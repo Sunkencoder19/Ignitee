@@ -207,7 +207,7 @@ All 10 modules from the brief map onto the screens above. Content follows the ne
 ### 8. Progress tracking
 
 - Per chapter: lessons done / total, best quiz score, stars.
-- Profile stats: total time, lessons, quizzes, accuracy.
+- Profile stats: lessons, quizzes, average quiz score, best streak.
 - Teacher's student detail page shows the same data per child, plus a chapter-wise score chart.
 
 ### 9. Database integration (future-ready)
@@ -244,6 +244,7 @@ Service files:
 - `api.js`: one `request()` wrapper with the delay and error simulation. The only file that changes when a backend arrives.
 - `contentService.js`: `getChapters()`, `getBadges()`, `getLesson(id)`, `getQuiz(id)`, `getChapterDetail(id)`.
 - `progressService.js`: `getProgress(studentId)`, `saveProgress(studentId, progress)`, `resetDemoData()`. The rules (points, streak, badges) live in ProgressContext's reducer and `lib/`; the service only stores the result.
+- `leaderboardService.js`: `getLeaderboard(classId)`: classmates' first names, avatars and progress; ranking lives in `lib/leaderboard.js`.
 - `classService.js`: teacher-side reads: `getClassSummary(classId)`, `getStudents(classId)`, `getStudentDetail(id)`, `getAssessments(classId)`; `classId` is `'4A'`, `'4B'` or `'all'`. The maths lives in `lib/classStats.js`.
 
 Seed ~12 students with varied, realistic progress so the teacher dashboard and leaderboard look alive. Mix strong, average, and inactive students, and include one with zero progress to exercise the empty states.

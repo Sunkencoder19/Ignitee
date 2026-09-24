@@ -59,3 +59,11 @@ export function daysAgoLabel(days) {
   if (days === 1) return 'Yesterday'
   return `${days} days ago`
 }
+
+const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+// '2026-09-24' -> 'Thursday'. Depends only on the date passed in.
+export function weekdayName(iso) {
+  const [y, m, d] = iso.split('-').map(Number)
+  return WEEKDAYS[new Date(y, m - 1, d, 12).getDay()]
+}

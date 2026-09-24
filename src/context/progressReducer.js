@@ -17,9 +17,17 @@ export const initialProgressState = {
   error: null,
 }
 
-// Old saves (and seed data) predate the first-try counters.
+// Old saves (and seed data) predate these fields. A seed student's best
+// streak is at least the streak they have now; their older streak points
+// were never dated, so their streak log starts empty.
 function withDefaults(progress) {
-  return { firstTryRun: 0, firstTryBest: 0, ...progress }
+  return {
+    firstTryRun: 0,
+    firstTryBest: 0,
+    streakLog: [],
+    ...progress,
+    bestStreak: Math.max(progress.bestStreak ?? 0, progress.streak ?? 0),
+  }
 }
 
 export function progressReducer(state, action) {

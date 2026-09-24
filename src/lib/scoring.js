@@ -67,13 +67,14 @@ export function answerPoints(outcomes) {
 
 // Older (seed) attempts only stored a score, so rebuild their answer points
 // from it: 100% on 8 questions is 8 x 10 = 80 points.
-function answerPointsOf(attempt, questionCount) {
+export function answerPointsOf(attempt, questionCount) {
   if (typeof attempt.answerPoints === 'number') return attempt.answerPoints
   return Math.round((attempt.score / 100) * questionCount * POINTS.firstTry)
 }
 
 /**
- * The whole retake rule in one place:
+ * The whole retake rule in one place, working from an attempt's score,
+ * stars and answer points:
  *  - First attempt: answer points, plus 30 if it earns 3 stars.
  *  - Retake that beats the best score: only the answer points above the best
  *    earlier attempt, plus 15 for improving, plus 30 the first time the quiz
@@ -82,9 +83,7 @@ function answerPointsOf(attempt, questionCount) {
  *    and over shouldn't buy a place at the top of the leaderboard.
  * Returns the total and a breakdown the result screen can list line by line.
  */
-export function quizAttemptPoints({ outcomes, previousAttempts, questionCount }) {
-  const { score, stars } = scoreQuiz(outcomes)
-  const earned = answerPoints(outcomes)
+export function attemptPoints({ score, stars, earned, previousAttempts, questionCount }) {
   const lines = []
 
   if (previousAttempts.length === 0) {
@@ -112,6 +111,19 @@ export function quizAttemptPoints({ outcomes, previousAttempts, questionCount })
   return { total, lines, improved: previousAttempts.length > 0 }
 }
 
+// A quiz the child just played: score, stars and answer points all come
+// from the per-question outcomes.
+export function quizAttemptPoints({ outcomes, previousAttempts, questionCount }) {
+  const { score, stars } = scoreQuiz(outcomes)
+  return attemptPoints({
+    score,
+    stars,
+    earned: answerPoints(outcomes),
+    previousAttempts,
+    questionCount,
+  })
+}
+
 // ---- streak ----
 
 // Day 1 = 5, day 2 = 10 ... day 7 and beyond = 35.
@@ -136,7 +148,15 @@ export function applyStreak(progress, today) {
   const streak = daysBetween(progress.lastActive, today) === 1 ? progress.streak + 1 : 1
   const earned = streakPoints(streak)
   return {
-    progress: { ...progress, streak, lastActive: today, points: progress.points + earned },
+    progress: {
+      ...progress,
+      streak,
+      bestStreak: Math.max(progress.bestStreak ?? 0, streak),
+      lastActive: today,
+      points: progress.points + earned,
+      // Dated, so "this week" on the leaderboard can count streak points too
+      streakLog: [...(progress.streakLog ?? []), { date: today, points: earned }],
+    },
     streakPoints: earned,
   }
 }

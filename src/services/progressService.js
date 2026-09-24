@@ -34,6 +34,8 @@ function emptyProgress(studentId) {
     lastActive: null,
     firstTryRun: 0,
     firstTryBest: 0,
+    bestStreak: 0,
+    streakLog: [],
   }
 }
 
@@ -56,6 +58,8 @@ function hydrateSeed(seed) {
     lastActive: isoDaysAgo(seed.lastActiveDaysAgo),
     firstTryRun: 0,
     firstTryBest: 0,
+    bestStreak: seed.streak,
+    streakLog: [],
   }
 }
 
