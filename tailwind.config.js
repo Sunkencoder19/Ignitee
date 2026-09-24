@@ -1,41 +1,12 @@
+import { palette } from './src/styles/palette.js'
+
 /** @type {import('tailwindcss').Config} */
 export default {
   content: ['./index.html', './src/**/*.{js,jsx}'],
   theme: {
     extend: {
-      // Every colour in the app comes from here. If a hex code shows up in a
-      // component, it belongs in this file instead.
-      colors: {
-        ember: {
-          500: '#F97316',
-          700: '#C2410C',
-        },
-        ink: {
-          600: '#4B4A6B',
-          900: '#1E1B4B',
-        },
-        cream: {
-          50: '#FFF8EE',
-        },
-        paper: '#FFFFFF',
-        sun: {
-          400: '#FACC15',
-        },
-        leaf: {
-          600: '#16A34A',
-        },
-        sky: {
-          500: '#0EA5E9',
-        },
-        berry: {
-          600: '#E11D48',
-        },
-        // Wrong answers: amber reads as "not yet", red reads as punishment
-        amber: {
-          500: '#F59E0B',
-          700: '#B45309',
-        },
-      },
+      // Colours come from src/styles/palette.js, shared with the charts.
+      colors: palette,
       fontFamily: {
         // Baloo 2 has Devanagari, so Hindi/Marathi later needs no font swap
         heading: ['"Baloo 2"', 'system-ui', 'sans-serif'],

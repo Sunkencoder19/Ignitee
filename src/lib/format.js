@@ -37,3 +37,25 @@ export function daysBetween(fromIso, toIso) {
 export function daysSince(iso) {
   return daysBetween(iso, todayISO())
 }
+
+// 'YYYY-MM-DD' plus or minus whole days. Pure, local noon for DST safety.
+export function addDays(iso, days) {
+  const [y, m, d] = iso.split('-').map(Number)
+  return toISODate(new Date(y, m - 1, d + days, 12))
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+// '2026-09-24' -> '24 Sep'. Short enough for a chart tick at 360px.
+export function shortDate(iso) {
+  const [, m, d] = iso.split('-').map(Number)
+  return `${d} ${MONTHS[m - 1]}`
+}
+
+// For "last active" columns: 0 -> 'Today', 1 -> 'Yesterday', null -> 'Not yet'.
+export function daysAgoLabel(days) {
+  if (days === null || days === Infinity) return 'Not yet'
+  if (days <= 0) return 'Today'
+  if (days === 1) return 'Yesterday'
+  return `${days} days ago`
+}

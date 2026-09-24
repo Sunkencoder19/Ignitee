@@ -1,71 +1,66 @@
-import students from '@/data/students.json'
+import badges from '@/data/badges.json'
 import chapters from '@/data/chapters.json'
+import students from '@/data/students.json'
+import {
+  assessmentStats,
+  chapterAverages,
+  classSummary,
+  lessonsPerDay,
+  studentSummary,
+} from '@/lib/classStats'
+import { todayISO } from '@/lib/format'
 import { peekProgress } from '@/services/progressService'
 import { request } from '@/services/api'
-import { daysSince } from '@/lib/format'
 
-const INACTIVE_DAYS = 3
+// Teacher-side reads. Each student's progress is whatever they've saved on
+// this device, falling back to the seed, so a lesson Ishita finishes shows up
+// here after a refresh. The numbers themselves come from lib/classStats.js.
+// TODO(fattesing): progress lives in this browser's localStorage, so the
+// teacher only sees work done on the same device until there's a backend.
 
-function averageScore(quizAttempts) {
-  if (quizAttempts.length === 0) return 0
-  const total = quizAttempts.reduce((sum, a) => sum + a.score, 0)
-  return Math.round(total / quizAttempts.length)
+// classId is '4A', '4B' or 'all'.
+function rowsFor(classId) {
+  return students
+    .filter((s) => classId === 'all' || s.classId === classId)
+    .map((student) => ({ student, progress: peekProgress(student.id) }))
 }
 
-function withProgress(student) {
-  const progress = peekProgress(student.id)
-  return { ...student, progress }
+export function getClassSummary(classId) {
+  const today = todayISO()
+  const rows = rowsFor(classId)
+  return request({
+    today,
+    ...classSummary(rows, chapters, today),
+    chapterAverages: chapterAverages(rows, chapters),
+    lessonsPerDay: lessonsPerDay(rows, today, 14),
+  })
 }
 
-export function getStudents() {
-  const rows = students.map(withProgress).map(({ progress, ...student }) => ({
-    ...student,
-    points: progress.points,
-    streak: progress.streak,
-    lastActive: progress.lastActive,
-    lessonsDone: progress.completedLessons.length,
-    averageScore: averageScore(progress.quizAttempts),
-  }))
-  return request(rows)
+export function getStudents(classId) {
+  const today = todayISO()
+  return request(
+    rowsFor(classId).map((r) => studentSummary(r.student, r.progress, chapters, today))
+  )
 }
 
 export function getStudentDetail(studentId) {
   const student = students.find((s) => s.id === studentId)
   if (!student) return Promise.reject(new Error(`No student found for id "${studentId}"`))
 
+  const today = todayISO()
   const progress = peekProgress(studentId)
-  const doneLessonIds = new Set(progress.completedLessons.map((l) => l.lessonId))
-  const chapterBreakdown = chapters
-    .filter((ch) => !ch.locked)
-    .map((ch) => {
-      const lessonsDone = ch.lessonIds.filter((id) => doneLessonIds.has(id)).length
-      const attempt = progress.quizAttempts.find((a) => a.quizId === ch.quizId)
-      return {
-        chapterId: ch.id,
-        title: ch.title,
-        lessonsDone,
-        lessonsTotal: ch.lessonIds.length,
-        bestScore: attempt?.score ?? null,
-        stars: attempt?.stars ?? 0,
-      }
-    })
+  const titleOf = (quizId) => chapters.find((c) => c.quizId === quizId)?.title ?? quizId
 
-  return request({ ...student, progress, chapterBreakdown })
+  return request({
+    ...studentSummary(student, progress, chapters, today),
+    badges: badges.filter((b) => progress.badges.includes(b.id)),
+    recentAttempts: [...progress.quizAttempts]
+      .reverse()
+      .slice(0, 5)
+      .map((a) => ({ ...a, chapterTitle: titleOf(a.quizId) })),
+  })
 }
 
-export function getClassSummary() {
-  const rows = students.map(withProgress)
-  const allAttempts = rows.flatMap((r) => r.progress.quizAttempts)
-  const lessonsThisWeek = rows
-    .flatMap((r) => r.progress.completedLessons)
-    .filter((l) => daysSince(l.completedAt) < 7).length
-  const inactiveStudents = rows.filter((r) => daysSince(r.progress.lastActive) >= INACTIVE_DAYS)
-
-  const summary = {
-    studentCount: rows.length,
-    averageScore: averageScore(allAttempts),
-    lessonsThisWeek,
-    inactiveCount: inactiveStudents.length,
-  }
-  return request(summary)
+export function getAssessments(classId) {
+  return request(assessmentStats(rowsFor(classId), chapters))
 }
