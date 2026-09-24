@@ -242,8 +242,8 @@ Content model (JSON files in `data/`):
 Service files:
 
 - `api.js`: one `request()` wrapper with the delay and error simulation. The only file that changes when a backend arrives.
-- `contentService.js`: `getChapters()`, `getLesson(id)`, `getQuiz(id)`.
-- `progressService.js`: `getProgress(studentId)`, `saveLessonComplete()`, `saveQuizAttempt()`.
+- `contentService.js`: `getChapters()`, `getBadges()`, `getLesson(id)`, `getQuiz(id)`, `getChapterDetail(id)`.
+- `progressService.js`: `getProgress(studentId)`, `saveProgress(studentId, progress)`, `resetDemoData()`. The rules (points, streak, badges) live in ProgressContext's reducer and `lib/`; the service only stores the result.
 - `classService.js`: teacher-side reads: `getClassSummary()`, `getStudents()`, `getStudentDetail(id)`.
 
 Seed ~12 students with varied, realistic progress so the teacher dashboard and leaderboard look alive. Mix strong, average, and inactive students, and include one with zero progress to exercise the empty states.

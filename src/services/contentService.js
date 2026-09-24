@@ -1,3 +1,4 @@
+import badges from '@/data/badges.json'
 import chapters from '@/data/chapters.json'
 import lessons from '@/data/lessons.json'
 import quizzes from '@/data/quizzes.json'
@@ -5,6 +6,10 @@ import { request } from '@/services/api'
 
 export function getChapters() {
   return request(chapters)
+}
+
+export function getBadges() {
+  return request(badges)
 }
 
 export function getLesson(lessonId) {

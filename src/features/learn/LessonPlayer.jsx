@@ -4,6 +4,7 @@ import {
   ArrowLeft,
   ArrowRight,
   BookOpen,
+  Flame,
   Lightbulb,
   PartyPopper,
   Pencil,
@@ -19,14 +20,13 @@ import LockedNotice from '@/components/ui/LockedNotice'
 import ProgressBar from '@/components/ui/ProgressBar'
 import QuestionCard from '@/components/ui/QuestionCard'
 import Spinner from '@/components/ui/Spinner'
-import { useAuth } from '@/context/AuthContext'
+import { useProgress } from '@/context/ProgressContext'
 import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'
 import useScrollIntoView from '@/hooks/useScrollIntoView'
 import { getChapterEntry, isQuizUnlocked } from '@/lib/chapterProgress'
 import { getTint } from '@/lib/tints'
 import { getChapters, getLesson } from '@/services/contentService'
-import { getProgress, saveLessonComplete } from '@/services/progressService'
 
 const STEP_LABELS = {
   explain: { label: 'Learn', icon: BookOpen },
@@ -36,13 +36,15 @@ const STEP_LABELS = {
 
 // ---- FinishScreen ----
 // Kept in this file: only the lesson player shows it.
-function FinishScreen({ lesson, chapter, pointsEarned, nextLessonId, quizReady }) {
+function FinishScreen({ lesson, chapter, event, nextLessonId, quizReady }) {
   let primary = { to: `/student/learn/${chapter.id}`, label: 'Back to chapter' }
   if (nextLessonId) {
     primary = { to: `/student/learn/${chapter.id}/${nextLessonId}`, label: 'Next lesson' }
   } else if (quizReady) {
     primary = { to: `/student/quiz/${chapter.quizId}`, label: 'Take the chapter quiz' }
   }
+  const lessonPoints = event?.lessonPoints ?? 0
+  const streakPoints = event?.streakPoints ?? 0
 
   return (
     <div className="mx-auto max-w-xl">
@@ -53,16 +55,22 @@ function FinishScreen({ lesson, chapter, pointsEarned, nextLessonId, quizReady }
         <h1 className="mt-4 text-3xl">Nice! You finished it.</h1>
         <p className="mt-1 text-lg">{lesson.title}</p>
 
-        {pointsEarned > 0 ? (
-          <p className="mx-auto mt-5 inline-flex items-center gap-2 rounded-full bg-sun-400/20 px-4 py-2 font-heading text-xl font-bold text-ink-900">
-            <Star aria-hidden="true" className="h-6 w-6 fill-sun-400 text-sun-400" />+{pointsEarned}{' '}
-            points
-          </p>
-        ) : (
-          <p className="mt-5">
-            You had already finished this one, so no new points. Great practice!
-          </p>
-        )}
+        <div className="mt-5 flex flex-col items-center gap-2">
+          {lessonPoints > 0 ? (
+            <p className="inline-flex items-center gap-2 rounded-full bg-sun-400/20 px-4 py-2 font-heading text-xl font-bold text-ink-900">
+              <Star aria-hidden="true" className="h-6 w-6 fill-sun-400 text-sun-400" />+
+              {lessonPoints} points
+            </p>
+          ) : (
+            <p>You had already finished this one, so no new lesson points. Great practice!</p>
+          )}
+          {streakPoints > 0 && (
+            <p className="inline-flex items-center gap-2 rounded-full bg-ember-500/10 px-4 py-2 font-heading text-lg font-bold text-ink-900">
+              <Flame aria-hidden="true" className="h-5 w-5 text-ember-500" />
+              Day {event.streakDay} streak: +{streakPoints}
+            </p>
+          )}
+        </div>
 
         <div className="mt-6 flex flex-col gap-3">
           <Button as={Link} to={primary.to} size="lg" fullWidth iconRight={ArrowRight}>
@@ -84,27 +92,38 @@ function FinishScreen({ lesson, chapter, pointsEarned, nextLessonId, quizReady }
 // ErrorBoundary by pathname, so this remounts with fresh step state.
 export default function LessonPlayer() {
   const { chapterId, lessonId } = useParams()
-  const { user } = useAuth()
+  const {
+    progress,
+    status: progressStatus,
+    error: progressError,
+    lastEvent,
+    completeLesson,
+    reload,
+  } = useProgress()
 
   // ---- state ----
   const [retryKey, setRetryKey] = useState(0)
   const [stepIndex, setStepIndex] = useState(0)
   const [activityDone, setActivityDone] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [saveError, setSaveError] = useState(null)
-  const [finish, setFinish] = useState(null)
+  const [finished, setFinished] = useState(false)
   const nextRef = useScrollIntoView(activityDone)
 
   const { data, loading, error } = useFetch(
-    () => Promise.all([getLesson(lessonId).catch(() => null), getChapters(), getProgress(user.id)]),
-    [lessonId, user.id, retryKey]
+    () => Promise.all([getLesson(lessonId).catch(() => null), getChapters()]),
+    [lessonId, retryKey]
   )
+  const busy = loading || progressStatus === 'idle' || progressStatus === 'loading'
+  const failed = error ?? (progressStatus === 'error' ? new Error(progressError) : null)
+  function retry() {
+    setRetryKey((k) => k + 1)
+    if (progressStatus === 'error') reload()
+  }
 
   const lesson = data?.[0]
   useDocumentTitle(lesson?.title ?? 'Lesson')
 
   // ---- render: loading / error / not found / locked ----
-  if (loading) {
+  if (busy) {
     return (
       <div className="grid min-h-[50dvh] place-items-center">
         <Spinner size="lg" label="Loading lesson" />
@@ -112,14 +131,14 @@ export default function LessonPlayer() {
     )
   }
 
-  if (error) {
+  if (failed) {
     return (
       <EmptyState
         icon={TriangleAlert}
         title="Couldn't load this lesson"
-        message={error.message}
+        message={failed.message}
         action={
-          <Button icon={RotateCcw} onClick={() => setRetryKey((k) => k + 1)}>
+          <Button icon={RotateCcw} onClick={retry}>
             Try again
           </Button>
         }
@@ -127,7 +146,7 @@ export default function LessonPlayer() {
     )
   }
 
-  const [, chapters, progress] = data
+  const [, chapters] = data
   const chapter = chapters.find((c) => c.id === chapterId)
 
   if (!lesson || !chapter || lesson.chapterId !== chapter.id) {
@@ -160,8 +179,19 @@ export default function LessonPlayer() {
     return <EmptyState title="This lesson is empty" message="Check back soon." />
   }
 
-  if (finish) {
-    return <FinishScreen lesson={lesson} chapter={chapter} {...finish} />
+  if (finished) {
+    const position = chapter.lessonIds.indexOf(lesson.id)
+    const event =
+      lastEvent?.type === 'LESSON_COMPLETED' && lastEvent.lessonId === lesson.id ? lastEvent : null
+    return (
+      <FinishScreen
+        lesson={lesson}
+        chapter={chapter}
+        event={event}
+        nextLessonId={chapter.lessonIds[position + 1] ?? null}
+        quizReady={Boolean(chapter.quizId) && isQuizUnlocked(chapter, progress)}
+      />
+    )
   }
 
   // ---- handlers ----
@@ -169,28 +199,16 @@ export default function LessonPlayer() {
   const isLast = stepIndex === lesson.steps.length - 1
   const needsAnswer = step.type === 'activity' && step.question && !activityDone
 
-  async function handleNext() {
+  // Finishing is one dispatch: ProgressContext adds the lesson, points and
+  // streak, saves, checks badges, and the header pill updates straight away.
+  function handleNext() {
     if (!isLast) {
       setStepIndex((i) => i + 1)
       setActivityDone(false)
       return
     }
-
-    setSaving(true)
-    setSaveError(null)
-    try {
-      const { progress: updated, pointsEarned } = await saveLessonComplete(user.id, lesson.id)
-      const position = chapter.lessonIds.indexOf(lesson.id)
-      setFinish({
-        pointsEarned,
-        nextLessonId: chapter.lessonIds[position + 1] ?? null,
-        quizReady: Boolean(chapter.quizId) && isQuizUnlocked(chapter, updated),
-      })
-    } catch (err) {
-      setSaveError(err.message)
-    } finally {
-      setSaving(false)
-    }
+    completeLesson(lesson.id)
+    setFinished(true)
   }
 
   // ---- render: content ----
@@ -241,12 +259,6 @@ export default function LessonPlayer() {
         )}
       </Card>
 
-      {saveError && (
-        <p role="alert" className="mt-4 font-semibold text-berry-600">
-          Couldn&apos;t save your progress. {saveError}
-        </p>
-      )}
-
       {/* scroll-mb keeps the button clear of the bottom tab bar on phones */}
       <div ref={nextRef} className="scroll-mb-28 md:scroll-mb-8">
         {!needsAnswer && (
@@ -256,13 +268,12 @@ export default function LessonPlayer() {
             className="mt-6"
             iconRight={isLast ? undefined : ArrowRight}
             onClick={handleNext}
-            loading={saving}
           >
             {isLast ? 'Finish lesson' : 'Next'}
           </Button>
         )}
       </div>
-      {stepIndex > 0 && !saving && (
+      {stepIndex > 0 && (
         <Button
           variant="ghost"
           fullWidth

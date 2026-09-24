@@ -5,13 +5,12 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import EmptyState from '@/components/ui/EmptyState'
 import Spinner from '@/components/ui/Spinner'
-import { useAuth } from '@/context/AuthContext'
+import { useProgress } from '@/context/ProgressContext'
 import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'
 import { getChapterMapEntries } from '@/lib/chapterProgress'
 import { getTint } from '@/lib/tints'
 import { getChapters } from '@/services/contentService'
-import { getProgress } from '@/services/progressService'
 
 // Snake pattern: centre, right, centre, left, repeat. Uses flex alignment
 // (not transforms), so it never pushes a node past the container edge.
@@ -95,16 +94,19 @@ function ChapterNode({ entry, index }) {
 // ---- ChapterMap ----
 export default function ChapterMap() {
   useDocumentTitle('Chapter map')
-  const { user } = useAuth()
+  const { progress, status: progressStatus, error: progressError, reload } = useProgress()
   const [retryKey, setRetryKey] = useState(0)
 
-  const { data, loading, error } = useFetch(
-    () => Promise.all([getChapters(), getProgress(user.id)]),
-    [user.id, retryKey]
-  )
+  const { data: chapters, loading, error } = useFetch(() => getChapters(), [retryKey])
+  const busy = loading || progressStatus === 'idle' || progressStatus === 'loading'
+  const failed = error ?? (progressStatus === 'error' ? new Error(progressError) : null)
+  function retry() {
+    setRetryKey((k) => k + 1)
+    if (progressStatus === 'error') reload()
+  }
 
   // ---- render ----
-  if (loading) {
+  if (busy) {
     return (
       <div className="grid min-h-[50dvh] place-items-center">
         <Spinner size="lg" label="Loading chapter map" />
@@ -112,14 +114,14 @@ export default function ChapterMap() {
     )
   }
 
-  if (error) {
+  if (failed) {
     return (
       <EmptyState
         icon={TriangleAlert}
         title="Couldn't load the chapter map"
-        message={error.message}
+        message={failed.message}
         action={
-          <Button icon={RotateCcw} onClick={() => setRetryKey((k) => k + 1)}>
+          <Button icon={RotateCcw} onClick={retry}>
             Try again
           </Button>
         }
@@ -127,7 +129,6 @@ export default function ChapterMap() {
     )
   }
 
-  const [chapters, progress] = data
   if (chapters.length === 0) {
     return <EmptyState title="No chapters yet" message="Check back soon." />
   }

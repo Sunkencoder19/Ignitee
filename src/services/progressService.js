@@ -1,7 +1,6 @@
 import seedProgress from '@/data/progress.json'
 import { request } from '@/services/api'
-import { isoDaysAgo, todayISO } from '@/lib/format'
-import { POINTS } from '@/lib/scoring'
+import { isoDaysAgo } from '@/lib/format'
 
 const STORAGE_PREFIX = 'ignite:progress:'
 
@@ -33,6 +32,8 @@ function emptyProgress(studentId) {
     badges: [],
     streak: 0,
     lastActive: null,
+    firstTryRun: 0,
+    firstTryBest: 0,
   }
 }
 
@@ -53,6 +54,8 @@ function hydrateSeed(seed) {
     badges: [...seed.badges],
     streak: seed.streak,
     lastActive: isoDaysAgo(seed.lastActiveDaysAgo),
+    firstTryRun: 0,
+    firstTryBest: 0,
   }
 }
 
@@ -77,27 +80,11 @@ export function peekProgress(studentId) {
   return loadProgress(studentId)
 }
 
-// Lesson points only count the first time; replaying a lesson is practice.
-export function saveLessonComplete(studentId, lessonId) {
-  const progress = loadProgress(studentId)
-  const alreadyDone = progress.completedLessons.some((l) => l.lessonId === lessonId)
-  const today = todayISO()
-  if (!alreadyDone) {
-    progress.completedLessons.push({ lessonId, completedAt: today })
-    progress.points += POINTS.lessonComplete
-  }
-  progress.lastActive = today
-  writeStored(studentId, progress)
-  return request({ progress, pointsEarned: alreadyDone ? 0 : POINTS.lessonComplete })
-}
-
-// `attempt.points` is worked out by lib/scoring.js before it gets here.
-export function saveQuizAttempt(studentId, attempt) {
-  const progress = loadProgress(studentId)
-  const today = todayISO()
-  progress.quizAttempts.push({ ...attempt, date: today })
-  progress.points += attempt.points
-  progress.lastActive = today
+// The rules (points, streak, badges) live in ProgressContext's reducer and
+// lib/. This only stores the result. ProgressContext calls it after a lesson,
+// a quiz or a badge, never on load, so untouched seed data stays relative to today.
+// TODO(fattesing): with a backend this becomes PUT /students/:id/progress.
+export function saveProgress(studentId, progress) {
   writeStored(studentId, progress)
   return request(progress)
 }

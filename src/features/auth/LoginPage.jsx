@@ -5,11 +5,11 @@ import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Wordmark from '@/components/ui/Wordmark'
 import { useAuth } from '@/context/AuthContext'
+import { useProgress } from '@/context/ProgressContext'
 import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'
 import { getTint } from '@/lib/tints'
 import { getLoginOptions } from '@/services/authService'
-import { resetDemoData } from '@/services/progressService'
 
 const ROLES = {
   student: {
@@ -44,6 +44,7 @@ export default function LoginPage() {
 
   // ---- state ----
   const { user, login } = useAuth()
+  const { resetDemo } = useProgress()
   const navigate = useNavigate()
   const location = useLocation()
   const from = location.state?.from
@@ -101,7 +102,9 @@ export default function LoginPage() {
 
   async function handleReset() {
     if (!window.confirm('Reset all saved progress back to the demo starting point?')) return
-    await resetDemoData()
+    // Through the context, not the service: it clears storage and also drops
+    // the in-memory progress of whoever is logged in, so nothing stale lingers.
+    await resetDemo()
     setResetDone(true)
   }
 

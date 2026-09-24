@@ -8,30 +8,38 @@ import LockedNotice from '@/components/ui/LockedNotice'
 import ProgressBar from '@/components/ui/ProgressBar'
 import QuestionCard from '@/components/ui/QuestionCard'
 import Spinner from '@/components/ui/Spinner'
-import { useAuth } from '@/context/AuthContext'
+import { useProgress } from '@/context/ProgressContext'
 import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'
 import useQuiz from '@/hooks/useQuiz'
 import useScrollIntoView from '@/hooks/useScrollIntoView'
 import { getChapterEntry, isQuizUnlocked } from '@/lib/chapterProgress'
-import { answerPoints, quizAttemptPoints, scoreQuiz } from '@/lib/scoring'
 import { getChapters, getQuiz } from '@/services/contentService'
-import { getProgress, saveQuizAttempt } from '@/services/progressService'
 
 export default function QuizPage() {
   const { quizId } = useParams()
-  const { user } = useAuth()
   const navigate = useNavigate()
+  const {
+    progress,
+    status: progressStatus,
+    error: progressError,
+    submitQuiz,
+    reload,
+  } = useProgress()
 
   // ---- state ----
   const [retryKey, setRetryKey] = useState(0)
-  const [saving, setSaving] = useState(false)
-  const [saveError, setSaveError] = useState(null)
 
   const { data, loading, error } = useFetch(
-    () => Promise.all([getQuiz(quizId).catch(() => null), getChapters(), getProgress(user.id)]),
-    [quizId, user.id, retryKey]
+    () => Promise.all([getQuiz(quizId).catch(() => null), getChapters()]),
+    [quizId, retryKey]
   )
+  const busy = loading || progressStatus === 'idle' || progressStatus === 'loading'
+  const failed = error ?? (progressStatus === 'error' ? new Error(progressError) : null)
+  function retry() {
+    setRetryKey((k) => k + 1)
+    if (progressStatus === 'error') reload()
+  }
   const quiz = data?.[0] ?? null
   const run = useQuiz(quiz)
   const nextRef = useScrollIntoView(run.currentAnswered)
@@ -40,7 +48,7 @@ export default function QuizPage() {
   useDocumentTitle(chapter ? `${chapter.title} quiz` : 'Quiz')
 
   // ---- render: loading / error / not found / locked ----
-  if (loading) {
+  if (busy) {
     return (
       <div className="grid min-h-[50dvh] place-items-center">
         <Spinner size="lg" label="Loading quiz" />
@@ -48,14 +56,14 @@ export default function QuizPage() {
     )
   }
 
-  if (error) {
+  if (failed) {
     return (
       <EmptyState
         icon={TriangleAlert}
         title="Couldn't load this quiz"
-        message={error.message}
+        message={failed.message}
         action={
-          <Button icon={RotateCcw} onClick={() => setRetryKey((k) => k + 1)}>
+          <Button icon={RotateCcw} onClick={retry}>
             Try again
           </Button>
         }
@@ -63,7 +71,7 @@ export default function QuizPage() {
     )
   }
 
-  const [, chapters, progress] = data
+  const [, chapters] = data
 
   if (!quiz || !chapter) {
     return (
@@ -108,37 +116,19 @@ export default function QuizPage() {
   }
 
   // ---- handlers ----
-  async function handleNext() {
+  // Submitting is one dispatch: the reducer scores the attempt with
+  // lib/scoring.js, adds points and streak, and the badge check runs after.
+  function handleNext() {
     if (!run.isLast) {
       run.next()
       return
     }
-
-    const outcomes = run.outcomes
-    const { score, stars } = scoreQuiz(outcomes)
-    const previousAttempts = progress.quizAttempts.filter((a) => a.quizId === quiz.id)
-    const { total } = quizAttemptPoints({
-      outcomes,
-      previousAttempts,
+    submitQuiz({
+      quizId: quiz.id,
       questionCount: quiz.questions.length,
+      answers: run.answers.map((a, i) => ({ questionId: quiz.questions[i].id, ...a })),
     })
-
-    setSaving(true)
-    setSaveError(null)
-    try {
-      await saveQuizAttempt(user.id, {
-        quizId: quiz.id,
-        score,
-        stars,
-        points: total,
-        answerPoints: answerPoints(outcomes),
-        answers: run.answers.map((a, i) => ({ questionId: quiz.questions[i].id, ...a })),
-      })
-      navigate(`/student/quiz/${quiz.id}/result`, { replace: true })
-    } catch (err) {
-      setSaveError(err.message)
-      setSaving(false)
-    }
+    navigate(`/student/quiz/${quiz.id}/result`, { replace: true })
   }
 
   function handleQuit(e) {
@@ -178,23 +168,10 @@ export default function QuizPage() {
         <QuestionCard key={run.question.id} question={run.question} onResolved={run.answered} />
       </Card>
 
-      {saveError && (
-        <p role="alert" className="mt-4 font-semibold text-berry-600">
-          Couldn&apos;t save your score. {saveError}
-        </p>
-      )}
-
       {/* scroll-mb keeps the button clear of the bottom tab bar on phones */}
       <div ref={nextRef} className="scroll-mb-28 md:scroll-mb-8">
         {run.currentAnswered && (
-          <Button
-            size="lg"
-            fullWidth
-            className="mt-6"
-            iconRight={ArrowRight}
-            onClick={handleNext}
-            loading={saving}
-          >
+          <Button size="lg" fullWidth className="mt-6" iconRight={ArrowRight} onClick={handleNext}>
             {run.isLast ? 'See my score' : 'Next question'}
           </Button>
         )}

@@ -15,13 +15,12 @@ import Card from '@/components/ui/Card'
 import EmptyState from '@/components/ui/EmptyState'
 import LockedNotice from '@/components/ui/LockedNotice'
 import Spinner from '@/components/ui/Spinner'
-import { useAuth } from '@/context/AuthContext'
+import { useProgress } from '@/context/ProgressContext'
 import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'
 import { getChapterEntry } from '@/lib/chapterProgress'
 import { quizAttemptPoints } from '@/lib/scoring'
 import { getChapters, getQuiz } from '@/services/contentService'
-import { getProgress } from '@/services/progressService'
 
 const HEADLINES = {
   3: 'Brilliant! 3 stars.',
@@ -83,17 +82,29 @@ function MistakeItem({ question, answer }) {
 // ---- ResultScreen ----
 export default function ResultScreen() {
   const { quizId } = useParams()
-  const { user } = useAuth()
+  const {
+    progress,
+    status: progressStatus,
+    error: progressError,
+    lastEvent,
+    reload,
+  } = useProgress()
   const [retryKey, setRetryKey] = useState(0)
 
   const { data, loading, error } = useFetch(
-    () => Promise.all([getQuiz(quizId).catch(() => null), getChapters(), getProgress(user.id)]),
-    [quizId, user.id, retryKey]
+    () => Promise.all([getQuiz(quizId).catch(() => null), getChapters()]),
+    [quizId, retryKey]
   )
+  const busy = loading || progressStatus === 'idle' || progressStatus === 'loading'
+  const failed = error ?? (progressStatus === 'error' ? new Error(progressError) : null)
+  function retry() {
+    setRetryKey((k) => k + 1)
+    if (progressStatus === 'error') reload()
+  }
   useDocumentTitle('Quiz result')
 
   // ---- render: loading / error / not found / locked / no attempt ----
-  if (loading) {
+  if (busy) {
     return (
       <div className="grid min-h-[50dvh] place-items-center">
         <Spinner size="lg" label="Loading your result" />
@@ -101,14 +112,14 @@ export default function ResultScreen() {
     )
   }
 
-  if (error) {
+  if (failed) {
     return (
       <EmptyState
         icon={TriangleAlert}
         title="Couldn't load your result"
-        message={error.message}
+        message={failed.message}
         action={
-          <Button icon={RotateCcw} onClick={() => setRetryKey((k) => k + 1)}>
+          <Button icon={RotateCcw} onClick={retry}>
             Try again
           </Button>
         }
@@ -116,7 +127,7 @@ export default function ResultScreen() {
     )
   }
 
-  const [quiz, chapters, progress] = data
+  const [quiz, chapters] = data
   const chapter = chapters.find((c) => c.id === quiz?.chapterId)
 
   if (!quiz || !chapter) {
@@ -172,6 +183,19 @@ export default function ResultScreen() {
   const unlockedTitle =
     justUnlocked && nextChapter && !nextChapter.locked ? nextChapter.title : null
 
+  // Streak points belong to the day, not the attempt, so they're only known
+  // straight after submitting. After a refresh the result shows quiz points only.
+  const event =
+    lastEvent?.type === 'QUIZ_SUBMITTED' &&
+    lastEvent.quizId === quiz.id &&
+    lastEvent.attemptNumber === attempts.length
+      ? lastEvent
+      : null
+  const streakPoints = event?.streakPoints ?? 0
+  const lines = streakPoints
+    ? [...breakdown, { label: `Day ${event.streakDay} streak`, points: streakPoints }]
+    : breakdown
+
   const passed = attempt.stars >= 1
   const retryTo = `/student/quiz/${quiz.id}`
 
@@ -199,11 +223,11 @@ export default function ResultScreen() {
               <Star aria-hidden="true" className="h-6 w-6 fill-sun-400 text-sun-400" />
               Points earned
             </span>
-            <span>+{attempt.points}</span>
+            <span>+{attempt.points + streakPoints}</span>
           </p>
-          {breakdown.length > 0 && (
+          {lines.length > 0 && (
             <ul className="mt-2 space-y-1 text-sm">
-              {breakdown.map((line) => (
+              {lines.map((line) => (
                 <li key={line.label} className="flex justify-between">
                   <span>{line.label}</span>
                   <span className="font-semibold text-ink-900">+{line.points}</span>
@@ -213,7 +237,7 @@ export default function ResultScreen() {
           )}
           {attempt.points === 0 && bestBefore !== null && (
             <p className="mt-2 text-sm">
-              No new points this time. Beat your best of {bestBefore}% to earn more.
+              No new quiz points this time. Beat your best of {bestBefore}% to earn more.
             </p>
           )}
         </div>

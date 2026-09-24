@@ -16,7 +16,7 @@ import EmptyState from '@/components/ui/EmptyState'
 import LockedNotice from '@/components/ui/LockedNotice'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Spinner from '@/components/ui/Spinner'
-import { useAuth } from '@/context/AuthContext'
+import { useProgress } from '@/context/ProgressContext'
 import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'
 import {
@@ -27,7 +27,6 @@ import {
 } from '@/lib/chapterProgress'
 import { getTint } from '@/lib/tints'
 import { getChapterDetail, getChapters } from '@/services/contentService'
-import { getProgress } from '@/services/progressService'
 
 // ---- LessonRow ----
 // Kept in this file, not its own component: only this page uses it.
@@ -123,23 +122,24 @@ function QuizCard({ quiz, unlocked, stars, tint }) {
 // ---- ChapterPage ----
 export default function ChapterPage() {
   const { chapterId } = useParams()
-  const { user } = useAuth()
+  const { progress, status: progressStatus, error: progressError, reload } = useProgress()
   const [retryKey, setRetryKey] = useState(0)
 
   const { data, loading, error } = useFetch(
-    () =>
-      Promise.all([
-        getChapterDetail(chapterId).catch(() => null),
-        getChapters(),
-        getProgress(user.id),
-      ]),
-    [chapterId, user.id, retryKey]
+    () => Promise.all([getChapterDetail(chapterId).catch(() => null), getChapters()]),
+    [chapterId, retryKey]
   )
+  const busy = loading || progressStatus === 'idle' || progressStatus === 'loading'
+  const failed = error ?? (progressStatus === 'error' ? new Error(progressError) : null)
+  function retry() {
+    setRetryKey((k) => k + 1)
+    if (progressStatus === 'error') reload()
+  }
 
   useDocumentTitle(data?.[0]?.chapter.title ?? 'Chapter')
 
   // ---- render ----
-  if (loading) {
+  if (busy) {
     return (
       <div className="grid min-h-[50dvh] place-items-center">
         <Spinner size="lg" label="Loading chapter" />
@@ -147,14 +147,14 @@ export default function ChapterPage() {
     )
   }
 
-  if (error) {
+  if (failed) {
     return (
       <EmptyState
         icon={TriangleAlert}
         title="Couldn't load this chapter"
-        message={error.message}
+        message={failed.message}
         action={
-          <Button icon={RotateCcw} onClick={() => setRetryKey((k) => k + 1)}>
+          <Button icon={RotateCcw} onClick={retry}>
             Try again
           </Button>
         }
@@ -162,7 +162,7 @@ export default function ChapterPage() {
     )
   }
 
-  const [detail, allChapters, progress] = data
+  const [detail, allChapters] = data
 
   if (!detail) {
     return (
