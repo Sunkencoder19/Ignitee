@@ -14,7 +14,16 @@
       },
       {
         "type": "activity",
-        "text": "Look around your room. Find one thing shaped like a circle and one shaped like a square."
+        "text": "Look around your room. Find one thing shaped like a circle and one shaped like a square.",
+        "question": {
+          "id": "ch1-l1-a1",
+          "type": "mcq",
+          "prompt": "A slice of pizza looks most like which shape?",
+          "options": ["Circle", "Square", "Triangle", "Rectangle"],
+          "answer": "Triangle",
+          "hint": "Count its pointy corners. It has 3.",
+          "explanation": "A pizza slice has 3 corners and 3 sides, like a triangle."
+        }
       }
     ]
   },
@@ -33,7 +42,16 @@
       },
       {
         "type": "activity",
-        "text": "Find a box at home. Is it a cube or a cuboid? Check if all its sides are the same size."
+        "text": "Find a box at home. Is it a cube or a cuboid? Check if all its sides are the same size.",
+        "question": {
+          "id": "ch1-l2-a1",
+          "type": "mcq",
+          "prompt": "A can of juice is shaped like a:",
+          "options": ["Cube", "Cylinder", "Cone", "Sphere"],
+          "answer": "Cylinder",
+          "hint": "It has a round top and a round bottom.",
+          "explanation": "A can has two round, flat ends and a curved side. That is a cylinder."
+        }
       }
     ]
   },
@@ -52,7 +70,16 @@
       },
       {
         "type": "activity",
-        "text": "Pick up a box. Run your finger along one edge, then touch one corner."
+        "text": "Pick up a box. Run your finger along one edge, then touch one corner.",
+        "question": {
+          "id": "ch1-l3-a1",
+          "type": "input",
+          "prompt": "A box shaped like a cuboid has how many faces?",
+          "options": [],
+          "answer": "6",
+          "hint": "Count top, bottom, front, back, left and right.",
+          "explanation": "A cuboid has 6 faces: top, bottom, front, back, left and right."
+        }
       }
     ]
   },
@@ -71,7 +98,16 @@
       },
       {
         "type": "activity",
-        "text": "Count your fingers and toes by 5s. Say the numbers out loud as you go."
+        "text": "Count your fingers and toes by 5s. Say the numbers out loud as you go.",
+        "question": {
+          "id": "ch2-l1-a1",
+          "type": "order",
+          "prompt": "Tap the numbers in order, counting by 5s.",
+          "options": ["15", "5", "20", "10"],
+          "answer": ["5", "10", "15", "20"],
+          "hint": "Start with the smallest number.",
+          "explanation": "Counting by 5s: 5, 10, 15, 20."
+        }
       }
     ]
   },
@@ -90,7 +126,16 @@
       },
       {
         "type": "activity",
-        "text": "Write your own pattern that adds 3 each time. Start at 1."
+        "text": "Write your own pattern that adds 3 each time. Start at 1.",
+        "question": {
+          "id": "ch2-l2-a1",
+          "type": "input",
+          "prompt": "What comes next? 1, 4, 7, 10, __",
+          "options": [],
+          "answer": "13",
+          "hint": "Each number is 3 more than the one before.",
+          "explanation": "10 + 3 = 13."
+        }
       }
     ]
   },
@@ -109,7 +154,16 @@
       },
       {
         "type": "activity",
-        "text": "Ask a friend to hide one number in a counting pattern. Find it using the rule."
+        "text": "Ask a friend to hide one number in a counting pattern. Find it using the rule.",
+        "question": {
+          "id": "ch2-l3-a1",
+          "type": "mcq",
+          "prompt": "Find the missing number: 20, 30, __, 50",
+          "options": ["35", "40", "45", "60"],
+          "answer": "40",
+          "hint": "The rule is add 10.",
+          "explanation": "30 + 10 = 40, and 40 + 10 = 50."
+        }
       }
     ]
   },
@@ -128,26 +182,44 @@
       },
       {
         "type": "activity",
-        "text": "Make a pattern with two colours of beads, blocks or drawings."
+        "text": "Make a pattern with two colours of beads, blocks or drawings.",
+        "question": {
+          "id": "ch3-l1-a1",
+          "type": "order",
+          "prompt": "Tap the tiles to make the pattern red, blue, red, blue.",
+          "options": ["Blue", "Red", "Blue", "Red"],
+          "answer": ["Red", "Blue", "Red", "Blue"],
+          "hint": "Start with red, then take turns.",
+          "explanation": "The two colours take turns: red, blue, red, blue."
+        }
       }
     ]
   },
   {
     "id": "ch3-l2",
     "chapterId": "ch3",
-    "title": "Symmetry",
+    "title": "Growing patterns",
     "steps": [
       {
         "type": "explain",
-        "text": "A shape has symmetry if you can fold it in half and both sides match exactly."
+        "text": "Some patterns grow. Each step adds the same amount as the step before."
       },
       {
         "type": "example",
-        "text": "A circle, a square and the letter A all have a line of symmetry."
+        "text": "1 dot, 3 dots, 5 dots, 7 dots. Each step adds 2 more dots."
       },
       {
         "type": "activity",
-        "text": "Fold a piece of paper in half. Cut a shape along the fold and open it up."
+        "text": "Draw the dots for each step. How many come next?",
+        "question": {
+          "id": "ch3-l2-a1",
+          "type": "input",
+          "prompt": "1 dot, 3 dots, 5 dots, 7 dots. How many dots come next?",
+          "options": [],
+          "answer": "9",
+          "hint": "Each step adds 2 dots.",
+          "explanation": "7 + 2 = 9 dots."
+        }
       }
     ]
   },
@@ -166,7 +238,16 @@
       },
       {
         "type": "activity",
-        "text": "Look at the floor tiles at home or school. What shape are they?"
+        "text": "Look at the floor tiles at home or school. What shape are they?",
+        "question": {
+          "id": "ch3-l3-a1",
+          "type": "mcq",
+          "prompt": "Which shape can cover a floor with no gaps?",
+          "options": ["Circle", "Square", "Star", "Heart"],
+          "answer": "Square",
+          "hint": "Think of the floor tiles at school.",
+          "explanation": "Squares fit edge to edge with no gaps. Circles always leave gaps."
+        }
       }
     ]
   },
@@ -185,7 +266,16 @@
       },
       {
         "type": "activity",
-        "text": "Pick a 4-digit number. Say out loud what each digit's place is."
+        "text": "Pick a 4-digit number. Say out loud what each digit's place is.",
+        "question": {
+          "id": "ch4-l1-a1",
+          "type": "order",
+          "prompt": "Tap these numbers from smallest to biggest.",
+          "options": ["4,632", "4,236", "4,326"],
+          "answer": ["4,236", "4,326", "4,632"],
+          "hint": "The thousands are the same, so compare the hundreds.",
+          "explanation": "2 hundreds < 3 hundreds < 6 hundreds, so 4,236 < 4,326 < 4,632."
+        }
       }
     ]
   },
@@ -204,7 +294,16 @@
       },
       {
         "type": "activity",
-        "text": "Write your house number or a bus number in expanded form."
+        "text": "Write your house number or a bus number in expanded form.",
+        "question": {
+          "id": "ch4-l2-a1",
+          "type": "input",
+          "prompt": "6000 + 400 + 70 + 2 = ?",
+          "options": [],
+          "answer": "6472",
+          "hint": "Put the digits in order: thousands, hundreds, tens, ones.",
+          "explanation": "6 thousands, 4 hundreds, 7 tens and 2 ones make 6,472."
+        }
       }
     ]
   },
@@ -223,7 +322,16 @@
       },
       {
         "type": "activity",
-        "text": "Add the prices of two things you know, like 1,200 and 1,500."
+        "text": "Add the prices of two things you know, like 1,200 and 1,500.",
+        "question": {
+          "id": "ch4-l3-a1",
+          "type": "input",
+          "prompt": "1,200 + 1,500 = ?",
+          "options": [],
+          "answer": "2700",
+          "hint": "Add the hundreds: 2 + 5, then the thousands: 1 + 1.",
+          "explanation": "1,200 + 1,500 = 2,700."
+        }
       }
     ]
   }

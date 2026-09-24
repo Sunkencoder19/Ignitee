@@ -30,6 +30,11 @@ export default {
         berry: {
           600: '#E11D48',
         },
+        // Wrong answers: amber reads as "not yet", red reads as punishment
+        amber: {
+          500: '#F59E0B',
+          700: '#B45309',
+        },
       },
       fontFamily: {
         // Baloo 2 has Devanagari, so Hindi/Marathi later needs no font swap

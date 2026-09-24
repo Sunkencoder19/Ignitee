@@ -57,6 +57,8 @@ The palette follows the name: a warm "ember" orange as the brand colour, deep in
 | `leaf-600` | #16A34A | Correct answer, completed lesson, success toasts |
 | `sky-500` | #0EA5E9 | Info, hints, teacher-side accent |
 | `berry-600` | #E11D48 | Errors only, used sparingly |
+| `amber-500` | #F59E0B | Wrong-answer borders and fills ("Try again") |
+| `amber-700` | #B45309 | Wrong-answer text on white (passes AA contrast) |
 
 Design rules:
 

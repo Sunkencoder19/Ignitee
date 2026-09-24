@@ -174,11 +174,11 @@
       {
         "id": "ch3-q2",
         "type": "mcq",
-        "prompt": "A shape that looks the same on both sides when folded is called:",
-        "options": ["Symmetric", "Patterned", "Random", "Twisted"],
-        "answer": "Symmetric",
-        "hint": "This word means the two halves match.",
-        "explanation": "A shape is symmetric when folding it makes both halves match."
+        "prompt": "A pattern grows: 1 square, 2 squares, 3 squares. How many squares come next?",
+        "options": ["3", "4", "5", "6"],
+        "answer": "4",
+        "hint": "Each step adds 1 square.",
+        "explanation": "3 + 1 = 4 squares."
       },
       {
         "id": "ch3-q3",
@@ -224,11 +224,11 @@
       {
         "id": "ch3-q7",
         "type": "mcq",
-        "prompt": "Which of these shows symmetry?",
-        "options": ["A lopsided star", "A circle", "A scribble", "A random blob"],
-        "answer": "A circle",
-        "hint": "Which one looks the same no matter how you fold it?",
-        "explanation": "A circle folded any way down the middle always matches."
+        "prompt": "Bees build honeycomb with no gaps. Which shape do they use?",
+        "options": ["Circle", "Hexagon", "Star", "Heart"],
+        "answer": "Hexagon",
+        "hint": "It has 6 sides that fit snugly together.",
+        "explanation": "Hexagons fit side by side with no gaps, so they tile a surface."
       },
       {
         "id": "ch3-q8",
