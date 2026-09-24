@@ -1,6 +1,14 @@
 import { useId, useRef, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, ArrowRight, Backpack, ChevronRight, GraduationCap, Info } from 'lucide-react'
+import {
+  ArrowLeft,
+  ArrowRight,
+  Backpack,
+  ChevronRight,
+  CircleCheck,
+  GraduationCap,
+  Info,
+} from 'lucide-react'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import Wordmark from '@/components/ui/Wordmark'
@@ -260,7 +268,8 @@ export default function LoginPage() {
           Reset demo data
         </button>
         {resetDone && (
-          <p role="status" className="font-semibold text-leaf-600">
+          <p role="status" className="inline-flex items-center gap-1 font-semibold text-ink-900">
+            <CircleCheck aria-hidden="true" className="h-4 w-4 text-leaf-600" />
             Demo data reset.
           </p>
         )}

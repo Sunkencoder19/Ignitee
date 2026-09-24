@@ -250,7 +250,11 @@ export default function QuestionCard({ question, onResolved }) {
         {status === 'revealed' && (
           <div className="mt-5 rounded-2xl bg-sky-500/10 p-4">
             <p className="font-semibold text-ink-900">
-              The answer is <span className="text-leaf-600">{formatAnswer(question)}</span>.
+              The answer is{' '}
+              <span className="rounded bg-leaf-600/15 px-1.5 font-bold">
+                {formatAnswer(question)}
+              </span>
+              .
             </p>
             <p className="mt-1">{question.explanation}</p>
           </div>
