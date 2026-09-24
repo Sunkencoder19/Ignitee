@@ -13,6 +13,7 @@ import {
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import EmptyState from '@/components/ui/EmptyState'
+import LockedNotice from '@/components/ui/LockedNotice'
 import ProgressBar from '@/components/ui/ProgressBar'
 import Spinner from '@/components/ui/Spinner'
 import { useAuth } from '@/context/AuthContext'
@@ -20,7 +21,7 @@ import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'
 import {
   getBestQuizStars,
-  getChapterMapEntries,
+  getChapterEntry,
   getLessonStates,
   isQuizUnlocked,
 } from '@/lib/chapterProgress'
@@ -178,23 +179,17 @@ export default function ChapterPage() {
   }
 
   const { chapter, lessons, quiz } = detail
-  const mapEntry = getChapterMapEntries(allChapters, progress).find(
-    (e) => e.chapter.id === chapter.id
-  )
+  const mapEntry = getChapterEntry(chapter.id, allChapters, progress)
   const tint = { ...getTint(chapter.tint), name: chapter.tint }
 
   // Guard against opening a locked chapter straight from the URL.
   if (mapEntry?.state === 'locked') {
     return (
-      <EmptyState
-        icon={Lock}
+      <LockedNotice
         title={`${chapter.title} isn't open yet`}
         message={mapEntry.lockedReason}
-        action={
-          <Button as={Link} to="/student/learn" icon={ArrowLeft}>
-            Back to map
-          </Button>
-        }
+        backTo="/student/learn"
+        backLabel="Back to map"
       />
     )
   }
