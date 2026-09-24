@@ -41,6 +41,10 @@ export function getChapterMapEntries(chapters, progress) {
   })
 }
 
+export function getChapterEntry(chapterId, chapters, progress) {
+  return getChapterMapEntries(chapters, progress).find((e) => e.chapter.id === chapterId) ?? null
+}
+
 export function getLessonStates(chapter, progress) {
   const doneIds = new Set((progress?.completedLessons ?? []).map((l) => l.lessonId))
   let nextFound = false

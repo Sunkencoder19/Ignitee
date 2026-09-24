@@ -1,6 +1,7 @@
 import seedProgress from '@/data/progress.json'
 import { request } from '@/services/api'
 import { isoDaysAgo, todayISO } from '@/lib/format'
+import { POINTS } from '@/lib/scoring'
 
 const STORAGE_PREFIX = 'ignite:progress:'
 
@@ -76,22 +77,27 @@ export function peekProgress(studentId) {
   return loadProgress(studentId)
 }
 
+// Lesson points only count the first time; replaying a lesson is practice.
 export function saveLessonComplete(studentId, lessonId) {
   const progress = loadProgress(studentId)
   const alreadyDone = progress.completedLessons.some((l) => l.lessonId === lessonId)
+  const today = todayISO()
   if (!alreadyDone) {
-    const completedAt = todayISO()
-    progress.completedLessons.push({ lessonId, completedAt })
-    progress.lastActive = completedAt
+    progress.completedLessons.push({ lessonId, completedAt: today })
+    progress.points += POINTS.lessonComplete
   }
+  progress.lastActive = today
   writeStored(studentId, progress)
-  return request(progress)
+  return request({ progress, pointsEarned: alreadyDone ? 0 : POINTS.lessonComplete })
 }
 
+// `attempt.points` is worked out by lib/scoring.js before it gets here.
 export function saveQuizAttempt(studentId, attempt) {
   const progress = loadProgress(studentId)
-  progress.quizAttempts.push(attempt)
-  progress.lastActive = todayISO()
+  const today = todayISO()
+  progress.quizAttempts.push({ ...attempt, date: today })
+  progress.points += attempt.points
+  progress.lastActive = today
   writeStored(studentId, progress)
   return request(progress)
 }
