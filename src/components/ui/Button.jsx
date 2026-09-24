@@ -26,20 +26,25 @@ export default function Button({
   fullWidth = false,
   type = 'button',
   disabled,
+  as: Tag = 'button',
   className = '',
   ...rest
 }) {
   const isDisabled = disabled || loading
+  // `as={Link}` renders a router link that looks like a button; links have
+  // no type or disabled attribute, so those only go on a real <button>.
+  const tagProps =
+    Tag === 'button' ? { type, disabled: isDisabled } : { 'aria-disabled': isDisabled || undefined }
 
   return (
-    <button
-      type={type}
-      disabled={isDisabled}
+    <Tag
+      {...tagProps}
       className={[
         'inline-flex select-none items-center justify-center rounded-2xl font-heading font-semibold',
         'transition duration-150 active:scale-[0.97]',
         'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-ember-500/40',
         'disabled:pointer-events-none disabled:opacity-50',
+        'aria-disabled:pointer-events-none aria-disabled:opacity-50',
         VARIANTS[variant],
         SIZES[size],
         fullWidth ? 'w-full' : '',
@@ -54,6 +59,6 @@ export default function Button({
       )}
       <span>{children}</span>
       {IconRight && !loading && <IconRight aria-hidden="true" className="h-5 w-5 shrink-0" />}
-    </button>
+    </Tag>
   )
 }
