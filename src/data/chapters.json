@@ -1,0 +1,128 @@
+[
+  {
+    "id": "ch1",
+    "number": 1,
+    "title": "Shapes Around Us",
+    "tint": "ember",
+    "lessonIds": ["ch1-l1", "ch1-l2", "ch1-l3"],
+    "quizId": "ch1-quiz",
+    "locked": false
+  },
+  {
+    "id": "ch2",
+    "number": 2,
+    "title": "Hide and Seek",
+    "tint": "sky",
+    "lessonIds": ["ch2-l1", "ch2-l2", "ch2-l3"],
+    "quizId": "ch2-quiz",
+    "locked": false
+  },
+  {
+    "id": "ch3",
+    "number": 3,
+    "title": "Pattern Around Us",
+    "tint": "leaf",
+    "lessonIds": ["ch3-l1", "ch3-l2", "ch3-l3"],
+    "quizId": "ch3-quiz",
+    "locked": false
+  },
+  {
+    "id": "ch4",
+    "number": 4,
+    "title": "Thousands Around Us",
+    "tint": "sun",
+    "lessonIds": ["ch4-l1", "ch4-l2", "ch4-l3"],
+    "quizId": "ch4-quiz",
+    "locked": false
+  },
+  {
+    "id": "ch5",
+    "number": 5,
+    "title": "Sharing and Measuring",
+    "tint": "berry",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch6",
+    "number": 6,
+    "title": "Measuring Length",
+    "tint": "ink",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch7",
+    "number": 7,
+    "title": "The Cleanest Village",
+    "tint": "ember",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch8",
+    "number": 8,
+    "title": "Weigh it, Pour it",
+    "tint": "sky",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch9",
+    "number": 9,
+    "title": "Equal Groups",
+    "tint": "leaf",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch10",
+    "number": 10,
+    "title": "Elephants, Tigers and Leopards",
+    "tint": "sun",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch11",
+    "number": 11,
+    "title": "Fun with Symmetry",
+    "tint": "berry",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch12",
+    "number": 12,
+    "title": "Ticking Clocks and Turning Calendar",
+    "tint": "ink",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch13",
+    "number": 13,
+    "title": "The Transport Museum",
+    "tint": "ember",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  },
+  {
+    "id": "ch14",
+    "number": 14,
+    "title": "Data Handling",
+    "tint": "sky",
+    "lessonIds": [],
+    "quizId": null,
+    "locked": true
+  }
+]

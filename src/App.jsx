@@ -1,6 +1,6 @@
-import UiKitPage from '@/features/dev/UiKitPage'
+import ServiceCheckPage from '@/features/dev/ServiceCheckPage'
 
-// Route table lands in checkpoint 3. Until then the app is just the UI kit.
+// Route table lands in checkpoint 3. Until then the app checks the service layer.
 export default function App() {
-  return <UiKitPage />
+  return <ServiceCheckPage />
 }

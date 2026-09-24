@@ -1,0 +1,328 @@
+[
+  {
+    "id": "ch1-quiz",
+    "chapterId": "ch1",
+    "passMark": 50,
+    "questions": [
+      {
+        "id": "ch1-q1",
+        "type": "mcq",
+        "prompt": "How many sides does a triangle have?",
+        "options": ["2", "3", "4", "5"],
+        "answer": "3",
+        "hint": "Tri means three.",
+        "explanation": "A triangle always has 3 sides and 3 corners."
+      },
+      {
+        "id": "ch1-q2",
+        "type": "mcq",
+        "prompt": "Which shape has no corners?",
+        "options": ["Square", "Triangle", "Circle", "Rectangle"],
+        "answer": "Circle",
+        "hint": "It rolls smoothly with no straight edges.",
+        "explanation": "A circle is round all the way, so it has no corners."
+      },
+      {
+        "id": "ch1-q3",
+        "type": "mcq",
+        "prompt": "A cube has how many faces?",
+        "options": ["4", "5", "6", "8"],
+        "answer": "6",
+        "hint": "Think of a dice.",
+        "explanation": "A cube has 6 flat square faces, like a dice."
+      },
+      {
+        "id": "ch1-q4",
+        "type": "input",
+        "prompt": "How many edges does a cube have?",
+        "options": [],
+        "answer": "12",
+        "hint": "Count where the faces meet.",
+        "explanation": "A cube has 12 edges, where two faces meet."
+      },
+      {
+        "id": "ch1-q5",
+        "type": "mcq",
+        "prompt": "Which of these is a 3D shape?",
+        "options": ["Circle", "Square", "Sphere", "Triangle"],
+        "answer": "Sphere",
+        "hint": "You can hold it in your hand like a ball.",
+        "explanation": "A sphere is a solid, round 3D shape, like a ball."
+      },
+      {
+        "id": "ch1-q6",
+        "type": "mcq",
+        "prompt": "A ball is shaped like a:",
+        "options": ["Cube", "Cylinder", "Sphere", "Cone"],
+        "answer": "Sphere",
+        "hint": "It is round in every direction.",
+        "explanation": "A ball is a sphere."
+      },
+      {
+        "id": "ch1-q7",
+        "type": "input",
+        "prompt": "How many corners does a cube have?",
+        "options": [],
+        "answer": "8",
+        "hint": "Count the pointy corners of a dice.",
+        "explanation": "A cube has 8 corners."
+      },
+      {
+        "id": "ch1-q8",
+        "type": "order",
+        "prompt": "Arrange these shapes from fewest sides to most sides.",
+        "options": ["Pentagon", "Triangle", "Hexagon", "Square"],
+        "answer": ["Triangle", "Square", "Pentagon", "Hexagon"],
+        "hint": "Triangle has 3 sides, square 4, pentagon 5, hexagon 6.",
+        "explanation": "Triangle (3), Square (4), Pentagon (5), Hexagon (6): fewest sides first."
+      }
+    ]
+  },
+  {
+    "id": "ch2-quiz",
+    "chapterId": "ch2",
+    "passMark": 50,
+    "questions": [
+      {
+        "id": "ch2-q1",
+        "type": "mcq",
+        "prompt": "Skip count by 2s: 2, 4, 6, __?",
+        "options": ["7", "8", "9", "10"],
+        "answer": "8",
+        "hint": "Add 2 to the last number.",
+        "explanation": "6 + 2 = 8."
+      },
+      {
+        "id": "ch2-q2",
+        "type": "input",
+        "prompt": "What comes next? 5, 10, 15, 20, __",
+        "options": [],
+        "answer": "25",
+        "hint": "Each jump adds 5.",
+        "explanation": "20 + 5 = 25."
+      },
+      {
+        "id": "ch2-q3",
+        "type": "mcq",
+        "prompt": "Skip count by 5s: 5, 10, 15, __?",
+        "options": ["18", "20", "22", "25"],
+        "answer": "20",
+        "hint": "Add 5 to the last number.",
+        "explanation": "15 + 5 = 20."
+      },
+      {
+        "id": "ch2-q4",
+        "type": "input",
+        "prompt": "Find the missing number: 3, 6, 9, __, 15",
+        "options": [],
+        "answer": "12",
+        "hint": "Each jump adds 3.",
+        "explanation": "9 + 3 = 12, and 12 + 3 = 15."
+      },
+      {
+        "id": "ch2-q5",
+        "type": "mcq",
+        "prompt": "Which number pattern skip counts by 10s?",
+        "options": ["2, 4, 6, 8", "5, 10, 15, 20", "10, 20, 30, 40", "1, 2, 3, 4"],
+        "answer": "10, 20, 30, 40",
+        "hint": "Each jump should add exactly 10.",
+        "explanation": "10, 20, 30, 40 each add 10."
+      },
+      {
+        "id": "ch2-q6",
+        "type": "input",
+        "prompt": "What is the missing number? 100, 90, 80, __, 60",
+        "options": [],
+        "answer": "70",
+        "hint": "This pattern counts down by 10.",
+        "explanation": "80 - 10 = 70, and 70 - 10 = 60."
+      },
+      {
+        "id": "ch2-q7",
+        "type": "mcq",
+        "prompt": "Skip counting by 3s: 3, 6, 9, 12, __?",
+        "options": ["13", "14", "15", "16"],
+        "answer": "15",
+        "hint": "Add 3 to the last number.",
+        "explanation": "12 + 3 = 15."
+      },
+      {
+        "id": "ch2-q8",
+        "type": "order",
+        "prompt": "Arrange these numbers in skip-counting order by 4s.",
+        "options": ["16", "4", "12", "8"],
+        "answer": ["4", "8", "12", "16"],
+        "hint": "Start from the smallest number.",
+        "explanation": "Counting by 4s from 4: 4, 8, 12, 16."
+      }
+    ]
+  },
+  {
+    "id": "ch3-quiz",
+    "chapterId": "ch3",
+    "passMark": 50,
+    "questions": [
+      {
+        "id": "ch3-q1",
+        "type": "mcq",
+        "prompt": "What comes next in the pattern: circle, square, circle, square, __?",
+        "options": ["Circle", "Triangle", "Square", "Star"],
+        "answer": "Circle",
+        "hint": "The pattern repeats every 2 shapes.",
+        "explanation": "The pattern is circle, square, circle, square, so it repeats with circle."
+      },
+      {
+        "id": "ch3-q2",
+        "type": "mcq",
+        "prompt": "A shape that looks the same on both sides when folded is called:",
+        "options": ["Symmetric", "Patterned", "Random", "Twisted"],
+        "answer": "Symmetric",
+        "hint": "This word means the two halves match.",
+        "explanation": "A shape is symmetric when folding it makes both halves match."
+      },
+      {
+        "id": "ch3-q3",
+        "type": "mcq",
+        "prompt": "Which letter has a line of symmetry?",
+        "options": ["F", "G", "A", "J"],
+        "answer": "A",
+        "hint": "Try folding each letter down the middle.",
+        "explanation": "Folding the letter A straight down the middle, both sides match."
+      },
+      {
+        "id": "ch3-q4",
+        "type": "mcq",
+        "prompt": "Which pattern repeats every 3 shapes?",
+        "options": [
+          "red, blue, red, blue",
+          "red, blue, green, red, blue, green",
+          "red, red, blue, blue",
+          "blue, red, red, blue"
+        ],
+        "answer": "red, blue, green, red, blue, green",
+        "hint": "Count how many shapes before it starts again.",
+        "explanation": "Red, blue, green repeats as a group of 3 before starting over."
+      },
+      {
+        "id": "ch3-q5",
+        "type": "mcq",
+        "prompt": "A wall uses red, yellow, red, yellow tiles. What colour is the 5th tile?",
+        "options": ["Red", "Yellow", "Blue", "Green"],
+        "answer": "Red",
+        "hint": "Odd positions are one colour, even positions are the other.",
+        "explanation": "Positions 1, 3, 5 are red, so the 5th tile is red."
+      },
+      {
+        "id": "ch3-q6",
+        "type": "input",
+        "prompt": "In the pattern A, B, A, B, A, __, what letter comes next?",
+        "options": [],
+        "answer": "B",
+        "hint": "The pattern alternates between two letters.",
+        "explanation": "The pattern swaps A and B each time, so after A comes B."
+      },
+      {
+        "id": "ch3-q7",
+        "type": "mcq",
+        "prompt": "Which of these shows symmetry?",
+        "options": ["A lopsided star", "A circle", "A scribble", "A random blob"],
+        "answer": "A circle",
+        "hint": "Which one looks the same no matter how you fold it?",
+        "explanation": "A circle folded any way down the middle always matches."
+      },
+      {
+        "id": "ch3-q8",
+        "type": "order",
+        "prompt": "This pattern repeats. Put the tiles in the correct repeating order.",
+        "options": ["Yellow", "Red", "Yellow", "Red"],
+        "answer": ["Red", "Yellow", "Red", "Yellow"],
+        "hint": "Two colours take turns.",
+        "explanation": "The tiles alternate red, yellow, red, yellow."
+      }
+    ]
+  },
+  {
+    "id": "ch4-quiz",
+    "chapterId": "ch4",
+    "passMark": 50,
+    "questions": [
+      {
+        "id": "ch4-q1",
+        "type": "mcq",
+        "prompt": "The number 4,236 has which digit in the hundreds place?",
+        "options": ["4", "2", "3", "6"],
+        "answer": "2",
+        "hint": "Count from the right: ones, tens, hundreds.",
+        "explanation": "In 4,236, the hundreds digit is 2."
+      },
+      {
+        "id": "ch4-q2",
+        "type": "input",
+        "prompt": "Write the number: 3 thousands, 4 hundreds, 5 tens, 6 ones.",
+        "options": [],
+        "answer": "3456",
+        "hint": "Put the digits in order: thousands, hundreds, tens, ones.",
+        "explanation": "3 thousands + 4 hundreds + 5 tens + 6 ones = 3,456."
+      },
+      {
+        "id": "ch4-q3",
+        "type": "mcq",
+        "prompt": "What is the expanded form of 5,821?",
+        "options": [
+          "5000 + 800 + 20 + 1",
+          "5000 + 80 + 2 + 1",
+          "500 + 800 + 20 + 1",
+          "5000 + 800 + 2 + 1"
+        ],
+        "answer": "5000 + 800 + 20 + 1",
+        "hint": "Match each digit to its place value.",
+        "explanation": "5,821 = 5000 + 800 + 20 + 1."
+      },
+      {
+        "id": "ch4-q4",
+        "type": "input",
+        "prompt": "2,450 + 1,300 = ?",
+        "options": [],
+        "answer": "3750",
+        "hint": "Add the hundreds and thousands separately, then the tens.",
+        "explanation": "2,450 + 1,300 = 3,750."
+      },
+      {
+        "id": "ch4-q5",
+        "type": "mcq",
+        "prompt": "Which number is the greatest?",
+        "options": ["3,459", "3,954", "3,495", "3,549"],
+        "answer": "3,954",
+        "hint": "Compare the hundreds digit first, since the thousands digit is the same.",
+        "explanation": "3,954 has the biggest hundreds digit (9) among these numbers."
+      },
+      {
+        "id": "ch4-q6",
+        "type": "input",
+        "prompt": "6,000 - 2,500 = ?",
+        "options": [],
+        "answer": "3500",
+        "hint": "Subtract the thousands, then the hundreds.",
+        "explanation": "6,000 - 2,500 = 3,500."
+      },
+      {
+        "id": "ch4-q7",
+        "type": "mcq",
+        "prompt": "The digit 7 in 7,382 is in which place?",
+        "options": ["Ones", "Tens", "Hundreds", "Thousands"],
+        "answer": "Thousands",
+        "hint": "It is the leftmost digit.",
+        "explanation": "In 7,382, the 7 is in the thousands place."
+      },
+      {
+        "id": "ch4-q8",
+        "type": "order",
+        "prompt": "Arrange these numbers from smallest to largest.",
+        "options": ["2,750", "1,999", "3,001", "2,099"],
+        "answer": ["1,999", "2,099", "2,750", "3,001"],
+        "hint": "Compare the thousands digit first.",
+        "explanation": "1,999 < 2,099 < 2,750 < 3,001."
+      }
+    ]
+  }
+]

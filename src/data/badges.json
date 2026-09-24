@@ -1,0 +1,44 @@
+[
+  {
+    "id": "first-step",
+    "name": "First Step",
+    "icon": "Footprints",
+    "rule": "firstLesson"
+  },
+  {
+    "id": "shape-explorer",
+    "name": "Shape Explorer",
+    "icon": "Shapes",
+    "rule": "finishChapter1"
+  },
+  {
+    "id": "pattern-pro",
+    "name": "Pattern Pro",
+    "icon": "Sparkles",
+    "rule": "chapter3ThreeStars"
+  },
+  {
+    "id": "thousand-club",
+    "name": "Thousand Club",
+    "icon": "Boxes",
+    "rule": "finishChapter4"
+  },
+  {
+    "id": "on-fire",
+    "name": "On Fire",
+    "icon": "Flame",
+    "rule": "fiveDayStreak"
+  },
+  {
+    "id": "never-give-up",
+    "name": "Never Give Up",
+    "icon": "Heart",
+    "rule": "quizRetryImproved"
+  },
+  {
+    "id": "sharp-mind",
+    "name": "Sharp Mind",
+    "icon": "Brain",
+    "rule": "tenFirstTryStreak"
+  }
+]

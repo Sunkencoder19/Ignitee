@@ -1,0 +1,230 @@
+[
+  {
+    "id": "ch1-l1",
+    "chapterId": "ch1",
+    "title": "Flat shapes around us",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "Flat shapes are shapes that lie on a page. A circle, a square, a rectangle and a triangle are all flat shapes."
+      },
+      {
+        "type": "example",
+        "text": "A clock is round like a circle. A book cover is a rectangle. A slice of pizza is like a triangle."
+      },
+      {
+        "type": "activity",
+        "text": "Look around your room. Find one thing shaped like a circle and one shaped like a square."
+      }
+    ]
+  },
+  {
+    "id": "ch1-l2",
+    "chapterId": "ch1",
+    "title": "Solid shapes around us",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "Solid shapes can be picked up and held. A cube, a cuboid, a sphere, a cylinder and a cone are all solid shapes."
+      },
+      {
+        "type": "example",
+        "text": "A dice is a cube. A can of juice is a cylinder. A ball is a sphere. An ice cream cone is a cone."
+      },
+      {
+        "type": "activity",
+        "text": "Find a box at home. Is it a cube or a cuboid? Check if all its sides are the same size."
+      }
+    ]
+  },
+  {
+    "id": "ch1-l3",
+    "chapterId": "ch1",
+    "title": "Faces, edges and corners",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "A face is a flat side of a solid shape. An edge is where two faces meet. A corner is where edges meet."
+      },
+      {
+        "type": "example",
+        "text": "A cube has 6 flat faces, 12 edges and 8 corners. Count them on a dice."
+      },
+      {
+        "type": "activity",
+        "text": "Pick up a box. Run your finger along one edge, then touch one corner."
+      }
+    ]
+  },
+  {
+    "id": "ch2-l1",
+    "chapterId": "ch2",
+    "title": "Skip counting",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "Skip counting means counting by jumps instead of one by one. We can skip count by 2s, 5s or 10s."
+      },
+      {
+        "type": "example",
+        "text": "Counting by 5s: 5, 10, 15, 20, 25. Each jump adds 5."
+      },
+      {
+        "type": "activity",
+        "text": "Count your fingers and toes by 5s. Say the numbers out loud as you go."
+      }
+    ]
+  },
+  {
+    "id": "ch2-l2",
+    "chapterId": "ch2",
+    "title": "Number patterns",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "A number pattern follows a rule. Once you find the rule, you can guess what comes next."
+      },
+      {
+        "type": "example",
+        "text": "2, 4, 6, 8, __. Each number is 2 more than the last, so the next number is 10."
+      },
+      {
+        "type": "activity",
+        "text": "Write your own pattern that adds 3 each time. Start at 1."
+      }
+    ]
+  },
+  {
+    "id": "ch2-l3",
+    "chapterId": "ch2",
+    "title": "Missing numbers",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "Sometimes a number in a pattern is hidden. Look at the numbers before and after it to find the rule."
+      },
+      {
+        "type": "example",
+        "text": "10, 20, __, 40. The rule is add 10, so the missing number is 30."
+      },
+      {
+        "type": "activity",
+        "text": "Ask a friend to hide one number in a counting pattern. Find it using the rule."
+      }
+    ]
+  },
+  {
+    "id": "ch3-l1",
+    "chapterId": "ch3",
+    "title": "Repeating patterns",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "A repeating pattern uses the same group of shapes or colours again and again."
+      },
+      {
+        "type": "example",
+        "text": "Red, blue, red, blue, red, blue is a repeating pattern with two colours."
+      },
+      {
+        "type": "activity",
+        "text": "Make a pattern with two colours of beads, blocks or drawings."
+      }
+    ]
+  },
+  {
+    "id": "ch3-l2",
+    "chapterId": "ch3",
+    "title": "Symmetry",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "A shape has symmetry if you can fold it in half and both sides match exactly."
+      },
+      {
+        "type": "example",
+        "text": "A circle, a square and the letter A all have a line of symmetry."
+      },
+      {
+        "type": "activity",
+        "text": "Fold a piece of paper in half. Cut a shape along the fold and open it up."
+      }
+    ]
+  },
+  {
+    "id": "ch3-l3",
+    "chapterId": "ch3",
+    "title": "Tiling patterns",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "Tiling means covering a space with shapes that fit together with no gaps."
+      },
+      {
+        "type": "example",
+        "text": "Square tiles fit together neatly on a floor with no space between them."
+      },
+      {
+        "type": "activity",
+        "text": "Look at the floor tiles at home or school. What shape are they?"
+      }
+    ]
+  },
+  {
+    "id": "ch4-l1",
+    "chapterId": "ch4",
+    "title": "Place value to thousands",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "In a number like 4,236, each digit has a place: thousands, hundreds, tens and ones."
+      },
+      {
+        "type": "example",
+        "text": "In 4,236: 4 is thousands, 2 is hundreds, 3 is tens, 6 is ones."
+      },
+      {
+        "type": "activity",
+        "text": "Pick a 4-digit number. Say out loud what each digit's place is."
+      }
+    ]
+  },
+  {
+    "id": "ch4-l2",
+    "chapterId": "ch4",
+    "title": "Expanded form",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "Expanded form writes a number as the sum of the value of each digit."
+      },
+      {
+        "type": "example",
+        "text": "5,821 in expanded form is 5000 + 800 + 20 + 1."
+      },
+      {
+        "type": "activity",
+        "text": "Write your house number or a bus number in expanded form."
+      }
+    ]
+  },
+  {
+    "id": "ch4-l3",
+    "chapterId": "ch4",
+    "title": "Adding and subtracting big numbers",
+    "steps": [
+      {
+        "type": "explain",
+        "text": "To add or subtract big numbers, line up the ones, tens, hundreds and thousands, then work column by column."
+      },
+      {
+        "type": "example",
+        "text": "2,450 + 1,300 = 3,750. Add ones, then tens, then hundreds, then thousands."
+      },
+      {
+        "type": "activity",
+        "text": "Add the prices of two things you know, like 1,200 and 1,500."
+      }
+    ]
+  }
+]
