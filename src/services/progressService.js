@@ -57,10 +57,12 @@ export function peekProgress(studentId) {
 
 export function saveLessonComplete(studentId, lessonId) {
   const progress = loadProgress(studentId)
-  if (!progress.completedLessons.includes(lessonId)) {
-    progress.completedLessons.push(lessonId)
+  const alreadyDone = progress.completedLessons.some((l) => l.lessonId === lessonId)
+  if (!alreadyDone) {
+    const completedAt = new Date().toISOString().slice(0, 10)
+    progress.completedLessons.push({ lessonId, completedAt })
+    progress.lastActive = completedAt
   }
-  progress.lastActive = new Date().toISOString().slice(0, 10)
   writeStored(studentId, progress)
   return request(progress)
 }

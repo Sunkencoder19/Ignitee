@@ -2,7 +2,7 @@
 // function routes its data through here instead of returning it directly,
 // so loading and error states are real even though the data is local JSON.
 
-const DEFAULT_DELAY_MS = 500
+const DEFAULT_DELAY_MS = 250
 
 /**
  * Resolves `data` after an artificial delay, like a real network request.

@@ -183,11 +183,11 @@
       {
         "id": "ch3-q3",
         "type": "mcq",
-        "prompt": "Which letter has a line of symmetry?",
-        "options": ["F", "G", "A", "J"],
-        "answer": "A",
-        "hint": "Try folding each letter down the middle.",
-        "explanation": "Folding the letter A straight down the middle, both sides match."
+        "prompt": "What comes next in this pattern: star, star, moon, star, star, moon, __?",
+        "options": ["Star", "Moon", "Sun", "Cloud"],
+        "answer": "Star",
+        "hint": "The pattern repeats every 3 shapes.",
+        "explanation": "The group star, star, moon repeats, so after moon comes star again."
       },
       {
         "id": "ch3-q4",

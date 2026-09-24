@@ -39,10 +39,11 @@ export function getStudentDetail(studentId) {
   if (!student) return Promise.reject(new Error(`No student found for id "${studentId}"`))
 
   const progress = peekProgress(studentId)
+  const doneLessonIds = new Set(progress.completedLessons.map((l) => l.lessonId))
   const chapterBreakdown = chapters
     .filter((ch) => !ch.locked)
     .map((ch) => {
-      const lessonsDone = ch.lessonIds.filter((id) => progress.completedLessons.includes(id)).length
+      const lessonsDone = ch.lessonIds.filter((id) => doneLessonIds.has(id)).length
       const attempt = progress.quizAttempts.find((a) => a.quizId === ch.quizId)
       return {
         chapterId: ch.id,
@@ -60,12 +61,9 @@ export function getStudentDetail(studentId) {
 export function getClassSummary() {
   const rows = students.map(withProgress)
   const allAttempts = rows.flatMap((r) => r.progress.quizAttempts)
-  // completedLessons has no per-lesson date, so "this week" is a proxy:
-  // lessons done by students who were active in the last 7 days.
-  // TODO(fattesing): swap for a real date once lesson completions carry a timestamp.
   const lessonsThisWeek = rows
-    .filter((r) => daysSince(r.progress.lastActive) <= 7)
-    .reduce((sum, r) => sum + r.progress.completedLessons.length, 0)
+    .flatMap((r) => r.progress.completedLessons)
+    .filter((l) => daysSince(l.completedAt) <= 7).length
   const inactiveStudents = rows.filter((r) => daysSince(r.progress.lastActive) >= INACTIVE_DAYS)
 
   const summary = {
