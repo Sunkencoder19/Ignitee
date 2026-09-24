@@ -20,13 +20,20 @@ export function isoDaysAgo(days) {
   return toISODate(date)
 }
 
-// Whole calendar days from `iso` to today. Parsed as local noon so a DST
-// shift can't nudge the difference to 0.96 or 1.04 days.
+// Whole calendar days from one 'YYYY-MM-DD' to another. Pure: both dates
+// come in as arguments, so reducers and rules can use it without a clock.
+// Parsed as local noon so a DST shift can't nudge the gap to 0.96 or 1.04.
+export function daysBetween(fromIso, toIso) {
+  if (!fromIso || !toIso) return Infinity
+  const toNoon = (iso) => {
+    const [y, m, d] = iso.split('-').map(Number)
+    return new Date(y, m - 1, d, 12).getTime()
+  }
+  return Math.round((toNoon(toIso) - toNoon(fromIso)) / DAY_MS)
+}
+
+// Whole calendar days from `iso` to today. Reads the clock, so it's for
+// services and screens only, never for the reducer or lib rules.
 export function daysSince(iso) {
-  if (!iso) return Infinity
-  const [y, m, d] = iso.split('-').map(Number)
-  const then = new Date(y, m - 1, d, 12)
-  const now = new Date()
-  now.setHours(12, 0, 0, 0)
-  return Math.round((now - then) / DAY_MS)
+  return daysBetween(iso, todayISO())
 }

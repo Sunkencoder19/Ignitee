@@ -22,7 +22,14 @@
       { "quizId": "ch4-quiz", "score": 88, "stars": 2, "points": 40, "daysAgo": 1 }
     ],
     "points": 620,
-    "badges": ["first-step", "shape-explorer", "thousand-club", "sharp-mind"],
+    "badges": [
+      "first-step",
+      "shape-explorer",
+      "pattern-pro",
+      "thousand-club",
+      "on-fire",
+      "sharp-mind"
+    ],
     "streak": 6,
     "lastActiveDaysAgo": 0
   },
@@ -41,7 +48,7 @@
       { "quizId": "ch2-quiz", "score": 65, "stars": 1, "points": 20, "daysAgo": 3 }
     ],
     "points": 210,
-    "badges": ["first-step"],
+    "badges": ["first-step", "shape-explorer"],
     "streak": 2,
     "lastActiveDaysAgo": 1
   },
@@ -64,7 +71,7 @@
       { "quizId": "ch3-quiz", "score": 95, "stars": 3, "points": 50, "daysAgo": 2 }
     ],
     "points": 480,
-    "badges": ["first-step", "shape-explorer", "pattern-pro"],
+    "badges": ["first-step", "shape-explorer", "pattern-pro", "on-fire"],
     "streak": 5,
     "lastActiveDaysAgo": 0
   },
@@ -77,7 +84,7 @@
     ],
     "quizAttempts": [{ "quizId": "ch1-quiz", "score": 60, "stars": 1, "points": 20, "daysAgo": 8 }],
     "points": 90,
-    "badges": ["first-step"],
+    "badges": ["first-step", "shape-explorer"],
     "streak": 0,
     "lastActiveDaysAgo": 6
   },
@@ -96,7 +103,7 @@
       { "quizId": "ch2-quiz", "score": 70, "stars": 1, "points": 20, "daysAgo": 4 }
     ],
     "points": 240,
-    "badges": ["first-step"],
+    "badges": ["first-step", "shape-explorer"],
     "streak": 1,
     "lastActiveDaysAgo": 2
   },
@@ -132,7 +139,14 @@
       { "quizId": "ch4-quiz", "score": 91, "stars": 3, "points": 50, "daysAgo": 1 }
     ],
     "points": 680,
-    "badges": ["first-step", "shape-explorer", "pattern-pro", "thousand-club", "sharp-mind"],
+    "badges": [
+      "first-step",
+      "shape-explorer",
+      "pattern-pro",
+      "thousand-club",
+      "on-fire",
+      "sharp-mind"
+    ],
     "streak": 7,
     "lastActiveDaysAgo": 0
   },
@@ -170,7 +184,7 @@
       { "quizId": "ch1-quiz", "score": 55, "stars": 1, "points": 20, "daysAgo": 10 }
     ],
     "points": 85,
-    "badges": ["first-step"],
+    "badges": ["first-step", "shape-explorer"],
     "streak": 0,
     "lastActiveDaysAgo": 7
   },
