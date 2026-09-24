@@ -4,14 +4,16 @@ import StudentLayout from '@/components/layout/StudentLayout'
 import Spinner from '@/components/ui/Spinner'
 import LoginPage from '@/features/auth/LoginPage'
 import RequireRole from '@/features/auth/RequireRole'
-import PlaceholderPage from '@/features/dev/PlaceholderPage'
 import LandingPage from '@/features/landing/LandingPage'
+import LeaderboardPage from '@/features/leaderboard/LeaderboardPage'
 import ChapterMap from '@/features/learn/ChapterMap'
 import ChapterPage from '@/features/learn/ChapterPage'
 import LessonPlayer from '@/features/learn/LessonPlayer'
 import NotFoundPage from '@/features/not-found/NotFoundPage'
+import ProfilePage from '@/features/profile/ProfilePage'
 import QuizPage from '@/features/quiz/QuizPage'
 import ResultScreen from '@/features/quiz/ResultScreen'
+import StudentDashboard from '@/features/student-dashboard/StudentDashboard'
 
 // Teachers are a handful of users on desktops; kids on cheap phones
 // shouldn't download the teacher area (and later, its charts) at all.
@@ -47,17 +49,14 @@ export default function App() {
             </RequireRole>
           }
         >
-          <Route index element={<PlaceholderPage title="Student dashboard" checkpoint={7} />} />
+          <Route index element={<StudentDashboard />} />
           <Route path="learn" element={<ChapterMap />} />
           <Route path="learn/:chapterId" element={<ChapterPage />} />
           <Route path="learn/:chapterId/:lessonId" element={<LessonPlayer />} />
           <Route path="quiz/:quizId" element={<QuizPage />} />
           <Route path="quiz/:quizId/result" element={<ResultScreen />} />
-          <Route
-            path="leaderboard"
-            element={<PlaceholderPage title="Leaderboard" checkpoint={7} />}
-          />
-          <Route path="profile" element={<PlaceholderPage title="Profile" checkpoint={7} />} />
+          <Route path="leaderboard" element={<LeaderboardPage />} />
+          <Route path="profile" element={<ProfilePage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
 
