@@ -1,6 +1,7 @@
 import { useId, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ChevronRight, RotateCcw, Search, SearchX, Star, TriangleAlert, Users } from 'lucide-react'
+import Avatar from '@/components/ui/Avatar'
 import Button from '@/components/ui/Button'
 import EmptyState from '@/components/ui/EmptyState'
 import Spinner from '@/components/ui/Spinner'
@@ -31,25 +32,6 @@ const SORTS = {
     column: 'active',
     compare: byNumber((s) => s.daysInactive, 'asc'),
   },
-}
-
-function initials(name) {
-  return name
-    .split(' ')
-    .map((part) => part[0])
-    .join('')
-    .slice(0, 2)
-}
-
-function Avatar({ name }) {
-  return (
-    <span
-      aria-hidden="true"
-      className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sky-500/10 font-heading font-bold text-ink-900"
-    >
-      {initials(name)}
-    </span>
-  )
 }
 
 function AttentionFlag({ student }) {

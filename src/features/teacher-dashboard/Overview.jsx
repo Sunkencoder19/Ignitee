@@ -19,7 +19,7 @@ import {
   DailyLessonsChart,
 } from '@/features/teacher-dashboard/Charts'
 import ReasonChip from '@/features/teacher-dashboard/ReasonChip'
-import StatTile from '@/features/teacher-dashboard/StatTile'
+import StatTile from '@/components/ui/StatTile'
 import useClassChoice from '@/hooks/useClassChoice'
 import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'

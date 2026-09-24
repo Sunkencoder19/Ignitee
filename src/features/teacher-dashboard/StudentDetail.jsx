@@ -10,6 +10,7 @@ import {
   TriangleAlert,
   UserX,
 } from 'lucide-react'
+import Avatar from '@/components/ui/Avatar'
 import BadgeIcon from '@/components/ui/BadgeIcon'
 import Button from '@/components/ui/Button'
 import EmptyState from '@/components/ui/EmptyState'
@@ -17,7 +18,7 @@ import ProgressBar from '@/components/ui/ProgressBar'
 import Spinner from '@/components/ui/Spinner'
 import { ChapterScoreChart, ChartCard } from '@/features/teacher-dashboard/Charts'
 import ReasonChip from '@/features/teacher-dashboard/ReasonChip'
-import StatTile from '@/features/teacher-dashboard/StatTile'
+import StatTile from '@/components/ui/StatTile'
 import useDocumentTitle from '@/hooks/useDocumentTitle'
 import useFetch from '@/hooks/useFetch'
 import { shortDate } from '@/lib/format'
@@ -110,15 +111,7 @@ export default function StudentDetail() {
       {backLink}
 
       <header className="flex items-center gap-4">
-        <span
-          aria-hidden="true"
-          className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-sky-500/10 font-heading text-2xl font-bold text-ink-900"
-        >
-          {s.name
-            .split(' ')
-            .map((p) => p[0])
-            .join('')}
-        </span>
+        <Avatar name={s.name} size="lg" />
         <div>
           <h1 className="text-3xl">{s.name}</h1>
           <p>Class {s.classId}</p>
