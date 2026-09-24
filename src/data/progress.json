@@ -2,105 +2,103 @@
   {
     "studentId": "s1",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-07" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-08" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-09" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-11" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-12" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-13" },
-      { "lessonId": "ch3-l1", "completedAt": "2026-09-16" },
-      { "lessonId": "ch3-l2", "completedAt": "2026-09-17" },
-      { "lessonId": "ch3-l3", "completedAt": "2026-09-18" },
-      { "lessonId": "ch4-l1", "completedAt": "2026-09-20" },
-      { "lessonId": "ch4-l2", "completedAt": "2026-09-21" },
-      { "lessonId": "ch4-l3", "completedAt": "2026-09-22" }
+      { "lessonId": "ch1-l1", "daysAgo": 17 },
+      { "lessonId": "ch1-l2", "daysAgo": 16 },
+      { "lessonId": "ch1-l3", "daysAgo": 15 },
+      { "lessonId": "ch2-l1", "daysAgo": 13 },
+      { "lessonId": "ch2-l2", "daysAgo": 12 },
+      { "lessonId": "ch2-l3", "daysAgo": 11 },
+      { "lessonId": "ch3-l1", "daysAgo": 8 },
+      { "lessonId": "ch3-l2", "daysAgo": 7 },
+      { "lessonId": "ch3-l3", "daysAgo": 6 },
+      { "lessonId": "ch4-l1", "daysAgo": 4 },
+      { "lessonId": "ch4-l2", "daysAgo": 3 },
+      { "lessonId": "ch4-l3", "daysAgo": 2 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 90, "stars": 3, "points": 50, "date": "2026-09-10" },
-      { "quizId": "ch2-quiz", "score": 85, "stars": 2, "points": 40, "date": "2026-09-14" },
-      { "quizId": "ch3-quiz", "score": 95, "stars": 3, "points": 50, "date": "2026-09-19" },
-      { "quizId": "ch4-quiz", "score": 88, "stars": 2, "points": 40, "date": "2026-09-23" }
+      { "quizId": "ch1-quiz", "score": 90, "stars": 3, "points": 50, "daysAgo": 14 },
+      { "quizId": "ch2-quiz", "score": 85, "stars": 2, "points": 40, "daysAgo": 10 },
+      { "quizId": "ch3-quiz", "score": 95, "stars": 3, "points": 50, "daysAgo": 5 },
+      { "quizId": "ch4-quiz", "score": 88, "stars": 2, "points": 40, "daysAgo": 1 }
     ],
     "points": 620,
     "badges": ["first-step", "shape-explorer", "thousand-club", "sharp-mind"],
     "streak": 6,
-    "lastActive": "2026-09-24"
+    "lastActiveDaysAgo": 0
   },
   {
     "studentId": "s2",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-12" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-13" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-14" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-18" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-19" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-20" }
+      { "lessonId": "ch1-l1", "daysAgo": 12 },
+      { "lessonId": "ch1-l2", "daysAgo": 11 },
+      { "lessonId": "ch1-l3", "daysAgo": 10 },
+      { "lessonId": "ch2-l1", "daysAgo": 6 },
+      { "lessonId": "ch2-l2", "daysAgo": 5 },
+      { "lessonId": "ch2-l3", "daysAgo": 4 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 70, "stars": 1, "points": 20, "date": "2026-09-15" },
-      { "quizId": "ch2-quiz", "score": 65, "stars": 1, "points": 20, "date": "2026-09-21" }
+      { "quizId": "ch1-quiz", "score": 70, "stars": 1, "points": 20, "daysAgo": 9 },
+      { "quizId": "ch2-quiz", "score": 65, "stars": 1, "points": 20, "daysAgo": 3 }
     ],
     "points": 210,
     "badges": ["first-step"],
     "streak": 2,
-    "lastActive": "2026-09-23"
+    "lastActiveDaysAgo": 1
   },
   {
     "studentId": "s3",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-09" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-10" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-11" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-14" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-15" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-16" },
-      { "lessonId": "ch3-l1", "completedAt": "2026-09-19" },
-      { "lessonId": "ch3-l2", "completedAt": "2026-09-20" },
-      { "lessonId": "ch3-l3", "completedAt": "2026-09-21" }
+      { "lessonId": "ch1-l1", "daysAgo": 15 },
+      { "lessonId": "ch1-l2", "daysAgo": 14 },
+      { "lessonId": "ch1-l3", "daysAgo": 13 },
+      { "lessonId": "ch2-l1", "daysAgo": 10 },
+      { "lessonId": "ch2-l2", "daysAgo": 9 },
+      { "lessonId": "ch2-l3", "daysAgo": 8 },
+      { "lessonId": "ch3-l1", "daysAgo": 5 },
+      { "lessonId": "ch3-l2", "daysAgo": 4 },
+      { "lessonId": "ch3-l3", "daysAgo": 3 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 92, "stars": 3, "points": 50, "date": "2026-09-12" },
-      { "quizId": "ch2-quiz", "score": 88, "stars": 2, "points": 40, "date": "2026-09-17" },
-      { "quizId": "ch3-quiz", "score": 95, "stars": 3, "points": 50, "date": "2026-09-22" }
+      { "quizId": "ch1-quiz", "score": 92, "stars": 3, "points": 50, "daysAgo": 12 },
+      { "quizId": "ch2-quiz", "score": 88, "stars": 2, "points": 40, "daysAgo": 7 },
+      { "quizId": "ch3-quiz", "score": 95, "stars": 3, "points": 50, "daysAgo": 2 }
     ],
     "points": 480,
     "badges": ["first-step", "shape-explorer", "pattern-pro"],
     "streak": 5,
-    "lastActive": "2026-09-24"
+    "lastActiveDaysAgo": 0
   },
   {
     "studentId": "s4",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-13" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-14" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-15" }
+      { "lessonId": "ch1-l1", "daysAgo": 11 },
+      { "lessonId": "ch1-l2", "daysAgo": 10 },
+      { "lessonId": "ch1-l3", "daysAgo": 9 }
     ],
-    "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 60, "stars": 1, "points": 20, "date": "2026-09-16" }
-    ],
+    "quizAttempts": [{ "quizId": "ch1-quiz", "score": 60, "stars": 1, "points": 20, "daysAgo": 8 }],
     "points": 90,
     "badges": ["first-step"],
     "streak": 0,
-    "lastActive": "2026-09-18"
+    "lastActiveDaysAgo": 6
   },
   {
     "studentId": "s5",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-12" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-13" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-14" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-17" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-18" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-19" }
+      { "lessonId": "ch1-l1", "daysAgo": 12 },
+      { "lessonId": "ch1-l2", "daysAgo": 11 },
+      { "lessonId": "ch1-l3", "daysAgo": 10 },
+      { "lessonId": "ch2-l1", "daysAgo": 7 },
+      { "lessonId": "ch2-l2", "daysAgo": 6 },
+      { "lessonId": "ch2-l3", "daysAgo": 5 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 75, "stars": 2, "points": 30, "date": "2026-09-15" },
-      { "quizId": "ch2-quiz", "score": 70, "stars": 1, "points": 20, "date": "2026-09-20" }
+      { "quizId": "ch1-quiz", "score": 75, "stars": 2, "points": 30, "daysAgo": 9 },
+      { "quizId": "ch2-quiz", "score": 70, "stars": 1, "points": 20, "daysAgo": 4 }
     ],
     "points": 240,
     "badges": ["first-step"],
     "streak": 1,
-    "lastActive": "2026-09-22"
+    "lastActiveDaysAgo": 2
   },
   {
     "studentId": "s6",
@@ -109,140 +107,140 @@
     "points": 0,
     "badges": [],
     "streak": 0,
-    "lastActive": "2026-09-24"
+    "lastActiveDaysAgo": 0
   },
   {
     "studentId": "s7",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-06" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-07" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-08" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-10" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-11" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-12" },
-      { "lessonId": "ch3-l1", "completedAt": "2026-09-15" },
-      { "lessonId": "ch3-l2", "completedAt": "2026-09-16" },
-      { "lessonId": "ch3-l3", "completedAt": "2026-09-17" },
-      { "lessonId": "ch4-l1", "completedAt": "2026-09-20" },
-      { "lessonId": "ch4-l2", "completedAt": "2026-09-21" },
-      { "lessonId": "ch4-l3", "completedAt": "2026-09-22" }
+      { "lessonId": "ch1-l1", "daysAgo": 18 },
+      { "lessonId": "ch1-l2", "daysAgo": 17 },
+      { "lessonId": "ch1-l3", "daysAgo": 16 },
+      { "lessonId": "ch2-l1", "daysAgo": 14 },
+      { "lessonId": "ch2-l2", "daysAgo": 13 },
+      { "lessonId": "ch2-l3", "daysAgo": 12 },
+      { "lessonId": "ch3-l1", "daysAgo": 9 },
+      { "lessonId": "ch3-l2", "daysAgo": 8 },
+      { "lessonId": "ch3-l3", "daysAgo": 7 },
+      { "lessonId": "ch4-l1", "daysAgo": 4 },
+      { "lessonId": "ch4-l2", "daysAgo": 3 },
+      { "lessonId": "ch4-l3", "daysAgo": 2 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 96, "stars": 3, "points": 50, "date": "2026-09-09" },
-      { "quizId": "ch2-quiz", "score": 90, "stars": 3, "points": 50, "date": "2026-09-13" },
-      { "quizId": "ch3-quiz", "score": 93, "stars": 3, "points": 50, "date": "2026-09-18" },
-      { "quizId": "ch4-quiz", "score": 91, "stars": 3, "points": 50, "date": "2026-09-23" }
+      { "quizId": "ch1-quiz", "score": 96, "stars": 3, "points": 50, "daysAgo": 15 },
+      { "quizId": "ch2-quiz", "score": 90, "stars": 3, "points": 50, "daysAgo": 11 },
+      { "quizId": "ch3-quiz", "score": 93, "stars": 3, "points": 50, "daysAgo": 6 },
+      { "quizId": "ch4-quiz", "score": 91, "stars": 3, "points": 50, "daysAgo": 1 }
     ],
     "points": 680,
     "badges": ["first-step", "shape-explorer", "pattern-pro", "thousand-club", "sharp-mind"],
     "streak": 7,
-    "lastActive": "2026-09-24"
+    "lastActiveDaysAgo": 0
   },
   {
     "studentId": "s8",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-11" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-12" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-13" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-16" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-17" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-18" },
-      { "lessonId": "ch3-l1", "completedAt": "2026-09-19" },
-      { "lessonId": "ch3-l2", "completedAt": "2026-09-20" },
-      { "lessonId": "ch3-l3", "completedAt": "2026-09-21" }
+      { "lessonId": "ch1-l1", "daysAgo": 13 },
+      { "lessonId": "ch1-l2", "daysAgo": 12 },
+      { "lessonId": "ch1-l3", "daysAgo": 11 },
+      { "lessonId": "ch2-l1", "daysAgo": 8 },
+      { "lessonId": "ch2-l2", "daysAgo": 7 },
+      { "lessonId": "ch2-l3", "daysAgo": 6 },
+      { "lessonId": "ch3-l1", "daysAgo": 5 },
+      { "lessonId": "ch3-l2", "daysAgo": 4 },
+      { "lessonId": "ch3-l3", "daysAgo": 3 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 80, "stars": 2, "points": 30, "date": "2026-09-14" },
-      { "quizId": "ch2-quiz", "score": 72, "stars": 1, "points": 20, "date": "2026-09-19" },
-      { "quizId": "ch3-quiz", "score": 78, "stars": 2, "points": 30, "date": "2026-09-22" }
+      { "quizId": "ch1-quiz", "score": 80, "stars": 2, "points": 30, "daysAgo": 10 },
+      { "quizId": "ch2-quiz", "score": 72, "stars": 1, "points": 20, "daysAgo": 5 },
+      { "quizId": "ch3-quiz", "score": 78, "stars": 2, "points": 30, "daysAgo": 2 }
     ],
     "points": 350,
     "badges": ["first-step", "shape-explorer"],
     "streak": 3,
-    "lastActive": "2026-09-23"
+    "lastActiveDaysAgo": 1
   },
   {
     "studentId": "s9",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-11" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-12" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-13" }
+      { "lessonId": "ch1-l1", "daysAgo": 13 },
+      { "lessonId": "ch1-l2", "daysAgo": 12 },
+      { "lessonId": "ch1-l3", "daysAgo": 11 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 55, "stars": 1, "points": 20, "date": "2026-09-14" }
+      { "quizId": "ch1-quiz", "score": 55, "stars": 1, "points": 20, "daysAgo": 10 }
     ],
     "points": 85,
     "badges": ["first-step"],
     "streak": 0,
-    "lastActive": "2026-09-17"
+    "lastActiveDaysAgo": 7
   },
   {
     "studentId": "s10",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-12" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-13" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-14" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-16" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-17" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-18" },
-      { "lessonId": "ch3-l1", "completedAt": "2026-09-19" },
-      { "lessonId": "ch3-l2", "completedAt": "2026-09-20" },
-      { "lessonId": "ch3-l3", "completedAt": "2026-09-21" }
+      { "lessonId": "ch1-l1", "daysAgo": 12 },
+      { "lessonId": "ch1-l2", "daysAgo": 11 },
+      { "lessonId": "ch1-l3", "daysAgo": 10 },
+      { "lessonId": "ch2-l1", "daysAgo": 8 },
+      { "lessonId": "ch2-l2", "daysAgo": 7 },
+      { "lessonId": "ch2-l3", "daysAgo": 6 },
+      { "lessonId": "ch3-l1", "daysAgo": 5 },
+      { "lessonId": "ch3-l2", "daysAgo": 4 },
+      { "lessonId": "ch3-l3", "daysAgo": 3 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 70, "stars": 1, "points": 20, "date": "2026-09-15" },
-      { "quizId": "ch2-quiz", "score": 68, "stars": 1, "points": 20, "date": "2026-09-19" },
-      { "quizId": "ch3-quiz", "score": 74, "stars": 1, "points": 20, "date": "2026-09-22" }
+      { "quizId": "ch1-quiz", "score": 70, "stars": 1, "points": 20, "daysAgo": 9 },
+      { "quizId": "ch2-quiz", "score": 68, "stars": 1, "points": 20, "daysAgo": 5 },
+      { "quizId": "ch3-quiz", "score": 74, "stars": 1, "points": 20, "daysAgo": 2 }
     ],
     "points": 300,
     "badges": ["first-step", "shape-explorer"],
     "streak": 2,
-    "lastActive": "2026-09-22"
+    "lastActiveDaysAgo": 2
   },
   {
     "studentId": "s11",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-08" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-09" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-10" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-12" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-13" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-14" },
-      { "lessonId": "ch3-l1", "completedAt": "2026-09-17" },
-      { "lessonId": "ch3-l2", "completedAt": "2026-09-18" },
-      { "lessonId": "ch3-l3", "completedAt": "2026-09-19" },
-      { "lessonId": "ch4-l1", "completedAt": "2026-09-21" },
-      { "lessonId": "ch4-l2", "completedAt": "2026-09-22" },
-      { "lessonId": "ch4-l3", "completedAt": "2026-09-23" }
+      { "lessonId": "ch1-l1", "daysAgo": 16 },
+      { "lessonId": "ch1-l2", "daysAgo": 15 },
+      { "lessonId": "ch1-l3", "daysAgo": 14 },
+      { "lessonId": "ch2-l1", "daysAgo": 12 },
+      { "lessonId": "ch2-l2", "daysAgo": 11 },
+      { "lessonId": "ch2-l3", "daysAgo": 10 },
+      { "lessonId": "ch3-l1", "daysAgo": 7 },
+      { "lessonId": "ch3-l2", "daysAgo": 6 },
+      { "lessonId": "ch3-l3", "daysAgo": 5 },
+      { "lessonId": "ch4-l1", "daysAgo": 3 },
+      { "lessonId": "ch4-l2", "daysAgo": 2 },
+      { "lessonId": "ch4-l3", "daysAgo": 1 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 89, "stars": 2, "points": 40, "date": "2026-09-11" },
-      { "quizId": "ch2-quiz", "score": 94, "stars": 3, "points": 50, "date": "2026-09-16" },
-      { "quizId": "ch3-quiz", "score": 90, "stars": 3, "points": 50, "date": "2026-09-20" },
-      { "quizId": "ch4-quiz", "score": 85, "stars": 2, "points": 40, "date": "2026-09-24" }
+      { "quizId": "ch1-quiz", "score": 89, "stars": 2, "points": 40, "daysAgo": 13 },
+      { "quizId": "ch2-quiz", "score": 94, "stars": 3, "points": 50, "daysAgo": 8 },
+      { "quizId": "ch3-quiz", "score": 90, "stars": 3, "points": 50, "daysAgo": 4 },
+      { "quizId": "ch4-quiz", "score": 85, "stars": 2, "points": 40, "daysAgo": 0 }
     ],
     "points": 610,
     "badges": ["first-step", "shape-explorer", "pattern-pro", "thousand-club"],
     "streak": 4,
-    "lastActive": "2026-09-24"
+    "lastActiveDaysAgo": 0
   },
   {
     "studentId": "s12",
     "completedLessons": [
-      { "lessonId": "ch1-l1", "completedAt": "2026-09-13" },
-      { "lessonId": "ch1-l2", "completedAt": "2026-09-14" },
-      { "lessonId": "ch1-l3", "completedAt": "2026-09-15" },
-      { "lessonId": "ch2-l1", "completedAt": "2026-09-18" },
-      { "lessonId": "ch2-l2", "completedAt": "2026-09-19" },
-      { "lessonId": "ch2-l3", "completedAt": "2026-09-20" }
+      { "lessonId": "ch1-l1", "daysAgo": 11 },
+      { "lessonId": "ch1-l2", "daysAgo": 10 },
+      { "lessonId": "ch1-l3", "daysAgo": 9 },
+      { "lessonId": "ch2-l1", "daysAgo": 6 },
+      { "lessonId": "ch2-l2", "daysAgo": 5 },
+      { "lessonId": "ch2-l3", "daysAgo": 4 }
     ],
     "quizAttempts": [
-      { "quizId": "ch1-quiz", "score": 45, "stars": 0, "points": 10, "date": "2026-09-16" },
-      { "quizId": "ch2-quiz", "score": 40, "stars": 0, "points": 10, "date": "2026-09-21" }
+      { "quizId": "ch1-quiz", "score": 45, "stars": 0, "points": 10, "daysAgo": 8 },
+      { "quizId": "ch2-quiz", "score": 40, "stars": 0, "points": 10, "daysAgo": 3 }
     ],
     "points": 120,
     "badges": ["first-step"],
     "streak": 0,
-    "lastActive": "2026-09-21"
+    "lastActiveDaysAgo": 3
   }
 ]

@@ -2,14 +2,9 @@ import students from '@/data/students.json'
 import chapters from '@/data/chapters.json'
 import { peekProgress } from '@/services/progressService'
 import { request } from '@/services/api'
+import { daysSince } from '@/lib/format'
 
 const INACTIVE_DAYS = 3
-
-function daysSince(dateString) {
-  if (!dateString) return Infinity
-  const ms = Date.now() - new Date(dateString).getTime()
-  return ms / (1000 * 60 * 60 * 24)
-}
 
 function averageScore(quizAttempts) {
   if (quizAttempts.length === 0) return 0
@@ -63,7 +58,7 @@ export function getClassSummary() {
   const allAttempts = rows.flatMap((r) => r.progress.quizAttempts)
   const lessonsThisWeek = rows
     .flatMap((r) => r.progress.completedLessons)
-    .filter((l) => daysSince(l.completedAt) <= 7).length
+    .filter((l) => daysSince(l.completedAt) < 7).length
   const inactiveStudents = rows.filter((r) => daysSince(r.progress.lastActive) >= INACTIVE_DAYS)
 
   const summary = {

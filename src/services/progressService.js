@@ -1,5 +1,6 @@
 import seedProgress from '@/data/progress.json'
 import { request } from '@/services/api'
+import { isoDaysAgo, todayISO } from '@/lib/format'
 
 const STORAGE_PREFIX = 'ignite:progress:'
 
@@ -34,14 +35,34 @@ function emptyProgress(studentId) {
   }
 }
 
+// Seed dates are stored as "days ago" so the demo looks the same on any day:
+// someone active yesterday is always active yesterday.
+function hydrateSeed(seed) {
+  return {
+    studentId: seed.studentId,
+    completedLessons: seed.completedLessons.map((l) => ({
+      lessonId: l.lessonId,
+      completedAt: isoDaysAgo(l.daysAgo),
+    })),
+    quizAttempts: seed.quizAttempts.map(({ daysAgo, ...attempt }) => ({
+      ...attempt,
+      date: isoDaysAgo(daysAgo),
+    })),
+    points: seed.points,
+    badges: [...seed.badges],
+    streak: seed.streak,
+    lastActive: isoDaysAgo(seed.lastActiveDaysAgo),
+  }
+}
+
+// Seed data is only written to storage once a student actually changes
+// something. Writing it on first read would freeze the dates to that day.
 function loadProgress(studentId) {
   const stored = readStored(studentId)
   if (stored) return stored
 
   const seed = seedProgress.find((p) => p.studentId === studentId)
-  const initial = seed ? structuredClone(seed) : emptyProgress(studentId)
-  writeStored(studentId, initial)
-  return initial
+  return seed ? hydrateSeed(seed) : emptyProgress(studentId)
 }
 
 export function getProgress(studentId) {
@@ -59,7 +80,7 @@ export function saveLessonComplete(studentId, lessonId) {
   const progress = loadProgress(studentId)
   const alreadyDone = progress.completedLessons.some((l) => l.lessonId === lessonId)
   if (!alreadyDone) {
-    const completedAt = new Date().toISOString().slice(0, 10)
+    const completedAt = todayISO()
     progress.completedLessons.push({ lessonId, completedAt })
     progress.lastActive = completedAt
   }
@@ -70,7 +91,19 @@ export function saveLessonComplete(studentId, lessonId) {
 export function saveQuizAttempt(studentId, attempt) {
   const progress = loadProgress(studentId)
   progress.quizAttempts.push(attempt)
-  progress.lastActive = new Date().toISOString().slice(0, 10)
+  progress.lastActive = todayISO()
   writeStored(studentId, progress)
   return request(progress)
+}
+
+// Wipes every student's saved progress so the next read falls back to the
+// seed. Handy before a demo, or after a tester has clicked through everything.
+export function resetDemoData() {
+  try {
+    const keys = Object.keys(window.localStorage).filter((k) => k.startsWith(STORAGE_PREFIX))
+    keys.forEach((k) => window.localStorage.removeItem(k))
+  } catch {
+    // Nothing stored, or storage is blocked; either way the seed is what loads.
+  }
+  return request(null)
 }
