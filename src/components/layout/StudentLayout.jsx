@@ -1,7 +1,13 @@
+import { useEffect } from 'react'
 import { BookOpen, House, Smile, Trophy } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import ErrorBoundary from '@/components/layout/ErrorBoundary'
 import Navbar from '@/components/layout/Navbar'
+import BadgeIcon from '@/components/ui/BadgeIcon'
+import Toast from '@/components/ui/Toast'
+import { useProgress } from '@/context/ProgressContext'
+
+const TOAST_MS = 5000
 
 const TABS = [
   { to: '/student', label: 'Home', icon: House, end: true },
@@ -27,6 +33,42 @@ function TabIcon({ icon: Icon }) {
   )
 }
 
+// ---- BadgeToasts ----
+// Shows queued badge unlocks one at a time. The live region is always in the
+// page, so screen readers announce each badge as it appears without moving
+// focus. Two badges at once simply wait their turn in the queue.
+function BadgeToasts() {
+  const { toasts, badges, dismissToast } = useProgress()
+  const badge = badges.find((b) => b.id === toasts[0])
+
+  useEffect(() => {
+    if (!badge) return
+    const timer = setTimeout(dismissToast, TOAST_MS)
+    return () => clearTimeout(timer)
+  }, [badge, dismissToast])
+
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      className="pointer-events-none fixed inset-x-4 bottom-24 z-40 md:bottom-6 md:left-auto md:right-6 md:w-96"
+    >
+      {badge && (
+        <div key={badge.id} className="pointer-events-auto">
+          <Toast
+            icon={<BadgeIcon name={badge.icon} className="h-6 w-6 text-ember-700" />}
+            eyebrow="New badge"
+            title={badge.name}
+            message={badge.description}
+            onClose={dismissToast}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ---- StudentLayout ----
 export default function StudentLayout() {
   const { pathname } = useLocation()
 
@@ -61,6 +103,8 @@ export default function StudentLayout() {
           </ErrorBoundary>
         </main>
       </div>
+
+      <BadgeToasts />
 
       <nav
         aria-label="Main"
