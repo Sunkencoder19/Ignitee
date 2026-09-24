@@ -1,6 +1,8 @@
+import { Suspense } from 'react'
 import { ClipboardCheck, LayoutDashboard, LogOut, Users } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import ErrorBoundary from '@/components/layout/ErrorBoundary'
+import Spinner from '@/components/ui/Spinner'
 import Wordmark from '@/components/ui/Wordmark'
 import { useAuth } from '@/context/AuthContext'
 
@@ -71,7 +73,16 @@ export default function TeacherLayout() {
 
       <main className="min-w-0 px-4 py-6 md:ml-64 md:px-8 md:py-8">
         <ErrorBoundary key={pathname}>
-          <Outlet />
+          {/* Each teacher page (and Recharts) loads on demand; the sidebar stays put */}
+          <Suspense
+            fallback={
+              <div className="grid min-h-[50dvh] place-items-center">
+                <Spinner size="lg" />
+              </div>
+            }
+          >
+            <Outlet />
+          </Suspense>
         </ErrorBoundary>
       </main>
     </div>

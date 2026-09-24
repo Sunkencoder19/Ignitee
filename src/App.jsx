@@ -16,6 +16,10 @@ import ResultScreen from '@/features/quiz/ResultScreen'
 // Teachers are a handful of users on desktops; kids on cheap phones
 // shouldn't download the teacher area (and later, its charts) at all.
 const TeacherLayout = lazy(() => import('@/components/layout/TeacherLayout'))
+const Overview = lazy(() => import('@/features/teacher-dashboard/Overview'))
+const ClassTable = lazy(() => import('@/features/teacher-dashboard/ClassTable'))
+const StudentDetail = lazy(() => import('@/features/teacher-dashboard/StudentDetail'))
+const Assessments = lazy(() => import('@/features/teacher-dashboard/Assessments'))
 
 // Only exists in `npm run dev`; the production build drops it entirely.
 const UiKitPage = import.meta.env.DEV ? lazy(() => import('@/features/dev/UiKitPage')) : null
@@ -65,19 +69,10 @@ export default function App() {
             </RequireRole>
           }
         >
-          <Route index element={<PlaceholderPage title="Class overview" checkpoint={8} />} />
-          <Route
-            path="students"
-            element={<PlaceholderPage title="Student table" checkpoint={8} />}
-          />
-          <Route
-            path="students/:studentId"
-            element={<PlaceholderPage title="Student detail" checkpoint={8} />}
-          />
-          <Route
-            path="assessments"
-            element={<PlaceholderPage title="Assessments" checkpoint={8} />}
-          />
+          <Route index element={<Overview />} />
+          <Route path="students" element={<ClassTable />} />
+          <Route path="students/:studentId" element={<StudentDetail />} />
+          <Route path="assessments" element={<Assessments />} />
           <Route path="*" element={<NotFoundPage />} />
         </Route>
 

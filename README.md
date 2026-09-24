@@ -31,6 +31,11 @@ No UI kit. The palette lives in `tailwind.config.js`.
 Login is fake: pick a role, pick a name, type a 4-digit PIN. It's there so the student and
 teacher screens can be demoed, not for security.
 
+Progress is saved in the browser's localStorage. The teacher screens read the same storage,
+so a teacher sees a student's new work only on the same device and browser. A real backend
+fixes that; until then, demo both roles in one browser. "Reset demo data" on the login page
+puts everyone back to the starting data.
+
 ## Status
 
 Checkpoint 1 of 8: project setup and the shared UI pieces. The app currently opens on a
