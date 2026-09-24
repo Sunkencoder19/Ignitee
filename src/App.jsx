@@ -1,11 +1,13 @@
 import { lazy, Suspense } from 'react'
-import { Link, Route, Routes } from 'react-router-dom'
+import { Route, Routes } from 'react-router-dom'
 import StudentLayout from '@/components/layout/StudentLayout'
-import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import LoginPage from '@/features/auth/LoginPage'
 import RequireRole from '@/features/auth/RequireRole'
 import PlaceholderPage from '@/features/dev/PlaceholderPage'
+import LandingPage from '@/features/landing/LandingPage'
+import ChapterMap from '@/features/learn/ChapterMap'
+import ChapterPage from '@/features/learn/ChapterPage'
 import NotFoundPage from '@/features/not-found/NotFoundPage'
 
 // Teachers are a handful of users on desktops; kids on cheap phones
@@ -27,18 +29,7 @@ export default function App() {
   return (
     <Suspense fallback={<PageSpinner />}>
       <Routes>
-        <Route
-          path="/"
-          element={
-            <div className="px-4 py-10">
-              <PlaceholderPage title="Landing page" checkpoint={4}>
-                <Button as={Link} to="/login">
-                  Log in
-                </Button>
-              </PlaceholderPage>
-            </div>
-          }
-        />
+        <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
 
         <Route
@@ -50,11 +41,8 @@ export default function App() {
           }
         >
           <Route index element={<PlaceholderPage title="Student dashboard" checkpoint={7} />} />
-          <Route path="learn" element={<PlaceholderPage title="Chapter map" checkpoint={4} />} />
-          <Route
-            path="learn/:chapterId"
-            element={<PlaceholderPage title="Chapter page" checkpoint={4} />}
-          />
+          <Route path="learn" element={<ChapterMap />} />
+          <Route path="learn/:chapterId" element={<ChapterPage />} />
           <Route
             path="learn/:chapterId/:lessonId"
             element={<PlaceholderPage title="Lesson player" checkpoint={5} />}

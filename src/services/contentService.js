@@ -18,3 +18,17 @@ export function getQuiz(quizId) {
   if (!quiz) return Promise.reject(new Error(`No quiz found for id "${quizId}"`))
   return request(quiz)
 }
+
+// ChapterPage needs the chapter, its lessons and its quiz together. One call
+// instead of the page fetching each lesson separately.
+export function getChapterDetail(chapterId) {
+  const chapter = chapters.find((c) => c.id === chapterId)
+  if (!chapter) return Promise.reject(new Error(`No chapter found for id "${chapterId}"`))
+
+  const chapterLessons = chapter.lessonIds
+    .map((id) => lessons.find((l) => l.id === id))
+    .filter(Boolean)
+  const quiz = chapter.quizId ? quizzes.find((q) => q.id === chapter.quizId) : null
+
+  return request({ chapter, lessons: chapterLessons, quiz })
+}
