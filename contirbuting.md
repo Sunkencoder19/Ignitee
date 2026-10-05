@@ -9,7 +9,7 @@
 - Open a pull request; at least one teammate reviews before merging.
 
 ## Code rules
-- Follow the folder structure in `CLAUDE.md`.
+- Follow the folder structure 
 - Game rules live in `src/lib/` as plain functions, with today's date passed in.
 - Data access only through `src/services/`.
 - Use palette tokens from `tailwind.config.js`, never raw hex codes.
