@@ -14,9 +14,7 @@ import { todayISO } from '@/lib/format'
 import { getBadges, getChapters } from '@/services/contentService'
 import { getProgress, resetDemoData, saveProgress } from '@/services/progressService'
 
-// The single source of truth for the logged-in student's points, streak,
-// badges, lessons and quiz attempts. Screens read from here and report what
-// happened (a lesson finished, a quiz submitted); the reducer applies the rules.
+
 
 const ProgressContext = createContext(null)
 

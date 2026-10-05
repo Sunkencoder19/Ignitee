@@ -15,9 +15,6 @@ export function AuthProvider({ children }) {
     return session
   }, [])
 
-  // Clearing the user and leaving the page must land in the same render.
-  // Router navigations are transitions, so a plain setUser(null) would render
-  // first and RequireRole would bounce to /login with "Please log in first."
   const logout = useCallback(() => {
     authService.logout()
     startTransition(() => {
@@ -31,8 +28,7 @@ export function AuthProvider({ children }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-// Kept next to the provider so the context object never leaves this file.
-// eslint-disable-next-line react-refresh/only-export-components
+
 export function useAuth() {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>')
