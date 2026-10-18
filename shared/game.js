@@ -104,6 +104,115 @@ export function attemptsWithPoints(progress) {
   })
 }
 
+// ---------- checking what a teacher writes ----------
+// Used by the server before saving (it has the final say) and by the editors,
+// so a teacher sees the same problems while typing. Each function returns a
+// list of problems in plain words; an empty list means it is fine.
+
+export const LIMITS = {
+  title: 80,
+  prompt: 300,
+  stepText: 1000,
+  option: 80,
+  hint: 200,
+  explanation: 300,
+  topic: 40,
+  minOptions: 2,
+  maxOptions: 6,
+  minItems: 2,
+  maxItems: 8,
+  maxSteps: 12,
+  maxQuestions: 40,
+}
+
+const filled = (value) => typeof value === 'string' && value.trim() !== ''
+const tooLong = (value, max) => typeof value === 'string' && value.trim().length > max
+
+// A question has: type ('mcq' | 'input' | 'order'), prompt, hint, explanation,
+// topic (quiz questions only), and an answer:
+//   mcq:   options (2-6 different texts) and answer (one of the options)
+//   input: answer (the text to type)
+//   order: answer (2-8 items, in the right order; students see them shuffled)
+export function questionProblems(question, { needsTopic = false } = {}) {
+  const q = question ?? {}
+  const problems = []
+
+  if (!['mcq', 'input', 'order'].includes(q.type)) return ['Choose a question type.']
+
+  if (!filled(q.prompt)) problems.push('Write the question.')
+  else if (tooLong(q.prompt, LIMITS.prompt)) problems.push(`Keep the question under ${LIMITS.prompt} characters.`)
+
+  if (q.type === 'mcq') {
+    const options = Array.isArray(q.options) ? q.options : []
+    if (options.length < LIMITS.minOptions) problems.push(`Give at least ${LIMITS.minOptions} options.`)
+    if (options.length > LIMITS.maxOptions) problems.push(`Give at most ${LIMITS.maxOptions} options.`)
+    if (options.some((o) => !filled(o))) problems.push('Fill in every option, or remove the empty one.')
+    if (options.some((o) => tooLong(o, LIMITS.option))) problems.push(`Keep each option under ${LIMITS.option} characters.`)
+    const seen = options.filter(filled).map((o) => o.trim().toLowerCase())
+    if (new Set(seen).size !== seen.length) problems.push('Two options are the same.')
+    const isOption = options.some((o) => filled(o) && filled(q.answer) && o.trim() === q.answer.trim())
+    if (!isOption) problems.push('Choose which option is the right answer.')
+  }
+
+  if (q.type === 'input') {
+    if (!filled(q.answer)) problems.push('Write the right answer.')
+    else if (tooLong(q.answer, LIMITS.option)) problems.push(`Keep the answer under ${LIMITS.option} characters.`)
+  }
+
+  if (q.type === 'order') {
+    const items = Array.isArray(q.answer) ? q.answer : []
+    if (items.length < LIMITS.minItems) problems.push(`An order question needs at least ${LIMITS.minItems} items.`)
+    if (items.length > LIMITS.maxItems) problems.push(`An order question can have at most ${LIMITS.maxItems} items.`)
+    if (items.some((item) => !filled(item))) problems.push('Fill in every item, or remove the empty one.')
+    if (items.some((item) => tooLong(item, LIMITS.option))) problems.push(`Keep each item under ${LIMITS.option} characters.`)
+  }
+
+  if (!filled(q.hint)) problems.push('Write a hint (shown after the first wrong answer).')
+  else if (tooLong(q.hint, LIMITS.hint)) problems.push(`Keep the hint under ${LIMITS.hint} characters.`)
+  if (!filled(q.explanation)) problems.push('Write an explanation (shown after the second wrong answer).')
+  else if (tooLong(q.explanation, LIMITS.explanation)) problems.push(`Keep the explanation under ${LIMITS.explanation} characters.`)
+
+  if (needsTopic && !filled(q.topic)) problems.push('Give the question a topic, for example "Place value".')
+  if (tooLong(q.topic, LIMITS.topic)) problems.push(`Keep the topic under ${LIMITS.topic} characters.`)
+
+  return problems
+}
+
+// A lesson: a title and 1-12 steps. Each step is explain, example or activity,
+// with some text; an activity step may also have one question.
+export function lessonProblems(lesson) {
+  const problems = []
+  if (!filled(lesson?.title)) problems.push('Give the lesson a title.')
+  else if (tooLong(lesson.title, LIMITS.title)) problems.push(`Keep the title under ${LIMITS.title} characters.`)
+
+  const steps = Array.isArray(lesson?.steps) ? lesson.steps : []
+  if (steps.length === 0) problems.push('Add at least one step.')
+  if (steps.length > LIMITS.maxSteps) problems.push(`A lesson can have at most ${LIMITS.maxSteps} steps.`)
+  steps.forEach((step, i) => {
+    const where = `Step ${i + 1}: `
+    if (!['explain', 'example', 'activity'].includes(step?.type)) problems.push(where + 'choose a step type.')
+    if (!filled(step?.text)) problems.push(where + 'write the text.')
+    else if (tooLong(step.text, LIMITS.stepText)) problems.push(where + `keep the text under ${LIMITS.stepText} characters.`)
+    if (step?.question) {
+      if (step.type !== 'activity') problems.push(where + 'only an activity step can have a question.')
+      for (const p of questionProblems(step.question)) problems.push(where + p.charAt(0).toLowerCase() + p.slice(1))
+    }
+  })
+  return problems
+}
+
+// A quiz: 1-40 questions, each needing a topic (reports group by topic).
+export function quizProblems(questions) {
+  const list = Array.isArray(questions) ? questions : []
+  const problems = []
+  if (list.length === 0) problems.push('Add at least one question.')
+  if (list.length > LIMITS.maxQuestions) problems.push(`A quiz can have at most ${LIMITS.maxQuestions} questions.`)
+  list.forEach((q, i) => {
+    for (const p of questionProblems(q, { needsTopic: true })) problems.push(`Question ${i + 1}: ${p.charAt(0).toLowerCase()}${p.slice(1)}`)
+  })
+  return problems
+}
+
 // ---------- points and streak ----------
 
 export function activeDays(progress) {

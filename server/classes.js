@@ -164,13 +164,22 @@ router.patch('/classes/:classId', requireTeacher, async (req, res) => {
   res.json({ id: cls.id, name: cls.name, code: cls.code })
 })
 
-// DELETE /api/classes/:classId   remove the class, its students and their quiz history
+// DELETE /api/classes/:classId  { confirmName }   remove the class, its students and their quiz history.
+// Because this can't be undone, the teacher must type the class name to confirm;
+// the server checks it too, so the check can't be skipped by calling the API directly.
 router.delete('/classes/:classId', requireTeacher, async (req, res) => {
   const cls = await ownedClass(req)
   if (!cls) return res.status(404).json({ error: 'Class not found.' })
+  if (cleanName(req.body?.confirmName).toLowerCase() !== cls.name.toLowerCase()) {
+    return res.status(400).json({ error: `Type the class name, ${cls.name}, to confirm.` })
+  }
   await deleteStudents({ class: cls._id })
   // Chapters (phase 3) list the classes they are shown to; take this one off.
   await mongoose.connection.collection('chapters').updateMany({ classes: cls._id }, { $pull: { classes: cls._id } })
+  // A published chapter must be shown to at least one class; if this was its last, it goes back to draft.
+  await mongoose.connection
+    .collection('chapters')
+    .updateMany({ teacher: req.teacher._id, status: 'published', classes: { $size: 0 } }, { $set: { status: 'draft' } })
   await cls.deleteOne()
   res.json({ deleted: true })
 })

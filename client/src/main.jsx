@@ -22,6 +22,10 @@ import Leaderboard from './pages/student/Leaderboard'
 
 import Classes from './pages/teacher/Classes'
 import Class from './pages/teacher/Class'
+import Content from './pages/teacher/Content'
+import ChapterEditor from './pages/teacher/ChapterEditor'
+import QuizEditor from './pages/teacher/QuizEditor'
+import Preview from './pages/teacher/Preview'
 
 // If any page throws an error, show this instead of a blank screen.
 // (React only lets a class component catch errors.)
@@ -74,6 +78,11 @@ createRoot(document.getElementById('root')).render(
           <Route path="/teacher" element={<TeacherLayout />}>
             <Route index element={<Classes />} />
             <Route path="classes/:classId" element={<Class />} />
+            <Route path="content" element={<Content />} />
+            <Route path="content/:chapterId" element={<ChapterEditor />} />
+            <Route path="content/:chapterId/quiz" element={<QuizEditor />} />
+            <Route path="preview/:chapterId/lesson/:lessonId" element={<Preview />} />
+            <Route path="preview/:chapterId/quiz" element={<Preview />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

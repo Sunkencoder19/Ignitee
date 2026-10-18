@@ -55,7 +55,9 @@ async function request(method, path, body) {
   if (res.status === 401) setToken(null) // the saved login no longer works
   if (!res.ok) {
     // The Vite proxy answers 500/502/504 with no JSON when the server isn't running.
-    throw new Error(data.error ?? 'Can’t reach the IGNITE server. Check that it is running and try again.')
+    const error = new Error(data.error ?? 'Can’t reach the IGNITE server. Check that it is running and try again.')
+    error.problems = data.problems ?? [] // every problem the server found, for editors to list
+    throw error
   }
   return data
 }
@@ -125,9 +127,10 @@ export function renameClass(classId, name) {
   return request('PATCH', `/classes/${classId}`, { name })
 }
 
-// DELETE /api/classes/:id   (also removes its students and their quiz history)
-export function deleteClass(classId) {
-  return request('DELETE', `/classes/${classId}`)
+// DELETE /api/classes/:id  { confirmName }   (also removes its students and their quiz history;
+// the server only does it if confirmName is the class name)
+export function deleteClass(classId, confirmName) {
+  return request('DELETE', `/classes/${classId}`, { confirmName })
 }
 
 // POST /api/classes/:id/students  { name }  ->  { student, pin }   (the PIN is only sent this once)
@@ -148,6 +151,78 @@ export function removeStudent(studentId) {
 // POST /api/students/:id/reset-pin  ->  { student, pin }   (also lifts a wrong-PIN lock)
 export function resetPin(studentId) {
   return request('POST', `/students/${studentId}/reset-pin`)
+}
+
+// ---------- content: chapters, lessons, quizzes (teacher) ----------
+
+// GET /api/chapters  ->  [{ id, title, status, classes, lessonCount, questionCount }] in order
+export function getContent() {
+  return request('GET', '/chapters')
+}
+
+// POST /api/chapters  { title }   a new draft chapter at the end
+export function createChapter(title) {
+  return request('POST', '/chapters', { title })
+}
+
+// POST /api/chapters/starter   adds the 4 starter chapters as drafts (only when there are none)
+export function addStarterChapters() {
+  return request('POST', '/chapters/starter')
+}
+
+// PUT /api/chapters/order  { chapterIds }
+export function saveChapterOrder(chapterIds) {
+  return request('PUT', '/chapters/order', { chapterIds })
+}
+
+// GET /api/topics  ->  every topic this teacher has used
+export function getTopics() {
+  return request('GET', '/topics')
+}
+
+// GET /api/chapters/:id  ->  { id, title, status, classIds, lessons, quiz }   (with answers)
+export function getChapterForEditing(chapterId) {
+  return request('GET', `/chapters/${chapterId}`)
+}
+
+// PATCH /api/chapters/:id  { title?, classIds?, status? }
+export function updateChapter(chapterId, changes) {
+  return request('PATCH', `/chapters/${chapterId}`, changes)
+}
+
+// DELETE /api/chapters/:id   (refused once students have started it)
+export function deleteChapter(chapterId) {
+  return request('DELETE', `/chapters/${chapterId}`)
+}
+
+// POST /api/chapters/:id/lessons  { title, steps }
+export function addLesson(chapterId, lesson) {
+  return request('POST', `/chapters/${chapterId}/lessons`, lesson)
+}
+
+// PUT /api/chapters/:id/lesson-order  { lessonIds }
+export function saveLessonOrder(chapterId, lessonIds) {
+  return request('PUT', `/chapters/${chapterId}/lesson-order`, { lessonIds })
+}
+
+// PATCH /api/lessons/:id  { title, steps }
+export function updateLesson(lessonId, lesson) {
+  return request('PATCH', `/lessons/${lessonId}`, lesson)
+}
+
+// DELETE /api/lessons/:id
+export function deleteLesson(lessonId) {
+  return request('DELETE', `/lessons/${lessonId}`)
+}
+
+// PUT /api/chapters/:id/quiz  { questions }
+export function saveQuiz(chapterId, questions) {
+  return request('PUT', `/chapters/${chapterId}/quiz`, { questions })
+}
+
+// DELETE /api/chapters/:id/quiz
+export function deleteQuiz(chapterId) {
+  return request('DELETE', `/chapters/${chapterId}/quiz`)
 }
 
 // ---------- demo data (replaced in later phases) ----------

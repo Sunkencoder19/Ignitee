@@ -72,6 +72,9 @@ export function TeacherLayout() {
             <NavLink to="/teacher" end className={navClass}>
               Classes
             </NavLink>
+            <NavLink to="/teacher/content" className={navClass}>
+              Content
+            </NavLink>
           </nav>
           <div className="ml-auto flex items-center gap-4">
             <span className="hidden text-sm text-muted md:inline">{user.name}</span>

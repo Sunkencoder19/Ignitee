@@ -34,19 +34,6 @@ export default function Class() {
   }
   if (!cls) return <p className="text-muted">Loading the class...</p>
 
-  async function handleDeleteClass() {
-    const sure = window.confirm(
-      `Delete ${cls.name}? This also removes its ${cls.students.length} students and all their progress. It can’t be undone.`
-    )
-    if (!sure) return
-    try {
-      await deleteClass(cls.id)
-      navigate('/teacher', { replace: true })
-    } catch (err) {
-      window.alert(err.message)
-    }
-  }
-
   return (
     <div className="max-w-3xl space-y-8">
       <div>
@@ -128,14 +115,61 @@ export default function Class() {
         )}
       </section>
 
-      <section className="border-t border-line pt-8">
-        <h2 className="text-lg font-semibold">Delete this class</h2>
-        <p className="mt-1 text-muted">Removes the class, all its students and all their progress.</p>
-        <button onClick={handleDeleteClass} className="btn btn-secondary mt-4 text-warn">
-          Delete {cls.name}
-        </button>
-      </section>
+      <DeleteClassForm cls={cls} onDeleted={() => navigate('/teacher', { replace: true })} />
     </div>
+  )
+}
+
+// Deleting can't be undone, so the teacher types the class name to unlock the button.
+// (The server checks the typed name as well.)
+function DeleteClassForm({ cls, onDeleted }) {
+  const [typed, setTyped] = useState('')
+  const [error, setError] = useState(null)
+  const [busy, setBusy] = useState(false)
+  const matches = typed.trim().toLowerCase() === cls.name.toLowerCase()
+  const count = cls.students.length
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    setBusy(true)
+    setError(null)
+    try {
+      await deleteClass(cls.id, typed)
+      onDeleted()
+    } catch (err) {
+      setError(err.message)
+      setBusy(false)
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="border-t border-line pt-8">
+      <h2 className="text-lg font-semibold">Delete this class</h2>
+      <p className="mt-1 text-muted">
+        This removes {cls.name}, {count === 1 ? 'its 1 student' : `all ${count} of its students`} and all their progress.
+        It can’t be undone.
+      </p>
+      <label htmlFor="confirm-name" className="label mt-4">
+        Type <span className="font-mono">{cls.name}</span> to confirm
+      </label>
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <input
+          id="confirm-name"
+          value={typed}
+          onChange={(e) => setTyped(e.target.value)}
+          autoComplete="off"
+          className="field"
+        />
+        <button type="submit" disabled={!matches || busy} className="btn btn-secondary shrink-0 text-warn">
+          {busy ? 'Deleting...' : 'Delete class'}
+        </button>
+      </div>
+      {error && (
+        <p role="alert" className="mt-2 font-semibold text-warn">
+          {error}
+        </p>
+      )}
+    </form>
   )
 }
 
