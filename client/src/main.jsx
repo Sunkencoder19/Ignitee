@@ -1,6 +1,6 @@
 // App entry. Every URL in the app is listed here.
 
-import { StrictMode } from 'react'
+import { Component, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './index.css'
@@ -23,9 +23,38 @@ import Overview from './pages/teacher/Overview'
 import Students from './pages/teacher/Students'
 import Student from './pages/teacher/Student'
 
+// If any page throws an error, show this instead of a blank screen.
+// (React only lets a class component catch errors.)
+class CrashScreen extends Component {
+  state = { crashed: false }
+
+  static getDerivedStateFromError() {
+    return { crashed: true }
+  }
+
+  startOver() {
+    localStorage.clear()
+    window.location.href = '/'
+  }
+
+  render() {
+    if (!this.state.crashed) return this.props.children
+    return (
+      <div className="mx-auto max-w-md px-4 py-24">
+        <h1 className="text-3xl font-semibold">Something went wrong</h1>
+        <p className="mt-2 text-muted">Saved data in this browser may be out of date. Clear it and start again.</p>
+        <button onClick={this.startOver} className="btn btn-primary mt-6">
+          Clear and start again
+        </button>
+      </div>
+    )
+  }
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
+      <CrashScreen>
       <SessionProvider>
         <Routes>
           <Route path="/" element={<Landing />} />
@@ -50,6 +79,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="*" element={<NotFound />} />
         </Routes>
       </SessionProvider>
+      </CrashScreen>
     </BrowserRouter>
   </StrictMode>
 )

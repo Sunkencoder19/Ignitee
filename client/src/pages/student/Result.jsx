@@ -37,15 +37,15 @@ export default function Result() {
   return (
     <div className="mx-auto max-w-2xl space-y-8">
       <section className="card p-8 text-center">
-        <p className="text-sm font-bold text-muted">{chapter.title} quiz</p>
-        <h1 className="mt-2 text-3xl font-extrabold">{HEADLINES[attempt.stars]}</h1>
-        <p className="mt-6 text-6xl font-extrabold">{attempt.score}%</p>
-        <p className="mt-6 text-2xl font-extrabold text-accent">+{attempt.points} points</p>
+        <p className="font-semibold text-muted">{chapter.title} quiz</p>
+        <h1 className="mt-2 text-3xl font-semibold">{HEADLINES[attempt.stars]}</h1>
+        <p className="mt-6 text-6xl font-semibold">{attempt.score}%</p>
+        <p className="mt-6 text-2xl font-semibold text-accent">+{attempt.points} points</p>
         {isRetake && attempt.points === 0 && (
           <p className="mt-2 text-muted">Retakes only earn points when you beat your best score.</p>
         )}
         {openedNext && nextChapter && !nextChapter.locked && (
-          <p className="mt-4 rounded-xl bg-good-soft p-3 font-bold text-good">
+          <p className="mt-4 rounded-xl bg-good-soft p-3 font-semibold text-good">
             Chapter {nextChapter.number}, {nextChapter.title}, is now open.
           </p>
         )}
@@ -62,7 +62,7 @@ export default function Result() {
 
       {attempt.answers && (
         <section>
-          <h2 className="text-2xl font-extrabold">Review</h2>
+          <h2 className="text-2xl font-semibold">Review</h2>
           {mistakes.length === 0 ? (
             <p className="mt-3 text-muted">Every answer was right first time. Nothing to review!</p>
           ) : (
@@ -73,8 +73,8 @@ export default function Result() {
                 const given = Array.isArray(answer.given) ? answer.given.join(', ') : answer.given
                 return (
                   <li key={answer.questionId} className="card">
-                    <p className="font-bold">{question.prompt}</p>
-                    <p className="mt-2 text-sm text-muted">
+                    <p className="font-semibold">{question.prompt}</p>
+                    <p className="mt-2 text-muted">
                       {answer.outcome === 'hint' ? 'You got it on the second try.' : `You said: ${given}`}
                     </p>
                     <p className="mt-1">

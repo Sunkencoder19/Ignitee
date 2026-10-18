@@ -8,7 +8,7 @@ import { currentStreak, today, totalPoints } from './game'
 import { useSession } from './session'
 
 function navClass({ isActive }) {
-  return `rounded-xl px-3 py-2 font-bold ${isActive ? 'bg-accent-soft text-accent' : 'text-muted hover:text-ink'}`
+  return `inline-flex min-h-12 items-center rounded-full px-4 font-semibold ${isActive ? 'bg-accent-soft text-accent' : 'text-muted hover:text-ink'}`
 }
 
 export function StudentLayout() {
@@ -17,9 +17,9 @@ export function StudentLayout() {
 
   return (
     <div className="min-h-dvh">
-      <header className="border-b border-line bg-surface">
-        <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
-          <Link to="/student" className="text-xl font-extrabold tracking-tight">
+      <header className="sticky top-0 z-20 border-b border-line bg-surface/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-4xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2">
+          <Link to="/student" className="inline-flex min-h-12 items-center text-xl font-semibold tracking-tight">
             IGNITE
           </Link>
           <nav className="order-last flex w-full gap-1 sm:order-none sm:w-auto">
@@ -35,13 +35,13 @@ export function StudentLayout() {
           </nav>
           <div className="ml-auto flex items-center gap-4">
             {progress && (
-              <p className="text-sm text-muted">
+              <p className="hidden text-base text-muted sm:block">
                 <strong className="text-ink">{totalPoints(progress)}</strong> points
                 <span className="mx-2">|</span>
                 <strong className="text-ink">{currentStreak(progress, today())}</strong> day streak
               </p>
             )}
-            <button onClick={logout} className="text-sm font-bold text-muted hover:text-ink">
+            <button onClick={logout} className="inline-flex min-h-12 items-center px-2 text-base font-semibold text-muted hover:text-ink">
               Log out
             </button>
           </div>
@@ -64,9 +64,9 @@ export function TeacherLayout() {
 
   return (
     <div className="min-h-dvh">
-      <header className="border-b border-line bg-surface">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-2 px-4 py-3">
-          <Link to="/teacher" className="text-xl font-extrabold tracking-tight">
+      <header className="sticky top-0 z-20 border-b border-line bg-surface/80 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2">
+          <Link to="/teacher" className="inline-flex min-h-12 items-center text-xl font-semibold tracking-tight">
             IGNITE <span className="font-semibold text-muted">for teachers</span>
           </Link>
           <nav className="flex gap-1">
@@ -89,7 +89,7 @@ export function TeacherLayout() {
               <option value="all">All classes</option>
             </select>
             <span className="hidden text-sm text-muted md:inline">{user.name}</span>
-            <button onClick={logout} className="text-sm font-bold text-muted hover:text-ink">
+            <button onClick={logout} className="inline-flex min-h-12 items-center px-2 text-base font-semibold text-muted hover:text-ink">
               Log out
             </button>
           </div>

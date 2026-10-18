@@ -50,14 +50,15 @@ export default function Login() {
 
   return (
     <div className="flex min-h-dvh flex-col items-center px-4 py-10">
-      <Link to="/" className="text-2xl font-extrabold tracking-tight">
+      <Link to="/" className="text-2xl font-semibold tracking-tight">
         IGNITE
       </Link>
 
-      <form onSubmit={handleSubmit} className="card mt-8 w-full max-w-md p-6 md:p-8">
-        <h1 className="text-2xl font-extrabold">Log in</h1>
+      <form onSubmit={handleSubmit} className="card relative mt-8 w-full max-w-md overflow-hidden p-6 shadow-float md:p-8">
+        <span aria-hidden="true" className="gradient-band absolute inset-x-0 top-0 h-1.5" />
+        <h1 className="text-2xl font-semibold">Log in</h1>
 
-        <div className="mt-6 grid grid-cols-2 gap-2 rounded-xl bg-bg p-1" role="radiogroup" aria-label="I am a">
+        <div className="mt-6 grid grid-cols-2 gap-2 rounded-full bg-bg p-1" role="radiogroup" aria-label="I am a">
           {['student', 'teacher'].map((r) => (
             <button
               key={r}
@@ -65,7 +66,7 @@ export default function Login() {
               role="radio"
               aria-checked={role === r}
               onClick={() => changeRole(r)}
-              className={`min-h-12 rounded-lg font-bold ${role === r ? 'bg-surface shadow-sm' : 'text-muted'}`}
+              className={`min-h-11 rounded-full font-semibold ${role === r ? 'bg-surface shadow-card' : 'text-muted'}`}
             >
               {r === 'student' ? "I'm a student" : "I'm a teacher"}
             </button>
@@ -109,7 +110,7 @@ export default function Login() {
           {picked ? `Demo PIN for ${picked.name}: ${picked.pin}` : 'Pick a name to see its demo PIN.'}
         </p>
         {error && (
-          <p role="alert" className="mt-2 font-bold text-warn">
+          <p role="alert" className="mt-2 font-semibold text-warn">
             {error}
           </p>
         )}
@@ -125,7 +126,7 @@ export default function Login() {
 
       <p className="mt-6 text-sm text-muted">
         Demo only, no real accounts.{' '}
-        <button onClick={handleReset} className="font-bold text-ink underline">
+        <button onClick={handleReset} className="font-semibold text-ink underline">
           Reset demo data
         </button>
         {resetDone && ' Done.'}

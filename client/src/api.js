@@ -129,8 +129,12 @@ function seedFor(studentId) {
   }
 }
 
+// Saved progress is only used if it has the current shape. Anything else
+// (for example, saved by an older version of the app) is ignored.
 function loadProgress(studentId) {
-  return readStorage(PROGRESS_KEY + studentId) ?? seedFor(studentId)
+  const saved = readStorage(PROGRESS_KEY + studentId)
+  const valid = Array.isArray(saved?.lessons) && Array.isArray(saved?.attempts)
+  return valid ? saved : seedFor(studentId)
 }
 
 // GET /api/students/:id/progress

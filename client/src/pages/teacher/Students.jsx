@@ -38,7 +38,7 @@ export default function Students() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-extrabold tracking-tight">Students</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">Students</h1>
 
       <div className="grid gap-4 sm:grid-cols-[1fr_16rem]">
         <div>
@@ -70,23 +70,23 @@ export default function Students() {
       {students.length === 0 ? (
         <p className="text-muted">No students match &quot;{search.trim()}&quot;.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-line bg-surface">
+        <div className="overflow-x-auto rounded-2xl bg-surface shadow-card ring-1 ring-line">
           <table className="w-full min-w-[40rem] text-left">
             <thead className="border-b border-line text-sm text-muted">
               <tr>
-                <th className="px-4 py-3 font-bold">Name</th>
-                <th className="px-4 py-3 font-bold">Class</th>
-                <th className="px-4 py-3 text-right font-bold">Points</th>
-                <th className="px-4 py-3 text-right font-bold">Average score</th>
-                <th className="px-4 py-3 text-right font-bold">Lessons</th>
-                <th className="px-4 py-3 font-bold">Last active</th>
+                <th className="px-4 py-3 font-semibold">Name</th>
+                <th className="px-4 py-3 font-semibold">Class</th>
+                <th className="px-4 py-3 text-right font-semibold">Points</th>
+                <th className="px-4 py-3 text-right font-semibold">Average score</th>
+                <th className="px-4 py-3 text-right font-semibold">Lessons</th>
+                <th className="px-4 py-3 font-semibold">Last active</th>
               </tr>
             </thead>
             <tbody className="tabular-nums">
               {students.map((s) => (
                 <tr key={s.id} className="not-last:border-b not-last:border-line">
                   <td className="px-4 py-3">
-                    <Link to={`/teacher/students/${s.id}`} className="font-bold text-accent hover:underline">
+                    <Link to={`/teacher/students/${s.id}`} className="font-semibold text-accent hover:underline">
                       {s.name}
                     </Link>
                     {s.reasons.length > 0 && <span className="block text-sm text-warn">Needs attention</span>}

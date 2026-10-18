@@ -1,43 +1,54 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 /*
   Colours. Every class like bg-surface, text-muted or border-line reads one of
   these variables, so dark mode is just a second set of values below.
-  One accent colour (orange) is used for every primary action in the app.
-  "good" and "warn" are only for answer feedback and teacher warnings.
+  - ink: deep navy for text
+  - accent: the one orange used for every primary action
+  - good / warn: only for answer feedback and teacher warnings
+  - --gradient: the warm band used behind the landing hero and a few highlights
 */
 @theme {
-  --font-sans: 'Nunito', system-ui, sans-serif;
+  --font-sans: 'Geist', system-ui, sans-serif;
 
-  --color-bg: #fafafa;
+  --color-bg: #f6f9fc;
   --color-surface: #ffffff;
-  --color-line: #e4e4e7;
-  --color-ink: #18181b;
-  --color-muted: #52525b;
+  --color-line: #e3e8ee;
+  --color-ink: #0b1f3a;
+  --color-muted: #4f5b76;
   --color-accent: #c2410c;
-  --color-accent-soft: #fff1e8;
+  --color-accent-soft: #fff1e6;
   --color-on-accent: #ffffff;
-  --color-good: #15803d;
-  --color-good-soft: #ecfdf3;
-  --color-warn: #b45309;
-  --color-warn-soft: #fff7e6;
+  --color-good: #0e7a4f;
+  --color-good-soft: #e6f7ef;
+  --color-warn: #a14e00;
+  --color-warn-soft: #fff5e1;
+
+  --shadow-card: 0 1px 2px rgb(11 31 58 / 0.05), 0 6px 20px -8px rgb(11 31 58 / 0.12);
+  --shadow-float: 0 30px 60px -20px rgb(11 31 58 / 0.28), 0 18px 36px -18px rgb(11 31 58 / 0.22);
+}
+
+:root {
+  --gradient: linear-gradient(115deg, #ff7a1a 0%, #ffb020 30%, #ff5d73 62%, #ff8a3d 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #111113;
-    --color-surface: #1a1a1d;
-    --color-line: #2e2e33;
-    --color-ink: #f4f4f5;
-    --color-muted: #a1a1aa;
-    --color-accent: #fb923c;
-    --color-accent-soft: #3a1f10;
-    --color-on-accent: #18181b;
-    --color-good: #4ade80;
-    --color-good-soft: #12301d;
-    --color-warn: #fbbf24;
+    --color-bg: #0a1424;
+    --color-surface: #111e33;
+    --color-line: #22324d;
+    --color-ink: #eef2f8;
+    --color-muted: #9fb0c8;
+    --color-accent: #ff8a3d;
+    --color-accent-soft: #3a1d0c;
+    --color-on-accent: #0a1424;
+    --color-good: #3ddc97;
+    --color-good-soft: #0f2e24;
+    --color-warn: #ffc35a;
     --color-warn-soft: #33260b;
+    --shadow-card: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 24px -10px rgb(0 0 0 / 0.6);
+    --shadow-float: 0 30px 60px -20px rgb(0 0 0 / 0.7);
   }
 }
 
@@ -46,33 +57,76 @@ body {
 }
 
 /*
-  The few shared styles. Every corner in the app is rounded-xl (12px).
+  Shared styles. The shape rule for the whole app:
+  buttons are pills (rounded-full), cards are rounded-2xl, inputs are rounded-xl.
   Buttons are at least 48px tall so a child's thumb can hit them.
 */
 @layer components {
-  .btn {
-    @apply inline-flex min-h-12 items-center justify-center rounded-xl px-5 font-bold transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40;
-  }
   /* Used together: className="btn btn-primary" */
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center rounded-full px-6 font-semibold transition duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40;
+  }
   .btn-primary {
-    @apply bg-accent text-on-accent hover:opacity-90;
+    @apply bg-accent text-on-accent shadow-card hover:-translate-y-px hover:brightness-110;
   }
   .btn-secondary {
-    @apply border border-line bg-surface text-ink hover:border-accent;
+    @apply bg-surface text-ink shadow-card ring-1 ring-line hover:-translate-y-px hover:ring-accent;
   }
   .card {
-    @apply rounded-xl border border-line bg-surface p-5;
+    @apply rounded-2xl bg-surface p-5 shadow-card ring-1 ring-line;
   }
   .field {
     @apply min-h-12 w-full rounded-xl border border-line bg-surface px-4 text-ink focus:border-accent focus:outline-none;
   }
   .label {
-    @apply mb-2 block font-bold;
+    @apply mb-2 block font-semibold;
+  }
+  .gradient-band {
+    background: var(--gradient);
+    background-size: 200% 200%;
   }
   a,
   button,
   input,
   select {
     @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent;
+  }
+}
+
+/*
+  Motion, used in two places only:
+  - .rise: the landing hero fades up once when the page opens
+  - .gradient-band drifts slowly, so the hero feels alive
+  Both are off for anyone who has asked their device for reduced motion.
+*/
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .rise-late {
+    animation: rise 700ms 150ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .gradient-band {
+    animation: drift 18s ease-in-out infinite alternate;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes drift {
+  from {
+    background-position: 0% 50%;
+  }
+  to {
+    background-position: 100% 50%;
   }
 }

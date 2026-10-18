@@ -54,7 +54,7 @@ export default function Question({ question, onDone }) {
 
   return (
     <form onSubmit={check}>
-      <h2 className="text-xl font-bold leading-snug sm:text-2xl">{question.prompt}</h2>
+      <h2 className="text-xl font-semibold leading-snug sm:text-2xl">{question.prompt}</h2>
 
       {question.type === 'mcq' && (
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -87,13 +87,13 @@ export default function Question({ question, onDone }) {
           autoComplete="off"
           inputMode={/^[\d,]+$/.test(question.answer) ? 'numeric' : 'text'}
           placeholder="Type your answer"
-          className="field mt-5 min-h-16 text-center text-2xl font-bold"
+          className="field mt-5 min-h-16 text-center text-2xl font-semibold"
         />
       )}
 
       {question.type === 'order' && (
         <div className="mt-5">
-          <p className="text-sm font-bold text-muted">Your order (tap to take one back)</p>
+          <p className="font-semibold text-muted">Your order (tap to take one back)</p>
           <div className="mt-2 flex min-h-14 flex-wrap gap-2 rounded-xl border-2 border-dashed border-line p-2">
             {order.map((optionIndex, slot) => (
               <button
@@ -101,7 +101,7 @@ export default function Question({ question, onDone }) {
                 type="button"
                 disabled={settled}
                 onClick={() => setOrder(order.filter((_, s) => s !== slot))}
-                className="min-h-12 rounded-xl bg-accent-soft px-4 text-lg font-bold"
+                className="min-h-12 rounded-xl bg-accent-soft px-4 text-lg font-semibold"
               >
                 {question.options[optionIndex]}
               </button>
@@ -115,7 +115,7 @@ export default function Question({ question, onDone }) {
                   type="button"
                   disabled={order.includes(i)}
                   onClick={() => setOrder([...order, i])}
-                  className="min-h-12 rounded-xl border-2 border-line bg-surface px-4 text-lg font-bold hover:border-accent disabled:opacity-25"
+                  className="min-h-12 rounded-xl border-2 border-line bg-surface px-4 text-lg font-semibold hover:border-accent disabled:opacity-25"
                 >
                   {option}
                 </button>
@@ -127,17 +127,17 @@ export default function Question({ question, onDone }) {
 
       <div aria-live="polite">
         {status === 'correct' && (
-          <p className="mt-5 rounded-xl bg-good-soft p-4 font-bold text-good">Correct, well done!</p>
+          <p className="mt-5 rounded-xl bg-good-soft p-4 font-semibold text-good">Correct, well done!</p>
         )}
         {status === 'retry' && (
           <div className="mt-5 rounded-xl bg-warn-soft p-4">
-            <p className="font-bold text-warn">Not quite. Try once more.</p>
+            <p className="font-semibold text-warn">Not quite. Try once more.</p>
             <p className="mt-1">Hint: {question.hint}</p>
           </div>
         )}
         {status === 'revealed' && (
           <div className="mt-5 rounded-xl bg-accent-soft p-4">
-            <p className="font-bold">The answer is {answerText}.</p>
+            <p className="font-semibold">The answer is {answerText}.</p>
             <p className="mt-1">{question.explanation}</p>
           </div>
         )}

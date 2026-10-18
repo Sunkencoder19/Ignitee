@@ -28,23 +28,23 @@ export default function Leaderboard() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-3xl font-extrabold tracking-tight">Class {user.classId} leaderboard</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">Class {user.classId} leaderboard</h1>
       <p className="mt-1 text-muted">
         You are number {me.rank} of {ranked.length}.
       </p>
 
-      <ol className="mt-6 overflow-hidden rounded-xl border border-line bg-surface">
+      <ol className="mt-6 overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-line">
         {ranked.map((row) => (
           <li
             key={row.id}
             className={`flex items-center gap-4 px-4 py-3 not-last:border-b not-last:border-line ${row.id === user.id ? 'bg-accent-soft' : ''}`}
           >
-            <span className="w-8 text-xl font-extrabold text-muted">{row.rank}</span>
-            <span className="flex-1 font-bold">
+            <span className="w-8 text-xl font-semibold text-muted">{row.rank}</span>
+            <span className="flex-1 font-semibold">
               {row.name}
               {row.id === user.id && ' (you)'}
             </span>
-            <span className="font-bold tabular-nums">{row.points} points</span>
+            <span className="font-semibold tabular-nums">{row.points} points</span>
           </li>
         ))}
       </ol>

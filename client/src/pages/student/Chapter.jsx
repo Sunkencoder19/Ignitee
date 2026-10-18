@@ -27,10 +27,10 @@ export default function Chapter() {
 
   return (
     <div className="max-w-2xl">
-      <Link to="/student/learn" className="text-sm font-bold text-muted hover:text-ink">
+      <Link to="/student/learn" className="inline-flex min-h-12 items-center font-semibold text-muted hover:text-ink">
         Back to chapters
       </Link>
-      <h1 className="mt-3 text-3xl font-extrabold tracking-tight">
+      <h1 className="mt-3 text-3xl font-semibold tracking-tight">
         Chapter {chapter.number}: {chapter.title}
       </h1>
       <p className="mt-1 text-muted">
@@ -45,11 +45,11 @@ export default function Chapter() {
             <li key={lesson.id}>
               <Link
                 to={`/student/learn/${chapter.id}/${lesson.id}`}
-                className={`card flex items-center gap-4 p-4 hover:border-accent ${isNext ? 'border-accent' : ''}`}
+                className={`card flex items-center gap-4 p-4 hover:ring-accent ${isNext ? 'ring-2 ring-accent' : ''}`}
               >
-                <span className="w-8 shrink-0 text-xl font-extrabold text-muted">{i + 1}</span>
-                <span className="flex-1 font-bold">{lesson.title}</span>
-                <span className={`text-sm ${isNext ? 'font-bold text-accent' : 'text-muted'}`}>
+                <span className="w-8 shrink-0 text-xl font-semibold text-muted">{i + 1}</span>
+                <span className="flex-1 font-semibold">{lesson.title}</span>
+                <span className={`${isNext ? 'font-semibold text-accent' : 'text-muted'}`}>
                   {done ? 'Done' : isNext ? 'Up next' : 'Not started'}
                 </span>
               </Link>
@@ -60,7 +60,7 @@ export default function Chapter() {
 
       {quiz && (
         <section className="card mt-8 p-6">
-          <h2 className="text-xl font-extrabold">Chapter quiz</h2>
+          <h2 className="text-xl font-semibold">Chapter quiz</h2>
           {quizOpen(chapter, progress) ? (
             <>
               <p className="mt-1 text-muted">
@@ -83,7 +83,7 @@ export default function Chapter() {
 function BackToChapters({ message }) {
   return (
     <div>
-      <p className="text-lg font-bold">{message}</p>
+      <p className="text-lg font-semibold">{message}</p>
       <Link to="/student/learn" className="btn btn-secondary mt-4">
         Back to chapters
       </Link>

@@ -46,7 +46,7 @@ export default function Overview() {
 
   return (
     <div className="space-y-10">
-      <h1 className="text-3xl font-extrabold tracking-tight">
+      <h1 className="text-3xl font-semibold tracking-tight">
         {classId === 'all' ? 'All classes' : `Class ${classId}`}
       </h1>
 
@@ -54,23 +54,23 @@ export default function Overview() {
         {stats.map((s) => (
           <div key={s.label} className="card">
             <dt className="text-sm text-muted">{s.label}</dt>
-            <dd className="mt-1 text-3xl font-extrabold">{s.value}</dd>
+            <dd className="mt-1 text-3xl font-semibold">{s.value}</dd>
           </div>
         ))}
       </dl>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section className="card">
-          <h2 className="text-lg font-extrabold">Quiz results by chapter</h2>
+          <h2 className="text-lg font-semibold">Quiz results by chapter</h2>
           <p className="text-sm text-muted">Each student counts once, with their best attempt.</p>
           <ul className="mt-5 space-y-5">
             {results.map((r) => (
               <li key={r.chapter.id}>
                 <div className="flex justify-between gap-4">
-                  <span className="font-bold">
+                  <span className="font-semibold">
                     {r.chapter.number}. {r.chapter.title}
                   </span>
-                  <span className="font-bold tabular-nums">{r.average === null ? 'Not taken' : `${r.average}%`}</span>
+                  <span className="font-semibold tabular-nums">{r.average === null ? 'Not taken' : `${r.average}%`}</span>
                 </div>
                 {r.average !== null && (
                   <div className="mt-2 h-2 rounded-full bg-accent" style={{ width: `${r.average}%` }} />
@@ -85,12 +85,12 @@ export default function Overview() {
         </section>
 
         <section className="card">
-          <h2 className="text-lg font-extrabold">Lessons finished per day</h2>
+          <h2 className="text-lg font-semibold">Lessons finished per day</h2>
           <p className="text-sm text-muted">Last 14 days, today on the right.</p>
           <ol className="mt-5 flex h-48 items-end gap-1">
             {perDay.map((d) => (
               <li key={d.date} className="flex h-full flex-1 flex-col justify-end text-center" title={`${shortDate(d.date)}: ${d.count}`}>
-                <span className="text-xs font-bold">{d.count || ''}</span>
+                <span className="text-xs font-semibold">{d.count || ''}</span>
                 <span
                   className="mt-1 block rounded-t-md bg-accent"
                   style={{ height: `${(d.count / busiestDay) * 100}%` }}
@@ -106,21 +106,21 @@ export default function Overview() {
       </div>
 
       <section>
-        <h2 className="text-lg font-extrabold">Needs attention</h2>
+        <h2 className="text-lg font-semibold">Needs attention</h2>
         <p className="text-sm text-muted">
           Below 50% on a quiz, or no learning for {INACTIVE_DAYS} days or more.
         </p>
         {needsHelp.length === 0 ? (
           <p className="mt-4">Nobody needs attention right now.</p>
         ) : (
-          <ul className="mt-4 overflow-hidden rounded-xl border border-line bg-surface">
+          <ul className="mt-4 overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-line">
             {needsHelp.map((s) => (
               <li key={s.id} className="not-last:border-b not-last:border-line">
                 <Link
                   to={`/teacher/students/${s.id}`}
                   className="flex flex-col gap-1 px-4 py-3 hover:bg-bg sm:flex-row sm:gap-6"
                 >
-                  <span className="font-bold sm:w-48">{s.name}</span>
+                  <span className="font-semibold sm:w-48">{s.name}</span>
                   <span className="text-warn">{s.reasons.join('. ')}</span>
                 </Link>
               </li>

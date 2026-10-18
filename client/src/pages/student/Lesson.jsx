@@ -51,9 +51,9 @@ function LessonSteps() {
 
     return (
       <div className="card mx-auto max-w-xl p-8 text-center">
-        <h1 className="text-3xl font-extrabold">You finished it!</h1>
+        <h1 className="text-3xl font-semibold">You finished it!</h1>
         <p className="mt-2 text-lg text-muted">{lesson.title}</p>
-        <p className="mt-6 text-4xl font-extrabold text-accent">+{finished.pointsEarned} points</p>
+        <p className="mt-6 text-4xl font-semibold text-accent">+{finished.pointsEarned} points</p>
         {finished.pointsEarned === 0 && (
           <p className="mt-2 text-muted">You had already done this lesson, so no new points. Good practice!</p>
         )}
@@ -83,8 +83,8 @@ function LessonSteps() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex items-center justify-between text-sm text-muted">
-        <Link to={`/student/learn/${chapter.id}`} className="font-bold hover:text-ink">
+      <div className="flex items-center justify-between text-muted">
+        <Link to={`/student/learn/${chapter.id}`} className="inline-flex min-h-12 items-center font-semibold hover:text-ink">
           Close lesson
         </Link>
         <span>
@@ -92,11 +92,11 @@ function LessonSteps() {
         </span>
       </div>
 
-      <h1 className="mt-4 text-2xl font-extrabold tracking-tight">{lesson.title}</h1>
+      <h1 className="mt-4 text-2xl font-semibold tracking-tight">{lesson.title}</h1>
 
       <section className="card mt-4 p-6 md:p-8">
-        <p className="text-sm font-bold text-accent">{STEP_NAMES[step.type]}</p>
-        <p className="mt-2 text-xl leading-relaxed">{step.text}</p>
+        <p className="font-semibold text-accent">{STEP_NAMES[step.type]}</p>
+        <p className="mt-2 text-lg leading-relaxed">{step.text}</p>
 
         {step.type === 'activity' && step.question && (
           <div className="mt-6 border-t border-line pt-6">
@@ -130,7 +130,7 @@ function LessonSteps() {
 function Back({ to, message }) {
   return (
     <div>
-      <p className="text-lg font-bold">{message}</p>
+      <p className="text-lg font-semibold">{message}</p>
       <Link to={to} className="btn btn-secondary mt-4">
         Go back
       </Link>

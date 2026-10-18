@@ -51,8 +51,8 @@ export default function Quiz() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex items-center justify-between text-sm text-muted">
-        <Link to={`/student/learn/${chapter.id}`} onClick={leave} className="font-bold hover:text-ink">
+      <div className="flex items-center justify-between text-muted">
+        <Link to={`/student/learn/${chapter.id}`} onClick={leave} className="inline-flex min-h-12 items-center font-semibold hover:text-ink">
           Leave quiz
         </Link>
         <span>
@@ -60,7 +60,7 @@ export default function Quiz() {
         </span>
       </div>
 
-      <h1 className="mt-4 text-2xl font-extrabold tracking-tight">{chapter.title} quiz</h1>
+      <h1 className="mt-4 text-2xl font-semibold tracking-tight">{chapter.title} quiz</h1>
 
       <section className="card mt-4 p-6 md:p-8">
         <Question
@@ -82,7 +82,7 @@ export default function Quiz() {
 function Back({ message }) {
   return (
     <div>
-      <p className="text-lg font-bold">{message}</p>
+      <p className="text-lg font-semibold">{message}</p>
       <Link to="/student/learn" className="btn btn-secondary mt-4">
         Back to chapters
       </Link>

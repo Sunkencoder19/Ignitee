@@ -17,7 +17,7 @@ export default function Student() {
   if (!row) {
     return (
       <div>
-        <p className="text-lg font-bold">We could not find that student.</p>
+        <p className="text-lg font-semibold">We could not find that student.</p>
         <Link to="/teacher/students" className="btn btn-secondary mt-4">
           All students
         </Link>
@@ -42,42 +42,42 @@ export default function Student() {
   return (
     <div className="space-y-8">
       <div>
-        <Link to="/teacher/students" className="text-sm font-bold text-muted hover:text-ink">
+        <Link to="/teacher/students" className="text-sm font-semibold text-muted hover:text-ink">
           All students
         </Link>
-        <h1 className="mt-3 text-3xl font-extrabold tracking-tight">{student.name}</h1>
+        <h1 className="mt-3 text-3xl font-semibold tracking-tight">{student.name}</h1>
         <p className="text-muted">Class {student.classId}</p>
       </div>
 
       {s.reasons.length > 0 && (
-        <p className="rounded-xl bg-warn-soft p-4 font-bold text-warn">Needs attention: {s.reasons.join('. ')}.</p>
+        <p className="rounded-xl bg-warn-soft p-4 font-semibold text-warn">Needs attention: {s.reasons.join('. ')}.</p>
       )}
 
       <dl className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
         {stats.map((stat) => (
           <div key={stat.label}>
             <dt className="text-sm text-muted">{stat.label}</dt>
-            <dd className="text-2xl font-extrabold">{stat.value}</dd>
+            <dd className="text-2xl font-semibold">{stat.value}</dd>
           </div>
         ))}
       </dl>
 
       <section>
-        <h2 className="text-lg font-extrabold">Chapters</h2>
-        <div className="mt-3 overflow-x-auto rounded-xl border border-line bg-surface">
+        <h2 className="text-lg font-semibold">Chapters</h2>
+        <div className="mt-3 overflow-x-auto rounded-2xl bg-surface shadow-card ring-1 ring-line">
           <table className="w-full min-w-[32rem] text-left">
             <thead className="border-b border-line text-sm text-muted">
               <tr>
-                <th className="px-4 py-3 font-bold">Chapter</th>
-                <th className="px-4 py-3 text-right font-bold">Lessons</th>
-                <th className="px-4 py-3 text-right font-bold">Best score</th>
-                <th className="px-4 py-3 text-right font-bold">Stars</th>
+                <th className="px-4 py-3 font-semibold">Chapter</th>
+                <th className="px-4 py-3 text-right font-semibold">Lessons</th>
+                <th className="px-4 py-3 text-right font-semibold">Best score</th>
+                <th className="px-4 py-3 text-right font-semibold">Stars</th>
               </tr>
             </thead>
             <tbody className="tabular-nums">
               {openChapters.map((c) => (
                 <tr key={c.id} className="not-last:border-b not-last:border-line">
-                  <td className="px-4 py-3 font-bold">
+                  <td className="px-4 py-3 font-semibold">
                     {c.number}. {c.title}
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -93,14 +93,14 @@ export default function Student() {
       </section>
 
       <section>
-        <h2 className="text-lg font-extrabold">Recent quiz attempts</h2>
+        <h2 className="text-lg font-semibold">Recent quiz attempts</h2>
         {recent.length === 0 ? (
           <p className="mt-2 text-muted">No quiz attempts yet.</p>
         ) : (
-          <ul className="mt-3 overflow-hidden rounded-xl border border-line bg-surface">
+          <ul className="mt-3 overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-line">
             {recent.map((a, i) => (
               <li key={i} className="flex flex-wrap gap-x-6 gap-y-1 px-4 py-3 not-last:border-b not-last:border-line">
-                <span className="flex-1 font-bold">{chapters.find((c) => c.quizId === a.quizId)?.title}</span>
+                <span className="flex-1 font-semibold">{chapters.find((c) => c.quizId === a.quizId)?.title}</span>
                 <span className="text-muted">{shortDate(a.date)}</span>
                 <span className="tabular-nums">{a.score}%</span>
                 <span className="tabular-nums">{a.stars} stars</span>

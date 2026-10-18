@@ -24,7 +24,7 @@ export default function Learn() {
 
   return (
     <div>
-      <h1 className="text-3xl font-extrabold tracking-tight">Chapters</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">Chapters</h1>
       <p className="mt-1 text-muted">Pass a chapter quiz to open the next chapter.</p>
 
       <ol className="mt-6 space-y-3">
@@ -33,10 +33,10 @@ export default function Learn() {
           const canOpen = state === 'done' || state === 'open'
           const row = (
             <>
-              <span className="w-10 shrink-0 text-2xl font-extrabold text-muted">{chapter.number}</span>
+              <span className="w-10 shrink-0 text-2xl font-semibold text-muted">{chapter.number}</span>
               <span className="min-w-0 flex-1">
-                <span className="block font-bold">{chapter.title}</span>
-                <span className={`block text-sm ${state === 'open' ? 'font-bold text-accent' : 'text-muted'}`}>
+                <span className="block font-semibold">{chapter.title}</span>
+                <span className={`block ${state === 'open' ? 'font-semibold text-accent' : 'text-muted'}`}>
                   {statusText(entry, index)}
                 </span>
               </span>
@@ -48,7 +48,7 @@ export default function Learn() {
               {canOpen ? (
                 <Link
                   to={`/student/learn/${chapter.id}`}
-                  className={`card flex items-center gap-4 p-4 hover:border-accent ${state === 'open' ? 'border-accent' : ''}`}
+                  className={`card flex items-center gap-4 p-4 hover:ring-accent ${state === 'open' ? 'ring-2 ring-accent' : ''}`}
                 >
                   {row}
                 </Link>
