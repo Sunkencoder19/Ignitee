@@ -10,6 +10,7 @@ import { SessionProvider } from './session'
 import Landing from './pages/Landing'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
+import Signup from './pages/Signup'
 
 import Home from './pages/student/Home'
 import Learn from './pages/student/Learn'
@@ -19,9 +20,7 @@ import Quiz from './pages/student/Quiz'
 import Result from './pages/student/Result'
 import Leaderboard from './pages/student/Leaderboard'
 
-import Overview from './pages/teacher/Overview'
-import Students from './pages/teacher/Students'
-import Student from './pages/teacher/Student'
+import Classes from './pages/teacher/Classes'
 
 // If any page throws an error, show this instead of a blank screen.
 // (React only lets a class component catch errors.)
@@ -59,6 +58,7 @@ createRoot(document.getElementById('root')).render(
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
 
           <Route path="/student" element={<StudentLayout />}>
             <Route index element={<Home />} />
@@ -71,9 +71,7 @@ createRoot(document.getElementById('root')).render(
           </Route>
 
           <Route path="/teacher" element={<TeacherLayout />}>
-            <Route index element={<Overview />} />
-            <Route path="students" element={<Students />} />
-            <Route path="students/:studentId" element={<Student />} />
+            <Route index element={<Classes />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

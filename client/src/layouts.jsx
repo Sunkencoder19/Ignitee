@@ -1,8 +1,8 @@
 // The frame around every student page and every teacher page:
 // a header with navigation, then the page itself (<Outlet />).
 // Each layout also sends anyone without the right role to the login page.
+// While a saved login is being checked (`checking`), they show "Loading..." instead.
 
-import { useState } from 'react'
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 import { currentStreak, today, totalPoints } from './game'
 import { useSession } from './session'
@@ -12,7 +12,8 @@ function navClass({ isActive }) {
 }
 
 export function StudentLayout() {
-  const { user, progress, logout } = useSession()
+  const { user, checking, progress, logout } = useSession()
+  if (checking) return <p className="px-4 py-8 text-muted">Loading...</p>
   if (user?.role !== 'student') return <Navigate to="/login" replace />
 
   return (
@@ -56,10 +57,8 @@ export function StudentLayout() {
 }
 
 export function TeacherLayout() {
-  const { user, logout } = useSession()
-  // Which class the teacher is looking at. Every teacher page reads it
-  // with useOutletContext().
-  const [classId, setClassId] = useState(user?.classId ?? '4A')
+  const { user, checking, logout } = useSession()
+  if (checking) return <p className="px-4 py-8 text-muted">Loading...</p>
   if (user?.role !== 'teacher') return <Navigate to="/login" replace />
 
   return (
@@ -71,23 +70,10 @@ export function TeacherLayout() {
           </Link>
           <nav className="flex gap-1">
             <NavLink to="/teacher" end className={navClass}>
-              Overview
-            </NavLink>
-            <NavLink to="/teacher/students" className={navClass}>
-              Students
+              Classes
             </NavLink>
           </nav>
           <div className="ml-auto flex items-center gap-4">
-            <select
-              aria-label="Class"
-              value={classId}
-              onChange={(e) => setClassId(e.target.value)}
-              className="field min-h-10 w-auto py-1 text-sm"
-            >
-              <option value="4A">Class 4A</option>
-              <option value="4B">Class 4B</option>
-              <option value="all">All classes</option>
-            </select>
             <span className="hidden text-sm text-muted md:inline">{user.name}</span>
             <button onClick={logout} className="inline-flex min-h-12 items-center px-2 text-base font-semibold text-muted hover:text-ink">
               Log out
@@ -97,7 +83,7 @@ export function TeacherLayout() {
       </header>
 
       <main className="mx-auto max-w-6xl px-4 py-8">
-        <Outlet context={{ classId }} />
+        <Outlet />
       </main>
     </div>
   )

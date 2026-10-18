@@ -1,10 +1,12 @@
 // The ONLY file that reads or writes data.
 //
-// Today it uses the JSON files in ./data and saves progress in the browser's
-// localStorage. Every function returns a Promise, exactly like a real network
-// call, so when the backend in /server is ready each function body becomes a
-// fetch() and no page has to change. The comment above each function names
-// the endpoint it should turn into.
+// Every function talks to the IGNITE server (server/) through request(),
+// which adds the login token and turns server errors into readable messages.
+// The comment above each function says which endpoint it calls.
+//
+// DEMO (until phases 3-6): the functions under "demo data" still read the JSON
+// files in ./data and save progress in localStorage. They are replaced phase by
+// phase and deleted in phase 6.
 
 import { useEffect, useState } from 'react'
 import chapters from './data/chapters.json'
@@ -12,10 +14,97 @@ import lessons from './data/lessons.json'
 import seedProgress from './data/progress.json'
 import quizzes from './data/quizzes.json'
 import students from './data/students.json'
-import teachers from './data/teachers.json'
 import { addDays, answerPoints, scoreQuiz, today } from './game'
 
-const SESSION_KEY = 'ignite:session'
+// ---------- talking to the server ----------
+
+const TOKEN_KEY = 'ignite:token'
+
+function getToken() {
+  try {
+    return localStorage.getItem(TOKEN_KEY)
+  } catch {
+    return null
+  }
+}
+
+function setToken(token) {
+  try {
+    if (token) localStorage.setItem(TOKEN_KEY, token)
+    else localStorage.removeItem(TOKEN_KEY)
+  } catch {
+    // Private browsing: you stay logged in until the tab closes.
+  }
+}
+
+// Sends one request to /api/... and returns the JSON reply.
+// If the server says no, it throws an Error whose message the page can show.
+async function request(method, path, body) {
+  const headers = { 'Content-Type': 'application/json' }
+  const token = getToken()
+  if (token) headers.Authorization = `Bearer ${token}`
+
+  let res
+  try {
+    res = await fetch(`/api${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined })
+  } catch {
+    throw new Error('Can’t reach the IGNITE server. Check your connection and try again.')
+  }
+
+  const data = await res.json().catch(() => ({}))
+  if (res.status === 401) setToken(null) // the saved login no longer works
+  if (!res.ok) {
+    // The Vite proxy answers 500/502/504 with no JSON when the server isn't running.
+    throw new Error(data.error ?? 'Can’t reach the IGNITE server. Check that it is running and try again.')
+  }
+  return data
+}
+
+// ---------- login ----------
+
+// Is there a saved login? (Checked with getMe() when the app opens.)
+export function hasSavedLogin() {
+  return Boolean(getToken())
+}
+
+// GET /api/auth/me
+export async function getMe() {
+  const { user } = await request('GET', '/auth/me')
+  return user
+}
+
+// POST /api/auth/teacher/signup  { name, email, password }
+export async function teacherSignup(name, email, password) {
+  const { token, user } = await request('POST', '/auth/teacher/signup', { name, email, password })
+  setToken(token)
+  return user
+}
+
+// POST /api/auth/teacher/login  { email, password }
+export async function teacherLogin(email, password) {
+  const { token, user } = await request('POST', '/auth/teacher/login', { email, password })
+  setToken(token)
+  return user
+}
+
+// GET /api/auth/class/:code  ->  { className, students: [{ id, name }] }
+export function findClass(code) {
+  return request('GET', `/auth/class/${encodeURIComponent(code.trim())}`)
+}
+
+// POST /api/auth/student/login  { classCode, studentId, pin }
+export async function studentLogin(classCode, studentId, pin) {
+  const { token, user } = await request('POST', '/auth/student/login', { classCode, studentId, pin })
+  setToken(token)
+  return user
+}
+
+export function logout() {
+  setToken(null)
+}
+
+// ---------- demo data (replaced in later phases) ----------
+
 const PROGRESS_KEY = 'ignite:progress:'
 
 // Pretend network: a short delay, and a copy so pages can't change the JSON.
@@ -41,50 +130,6 @@ function writeStorage(key, value) {
   } catch {
     // Private browsing or full storage: it still works until the tab closes.
   }
-}
-
-// ---------- login ----------
-
-function usersFor(role) {
-  return role === 'teacher' ? teachers : students
-}
-
-function displayName(user, role) {
-  return role === 'teacher' ? `${user.title} ${user.name}` : user.name
-}
-
-// GET /api/users?role=student
-// The demo PIN is included so the login page can show it. A real server must not do this.
-export function getLoginNames(role) {
-  const names = usersFor(role)
-    .map((u) => ({ id: u.id, name: displayName(u, role), classId: u.classId, pin: u.pin }))
-    .sort((a, b) => a.name.localeCompare(b.name))
-  return respond(names)
-}
-
-// POST /api/login  { role, userId, pin }
-export function login(role, userId, pin) {
-  const user = usersFor(role).find((u) => u.id === userId)
-  if (!user || user.pin !== pin) return fail("That PIN doesn't match. Try again.")
-  const session = {
-    id: user.id,
-    role,
-    name: displayName(user, role),
-    firstName: user.name.split(' ')[0],
-    classId: user.classId,
-  }
-  writeStorage(SESSION_KEY, session)
-  return respond(session)
-}
-
-// Read once on page load, so a refresh keeps you logged in.
-export function getSession() {
-  return readStorage(SESSION_KEY)
-}
-
-// POST /api/logout
-export function logout() {
-  localStorage.removeItem(SESSION_KEY)
 }
 
 // ---------- content ----------
@@ -181,13 +226,6 @@ export function getClass(classId) {
     .filter((s) => classId === 'all' || s.classId === classId)
     .map(({ pin, ...student }) => ({ student, progress: loadProgress(student.id) }))
   return respond(rows)
-}
-
-// Demo only: forget every saved change and go back to the seed data.
-export function resetDemo() {
-  Object.keys(localStorage)
-    .filter((key) => key.startsWith(PROGRESS_KEY))
-    .forEach((key) => localStorage.removeItem(key))
 }
 
 // ---------- helper for pages ----------
