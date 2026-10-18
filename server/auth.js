@@ -80,25 +80,38 @@ async function studentSession(student) {
 
 // ---------- wrong-PIN lockout ----------
 // A 4-digit PIN is easy to guess by trying them all, so after 5 wrong PINs
-// that student can't log in for 10 minutes. Kept in memory: a server restart clears it.
+// that student can't log in for 15 minutes. The lock clears itself:
+//   - after 15 minutes (checked in isLocked, the next time they try)
+//   - straight away when the teacher resets that student's PIN (clearLockout,
+//     called from the reset-PIN route in classes.js), or removes the student
+// Wrong PINs more than 15 minutes old stop counting, so a few slips spread
+// over several days never add up to a lock.
+// Kept in memory, so restarting the server also clears every lock.
 
 const MAX_WRONG_PINS = 5
-const LOCK_MS = 10 * 60 * 1000
-const wrongPins = new Map() // studentId -> { count, lockedUntil }
+const LOCK_MS = 15 * 60 * 1000
+const wrongPins = new Map() // studentId -> { count, firstWrongAt, lockedUntil }
 
 function isLocked(studentId) {
   const entry = wrongPins.get(studentId)
-  return entry?.lockedUntil > Date.now()
+  if (!entry?.lockedUntil) return false
+  if (entry.lockedUntil > Date.now()) return true
+  wrongPins.delete(studentId) // the 15 minutes are up: start fresh
+  return false
 }
 
 function recordWrongPin(studentId) {
-  const entry = wrongPins.get(studentId) ?? { count: 0, lockedUntil: 0 }
-  entry.count += 1
-  if (entry.count >= MAX_WRONG_PINS) {
-    entry.count = 0
-    entry.lockedUntil = Date.now() + LOCK_MS
+  let entry = wrongPins.get(studentId)
+  if (!entry || Date.now() - entry.firstWrongAt > LOCK_MS) {
+    entry = { count: 0, firstWrongAt: Date.now(), lockedUntil: 0 }
   }
+  entry.count += 1
+  if (entry.count >= MAX_WRONG_PINS) entry.lockedUntil = Date.now() + LOCK_MS
   wrongPins.set(studentId, entry)
+}
+
+export function clearLockout(studentId) {
+  wrongPins.delete(String(studentId))
 }
 
 // ---------- routes ----------
@@ -163,14 +176,14 @@ router.post('/student/login', async (req, res) => {
   if (!student) return wrong()
 
   if (isLocked(student.id)) {
-    return res.status(429).json({ error: 'Too many wrong PINs. Ask your teacher, or try again in 10 minutes.' })
+    return res.status(429).json({ error: 'Too many wrong PINs. Ask your teacher, or try again in 15 minutes.' })
   }
   if (!/^\d{4}$/.test(pin) || !(await bcrypt.compare(pin, student.pinHash))) {
     recordWrongPin(student.id)
     return wrong()
   }
 
-  wrongPins.delete(student.id)
+  clearLockout(student.id)
   res.json({ token: makeToken('student', student.id), user: await studentSession(student) })
 })
 

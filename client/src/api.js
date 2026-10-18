@@ -8,7 +8,7 @@
 // files in ./data and save progress in localStorage. They are replaced phase by
 // phase and deleted in phase 6.
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import chapters from './data/chapters.json'
 import lessons from './data/lessons.json'
 import seedProgress from './data/progress.json'
@@ -101,6 +101,53 @@ export async function studentLogin(classCode, studentId, pin) {
 
 export function logout() {
   setToken(null)
+}
+
+// ---------- classes and students (teacher) ----------
+
+// GET /api/classes  ->  [{ id, name, code, studentCount }]
+export function getClasses() {
+  return request('GET', '/classes')
+}
+
+// POST /api/classes  { name }
+export function createClass(name) {
+  return request('POST', '/classes', { name })
+}
+
+// GET /api/classes/:id  ->  { id, name, code, students: [{ id, name }] }
+export function getTeacherClass(classId) {
+  return request('GET', `/classes/${classId}`)
+}
+
+// PATCH /api/classes/:id  { name }
+export function renameClass(classId, name) {
+  return request('PATCH', `/classes/${classId}`, { name })
+}
+
+// DELETE /api/classes/:id   (also removes its students and their quiz history)
+export function deleteClass(classId) {
+  return request('DELETE', `/classes/${classId}`)
+}
+
+// POST /api/classes/:id/students  { name }  ->  { student, pin }   (the PIN is only sent this once)
+export function addStudent(classId, name) {
+  return request('POST', `/classes/${classId}/students`, { name })
+}
+
+// PATCH /api/students/:id  { name }
+export function renameStudent(studentId, name) {
+  return request('PATCH', `/students/${studentId}`, { name })
+}
+
+// DELETE /api/students/:id
+export function removeStudent(studentId) {
+  return request('DELETE', `/students/${studentId}`)
+}
+
+// POST /api/students/:id/reset-pin  ->  { student, pin }   (also lifts a wrong-PIN lock)
+export function resetPin(studentId) {
+  return request('POST', `/students/${studentId}/reset-pin`)
 }
 
 // ---------- demo data (replaced in later phases) ----------
@@ -231,10 +278,14 @@ export function getClass(classId) {
 // ---------- helper for pages ----------
 
 // Loads data when a page opens (and again when `deps` change).
-//   const { data, error } = useData(() => getQuiz(quizId), [quizId])
+//   const { data, error, reload } = useData(() => getQuiz(quizId), [quizId])
 // While loading, data and error are both null.
+// reload() fetches again after a change (say, a new student was added) but
+// keeps showing the current data until the new data arrives.
 export function useData(load, deps) {
   const [state, setState] = useState({ data: null, error: null })
+  const latestLoad = useRef(load)
+  latestLoad.current = load
 
   useEffect(() => {
     let current = true
@@ -248,5 +299,14 @@ export function useData(load, deps) {
     }
   }, deps)
 
-  return state
+  async function reload() {
+    try {
+      const data = await latestLoad.current()
+      setState({ data, error: null })
+    } catch (error) {
+      setState((prev) => ({ ...prev, error: error.message }))
+    }
+  }
+
+  return { ...state, reload }
 }

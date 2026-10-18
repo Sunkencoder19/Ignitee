@@ -21,6 +21,7 @@ import Result from './pages/student/Result'
 import Leaderboard from './pages/student/Leaderboard'
 
 import Classes from './pages/teacher/Classes'
+import Class from './pages/teacher/Class'
 
 // If any page throws an error, show this instead of a blank screen.
 // (React only lets a class component catch errors.)
@@ -72,6 +73,7 @@ createRoot(document.getElementById('root')).render(
 
           <Route path="/teacher" element={<TeacherLayout />}>
             <Route index element={<Classes />} />
+            <Route path="classes/:classId" element={<Class />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

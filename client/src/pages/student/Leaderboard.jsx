@@ -25,6 +25,8 @@ export default function Leaderboard() {
     row.rank = i > 0 && row.points === ranked[i - 1].points ? ranked[i - 1].rank : i + 1
   })
   const me = ranked.find((r) => r.id === user.id)
+  // DEMO until phase 4: real students aren't in the demo data yet.
+  if (!me) return <p className="text-muted">The leaderboard isn’t ready yet.</p>
 
   return (
     <div className="max-w-2xl">

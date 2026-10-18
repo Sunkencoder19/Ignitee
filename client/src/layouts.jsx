@@ -65,7 +65,7 @@ export function TeacherLayout() {
     <div className="min-h-dvh">
       <header className="sticky top-0 z-20 border-b border-line bg-surface/80 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-6 gap-y-1 px-4 py-2">
-          <Link to="/teacher" className="inline-flex min-h-12 items-center text-xl font-semibold tracking-tight">
+          <Link to="/teacher" className="inline-flex min-h-12 items-center gap-1.5 text-xl font-semibold tracking-tight">
             IGNITE <span className="font-semibold text-muted">for teachers</span>
           </Link>
           <nav className="flex gap-1">
