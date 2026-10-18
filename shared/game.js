@@ -276,7 +276,8 @@ export function quizOpen(chapter, progress) {
 
 // Chapters open in order. A chapter is 'done' once its quiz has 1 star or
 // more, the first chapter that isn't done is 'open', and the rest are
-// 'locked'. Chapters without content yet are 'soon'.
+// 'locked'. (Chapters marked `locked` show as 'soon'; the landing page's
+// examples use that.)
 export function chapterStates(chapters, progress) {
   let previousDone = true
   return chapters.map((chapter) => {
@@ -302,11 +303,12 @@ export function nextStep(chapters, progress) {
 // ---------- badges ----------
 // Seven badges. Like points and streak, they are worked out from the
 // history every time, so nothing extra is saved and a badge can't be
-// awarded twice.
+// awarded twice. They work with any chapters a teacher makes.
+// `chapters` is the list the student can see: [{ id, lessonIds, quizId }].
 
-function chapterFinished(chapters, progress, chapterId) {
-  const chapter = chapters.find((c) => c.id === chapterId)
-  return quizOpen(chapter, progress) && bestStars(progress, chapter.quizId) >= 1
+// "Finished" means every lesson done and the quiz passed with 1 star or more.
+function chaptersFinished(chapters, progress) {
+  return chapters.filter((c) => c.quizId && quizOpen(c, progress) && bestStars(progress, c.quizId) >= 1).length
 }
 
 // A retake that scored higher than every earlier attempt on the same quiz.
@@ -318,7 +320,6 @@ function improvedOnRetake(progress) {
 }
 
 // Longest run of quiz answers right first time, across all quizzes in order.
-// Demo (seed) attempts have no saved answers, so they don't count.
 function longestFirstTryRun(progress) {
   let run = 0
   let best = 0
@@ -333,9 +334,9 @@ function longestFirstTryRun(progress) {
 
 const BADGES = [
   { name: 'First Step', howTo: 'Finish your first lesson.', check: (p) => p.lessons.length > 0 },
-  { name: 'Shape Explorer', howTo: 'Finish Chapter 1, Shapes Around Us.', check: (p, c) => chapterFinished(c, p, 'ch1') },
-  { name: 'Pattern Pro', howTo: 'Get 3 stars on the Chapter 3 quiz.', check: (p) => bestStars(p, 'ch3-quiz') === 3 },
-  { name: 'Thousand Club', howTo: 'Finish Chapter 4, Thousands Around Us.', check: (p, c) => chapterFinished(c, p, 'ch4') },
+  { name: 'Chapter Champion', howTo: 'Finish a chapter: every lesson, then pass the quiz.', check: (p, c) => chaptersFinished(c, p) >= 1 },
+  { name: 'Star Student', howTo: 'Get 3 stars on any quiz.', check: (p) => p.attempts.some((a) => a.stars === 3) },
+  { name: 'Explorer', howTo: 'Finish 3 chapters.', check: (p, c) => chaptersFinished(c, p) >= 3 },
   { name: 'On Fire', howTo: 'Learn 5 days in a row.', check: (p) => bestStreak(p) >= 5 },
   { name: 'Never Give Up', howTo: 'Beat your best score when you retake a quiz.', check: (p) => improvedOnRetake(p) },
   { name: 'Sharp Mind', howTo: 'Get 10 quiz answers right first time in a row.', check: (p) => longestFirstTryRun(p) >= 10 },

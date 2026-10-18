@@ -71,7 +71,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="learn/:chapterId" element={<Chapter />} />
             <Route path="learn/:chapterId/:lessonId" element={<Lesson />} />
             <Route path="quiz/:quizId" element={<Quiz />} />
-            <Route path="quiz/:quizId/result" element={<Result />} />
+            <Route path="results/:attemptId" element={<Result />} />
             <Route path="leaderboard" element={<Leaderboard />} />
           </Route>
 

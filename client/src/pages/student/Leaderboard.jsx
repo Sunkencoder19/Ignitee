@@ -1,50 +1,45 @@
-// Points ranking for the student's own class. First names only.
+// Points ranking for the student's own class. The server sends first names
+// and points only.
 
-import { getClass, useData } from '../../api'
-import { totalPoints } from '../../game'
+import { getLeaderboard, useData } from '../../api'
 import { useSession } from '../../session'
 
 export default function Leaderboard() {
   const { user, progress } = useSession()
-  const { data: rows, error } = useData(() => getClass(user.classId), [user.classId])
+  // Reloads when the student's points change, so their own row is never behind.
+  const { data: rows, error, reload } = useData(() => getLeaderboard(), [progress.points])
 
-  if (error) return <p className="text-warn">{error}</p>
+  if (error) {
+    return (
+      <div>
+        <p className="text-lg font-semibold">{error}</p>
+        <button onClick={reload} className="btn btn-primary mt-4">
+          Try again
+        </button>
+      </div>
+    )
+  }
   if (!rows) return <p className="text-muted">Loading...</p>
 
-  // Your own row uses your live progress, so it updates straight after a lesson.
-  const ranked = rows
-    .map((r) => ({
-      id: r.student.id,
-      name: r.student.name.split(' ')[0],
-      points: totalPoints(r.student.id === user.id ? progress : r.progress),
-    }))
-    .sort((a, b) => b.points - a.points || a.name.localeCompare(b.name))
-
-  // Equal points share a rank: 1, 2, 2, 4.
-  ranked.forEach((row, i) => {
-    row.rank = i > 0 && row.points === ranked[i - 1].points ? ranked[i - 1].rank : i + 1
-  })
-  const me = ranked.find((r) => r.id === user.id)
-  // DEMO until phase 4: real students aren't in the demo data yet.
-  if (!me) return <p className="text-muted">The leaderboard isn’t ready yet.</p>
+  const me = rows.find((r) => r.isMe)
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-3xl font-semibold tracking-tight">Class {user.classId} leaderboard</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">{user.className} leaderboard</h1>
       <p className="mt-1 text-muted">
-        You are number {me.rank} of {ranked.length}.
+        {me.points === 0 ? 'Finish a lesson to get your first points.' : `You are number ${me.rank} of ${rows.length}.`}
       </p>
 
       <ol className="mt-6 overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-line">
-        {ranked.map((row) => (
+        {rows.map((row) => (
           <li
             key={row.id}
-            className={`flex items-center gap-4 px-4 py-3 not-last:border-b not-last:border-line ${row.id === user.id ? 'bg-accent-soft' : ''}`}
+            className={`flex items-center gap-4 px-4 py-3 not-last:border-b not-last:border-line ${row.isMe ? 'bg-accent-soft' : ''}`}
           >
             <span className="w-8 text-xl font-semibold text-muted">{row.rank}</span>
             <span className="flex-1 font-semibold">
-              {row.name}
-              {row.id === user.id && ' (you)'}
+              {row.firstName}
+              {row.isMe && ' (you)'}
             </span>
             <span className="font-semibold tabular-nums">{row.points} points</span>
           </li>

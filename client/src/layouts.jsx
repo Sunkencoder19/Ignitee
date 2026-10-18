@@ -4,7 +4,6 @@
 // While a saved login is being checked (`checking`), they show "Loading..." instead.
 
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
-import { currentStreak, today, totalPoints } from './game'
 import { useSession } from './session'
 
 function navClass({ isActive }) {
@@ -12,7 +11,7 @@ function navClass({ isActive }) {
 }
 
 export function StudentLayout() {
-  const { user, checking, progress, logout } = useSession()
+  const { user, checking, progress, progressError, reloadProgress, logout } = useSession()
   if (checking) return <p className="px-4 py-8 text-muted">Loading...</p>
   if (user?.role !== 'student') return <Navigate to="/login" replace />
 
@@ -37,9 +36,9 @@ export function StudentLayout() {
           <div className="ml-auto flex items-center gap-4">
             {progress && (
               <p className="hidden text-base text-muted sm:block">
-                <strong className="text-ink">{totalPoints(progress)}</strong> points
+                <strong className="text-ink">{progress.points}</strong> points
                 <span className="mx-2">|</span>
-                <strong className="text-ink">{currentStreak(progress, today())}</strong> day streak
+                <strong className="text-ink">{progress.streak}</strong> day streak
               </p>
             )}
             <button onClick={logout} className="inline-flex min-h-12 items-center px-2 text-base font-semibold text-muted hover:text-ink">
@@ -50,7 +49,18 @@ export function StudentLayout() {
       </header>
 
       <main className="mx-auto max-w-4xl px-4 py-8">
-        {progress ? <Outlet /> : <p className="text-muted">Loading your progress...</p>}
+        {progress ? (
+          <Outlet />
+        ) : progressError ? (
+          <div>
+            <p className="text-lg font-semibold">{progressError}</p>
+            <button onClick={reloadProgress} className="btn btn-primary mt-4">
+              Try again
+            </button>
+          </div>
+        ) : (
+          <p className="text-muted">Loading your progress...</p>
+        )}
       </main>
     </div>
   )

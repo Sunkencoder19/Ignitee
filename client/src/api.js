@@ -4,17 +4,13 @@
 // which adds the login token and turns server errors into readable messages.
 // The comment above each function says which endpoint it calls.
 //
-// DEMO (until phases 3-6): the functions under "demo data" still read the JSON
-// files in ./data and save progress in localStorage. They are replaced phase by
-// phase and deleted in phase 6.
+// DEMO (until phase 6): only the landing page's examples still read ./data.
 
 import { useEffect, useRef, useState } from 'react'
 import chapters from './data/chapters.json'
-import lessons from './data/lessons.json'
 import seedProgress from './data/progress.json'
-import quizzes from './data/quizzes.json'
 import students from './data/students.json'
-import { addDays, answerPoints, scoreQuiz, today } from './game'
+import { addDays, today } from './game'
 
 // ---------- talking to the server ----------
 
@@ -225,135 +221,93 @@ export function deleteQuiz(chapterId) {
   return request('DELETE', `/chapters/${chapterId}/quiz`)
 }
 
-// ---------- demo data (replaced in later phases) ----------
+// ---------- student: lessons, quizzes, progress ----------
+// Students never receive answers, hints or explanations up front: every
+// answer is sent to the server, which says whether it is right.
 
-const PROGRESS_KEY = 'ignite:progress:'
+// GET /api/student/chapters  ->  [{ id, number, title, state, stars, lessons: [{ id, title, done }], quiz }]
+export function getStudentChapters() {
+  return request('GET', '/student/chapters')
+}
 
-// Pretend network: a short delay, and a copy so pages can't change the JSON.
+// GET /api/student/progress  ->  { lessons, attempts, points, streak, bestStreak, lastActive, badges }
+export function getProgress() {
+  return request('GET', '/student/progress')
+}
+
+// GET /api/student/lessons/:id  ->  { id, title, chapterId, steps }   (questions without answers)
+export function getStudentLesson(lessonId) {
+  return request('GET', `/student/lessons/${lessonId}`)
+}
+
+// POST /api/student/lessons/:id/check  { questionId, given, tries }
+//   ->  { result: 'correct' }  |  { result: 'retry', hint }  |  { result: 'revealed', answer, explanation }
+export function checkLessonAnswer(lessonId, questionId, given, tries) {
+  return request('POST', `/student/lessons/${lessonId}/check`, { questionId, given, tries })
+}
+
+// POST /api/student/lessons/:id/finish  ->  { firstTime, pointsEarned, newBadges, progress }
+export function finishLesson(lessonId) {
+  return request('POST', `/student/lessons/${lessonId}/finish`)
+}
+
+// POST /api/student/quizzes/:id/attempts  ->  { attemptId, chapterTitle, questions }   (no answers)
+export function startQuiz(quizId) {
+  return request('POST', `/student/quizzes/${quizId}/attempts`)
+}
+
+// POST /api/student/attempts/:id/answers  { questionId, given }
+//   ->  same replies as checkLessonAnswer, plus `settled`. The server counts the tries.
+export function answerQuizQuestion(attemptId, questionId, given) {
+  return request('POST', `/student/attempts/${attemptId}/answers`, { questionId, given })
+}
+
+// POST /api/student/attempts/:id/finish   (sends nothing: the server works out the score)
+//   ->  { score, stars, quizPoints, pointsEarned, newBadges, openedChapter, review, progress, ... }
+export function finishQuiz(attemptId) {
+  return request('POST', `/student/attempts/${attemptId}/finish`)
+}
+
+// GET /api/student/attempts/:id  ->  a finished attempt with its review
+export function getQuizResult(attemptId) {
+  return request('GET', `/student/attempts/${attemptId}`)
+}
+
+// GET /api/student/leaderboard  ->  [{ id, firstName, points, rank, isMe }]
+export function getLeaderboard() {
+  return request('GET', '/student/leaderboard')
+}
+
+// ---------- landing page examples (removed in phase 6) ----------
+// DEMO: the landing page's previews still read the old JSON in ./data.
+
 function respond(data) {
   return new Promise((resolve) => setTimeout(() => resolve(structuredClone(data)), 200))
 }
 
-function fail(message) {
-  return new Promise((_, reject) => setTimeout(() => reject(new Error(message)), 200))
-}
-
-function readStorage(key) {
-  try {
-    return JSON.parse(localStorage.getItem(key))
-  } catch {
-    return null
-  }
-}
-
-function writeStorage(key, value) {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    // Private browsing or full storage: it still works until the tab closes.
-  }
-}
-
-// ---------- content ----------
-
-// GET /api/chapters
-export function getChapters() {
+export function getDemoChapters() {
   return respond(chapters)
 }
 
-// GET /api/chapters/:id
-export function getChapter(chapterId) {
-  const chapter = chapters.find((c) => c.id === chapterId)
-  if (!chapter) return fail('We could not find that chapter.')
-  const chapterLessons = chapter.lessonIds.map((id) => lessons.find((l) => l.id === id))
-  const quiz = quizzes.find((q) => q.id === chapter.quizId) ?? null
-  return respond({ chapter, lessons: chapterLessons, quiz })
-}
-
-// GET /api/lessons/:id
-export function getLesson(lessonId) {
-  const lesson = lessons.find((l) => l.id === lessonId)
-  return lesson ? respond(lesson) : fail('We could not find that lesson.')
-}
-
-// GET /api/quizzes/:id
-export function getQuiz(quizId) {
-  const quiz = quizzes.find((q) => q.id === quizId)
-  return quiz ? respond(quiz) : fail('We could not find that quiz.')
-}
-
-// ---------- progress ----------
-
-// The seed file stores "days ago" instead of dates, so the demo data looks
-// the same whatever day you open it.
-function seedFor(studentId) {
-  const seed = seedProgress.find((p) => p.studentId === studentId)
-  if (!seed) return { studentId, lessons: [], attempts: [] }
-  return {
-    studentId,
-    lessons: seed.lessons.map((l) => ({ lessonId: l.lessonId, date: addDays(today(), -l.daysAgo) })),
-    attempts: seed.attempts.map(({ daysAgo, ...a }) => ({ ...a, date: addDays(today(), -daysAgo) })),
-  }
-}
-
-// Saved progress is only used if it has the current shape. Anything else
-// (for example, saved by an older version of the app) is ignored.
-function loadProgress(studentId) {
-  const saved = readStorage(PROGRESS_KEY + studentId)
-  const valid = Array.isArray(saved?.lessons) && Array.isArray(saved?.attempts)
-  return valid ? saved : seedFor(studentId)
-}
-
-// GET /api/students/:id/progress
-export function getProgress(studentId) {
-  return respond(loadProgress(studentId))
-}
-
-// POST /api/students/:id/lessons  { lessonId }
-// Finishing a lesson again changes nothing; only the first time counts.
-export function completeLesson(studentId, lessonId) {
-  const progress = loadProgress(studentId)
-  if (!progress.lessons.some((l) => l.lessonId === lessonId)) {
-    progress.lessons.push({ lessonId, date: today() })
-    writeStorage(PROGRESS_KEY + studentId, progress)
-  }
-  return respond(progress)
-}
-
-// POST /api/students/:id/attempts  { quizId, answers }
-// answers: [{ questionId, outcome: 'first' | 'hint' | 'missed', given }]
-export function submitQuiz(studentId, quizId, answers) {
-  const progress = loadProgress(studentId)
-  const outcomes = answers.map((a) => a.outcome)
-  const { score, stars } = scoreQuiz(outcomes)
-  progress.attempts.push({
-    quizId,
-    score,
-    stars,
-    answerPoints: answerPoints(outcomes),
-    answers,
-    date: today(),
-  })
-  writeStorage(PROGRESS_KEY + studentId, progress)
-  return respond(progress)
-}
-
-// ---------- class (teacher pages and leaderboard) ----------
-
-// GET /api/classes/:classId   (classId '4A', '4B' or 'all')
-// Returns [{ student, progress }]. The real server should send students
-// only first names and points for the leaderboard.
-export function getClass(classId) {
+export function getDemoClass(classId) {
   const rows = students
-    .filter((s) => classId === 'all' || s.classId === classId)
-    .map(({ pin, ...student }) => ({ student, progress: loadProgress(student.id) }))
+    .filter((s) => s.classId === classId)
+    .map(({ pin, ...student }) => {
+      const seed = seedProgress.find((p) => p.studentId === student.id)
+      const progress = {
+        studentId: student.id,
+        lessons: (seed?.lessons ?? []).map((l) => ({ lessonId: l.lessonId, date: addDays(today(), -l.daysAgo) })),
+        attempts: (seed?.attempts ?? []).map(({ daysAgo, ...a }) => ({ ...a, date: addDays(today(), -daysAgo) })),
+      }
+      return { student, progress }
+    })
   return respond(rows)
 }
 
 // ---------- helper for pages ----------
 
 // Loads data when a page opens (and again when `deps` change).
-//   const { data, error, reload } = useData(() => getQuiz(quizId), [quizId])
+//   const { data, error, reload } = useData(() => getStudentLesson(lessonId), [lessonId])
 // While loading, data and error are both null.
 // reload() fetches again after a change (say, a new student was added) but
 // keeps showing the current data until the new data arrives.

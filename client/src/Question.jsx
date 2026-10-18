@@ -1,10 +1,20 @@
-// One question, used by both the lesson page and the quiz page.
+// One question, used by the lesson page, the quiz page, the teacher's preview
+// and the landing page.
 //
 // The two-tries rule:
 //   first wrong answer  -> "Not quite" and the hint, try again
 //   second wrong answer -> show the right answer and the explanation
 // When the question is settled it calls onDone({ outcome, given }) once,
 // where outcome is 'first', 'hint' or 'missed'.
+//
+// Who decides if an answer is right? The `check(given, tries)` prop:
+//   - Student lessons and quizzes pass a function that asks the SERVER. The
+//     question they get has no answer in it, so the hint, answer and
+//     explanation only arrive in the server's reply.
+//   - Without `check` (landing page, teacher preview) the question has its
+//     answer, hint and explanation, and is checked right here.
+// Either way, check returns one of:
+//   { result: 'correct' }  |  { result: 'retry', hint }  |  { result: 'revealed', answer, explanation }
 //
 // Three kinds of question:
 //   mcq   - tap one option
@@ -14,12 +24,23 @@
 import { useState } from 'react'
 import { checkAnswer } from './game'
 
-export default function Question({ question, onDone }) {
+// The local check, for questions that carry their own answer.
+function checkHere(question, given, tries) {
+  if (checkAnswer(question, given)) return { result: 'correct' }
+  if (tries === 1) return { result: 'retry', hint: question.hint }
+  return { result: 'revealed', answer: question.answer, explanation: question.explanation }
+}
+
+export default function Question({ question, onDone, check }) {
   const [status, setStatus] = useState('answering') // answering | retry | correct | revealed
+  const [reply, setReply] = useState(null) // the last reply from check: hint, answer, explanation
+  const [rightAnswer, setRightAnswer] = useState(null) // known once correct or revealed
   const [choice, setChoice] = useState(null) // mcq
   const [wrongChoices, setWrongChoices] = useState([]) // mcq
   const [text, setText] = useState('') // input
   const [order, setOrder] = useState([]) // order: indexes into question.options
+  const [busy, setBusy] = useState(false) // waiting for the server
+  const [error, setError] = useState(null)
 
   const settled = status === 'correct' || status === 'revealed'
 
@@ -32,28 +53,45 @@ export default function Question({ question, onDone }) {
     (question.type === 'input' && text.trim() !== '') ||
     (question.type === 'order' && order.length === question.options.length)
 
-  function check(e) {
+  async function handleCheck(e) {
     e.preventDefault()
-    if (!ready || settled) return
+    if (!ready || settled || busy) return
 
-    if (checkAnswer(question, given)) {
+    const tries = status === 'retry' ? 2 : 1
+    setBusy(true)
+    setError(null)
+    let answer
+    try {
+      answer = check ? await check(given, tries) : checkHere(question, given, tries)
+    } catch (err) {
+      setError(err.message) // nothing changes; the child can press Check again
+      setBusy(false)
+      return
+    }
+    setBusy(false)
+    setReply(answer)
+
+    if (answer.result === 'correct') {
       setStatus('correct')
-      onDone({ outcome: status === 'retry' ? 'hint' : 'first', given })
-    } else if (status === 'answering') {
+      setRightAnswer(given)
+      onDone({ outcome: tries === 1 ? 'first' : 'hint', given })
+    } else if (answer.result === 'retry') {
       setStatus('retry')
       setWrongChoices([choice])
       setChoice(null)
       setOrder([])
     } else {
       setStatus('revealed')
+      setRightAnswer(answer.answer)
+      if (question.type === 'mcq') setWrongChoices([...wrongChoices, choice])
       onDone({ outcome: 'missed', given })
     }
   }
 
-  const answerText = Array.isArray(question.answer) ? question.answer.join(', ') : question.answer
+  const answerText = Array.isArray(rightAnswer) ? rightAnswer.join(', ') : rightAnswer
 
   return (
-    <form onSubmit={check}>
+    <form onSubmit={handleCheck}>
       <h2 className="text-xl font-semibold leading-snug sm:text-2xl">{question.prompt}</h2>
 
       {question.type === 'mcq' && (
@@ -62,12 +100,12 @@ export default function Question({ question, onDone }) {
             let style = 'border-line bg-surface hover:border-accent'
             if (choice === option) style = 'border-accent bg-accent-soft'
             if (wrongChoices.includes(option)) style = 'border-line bg-surface opacity-40 line-through'
-            if (settled && option === question.answer) style = 'border-good bg-good-soft'
+            if (settled && option === rightAnswer) style = 'border-good bg-good-soft'
             return (
               <button
                 key={option}
                 type="button"
-                disabled={settled || wrongChoices.includes(option)}
+                disabled={settled || busy || wrongChoices.includes(option)}
                 onClick={() => setChoice(option)}
                 className={`min-h-14 rounded-xl border-2 px-4 text-left text-lg font-semibold ${style}`}
               >
@@ -83,9 +121,9 @@ export default function Question({ question, onDone }) {
           aria-label="Your answer"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          disabled={settled}
+          disabled={settled || busy}
           autoComplete="off"
-          inputMode={/^[\d,]+$/.test(question.answer) ? 'numeric' : 'text'}
+          inputMode="text"
           placeholder="Type your answer"
           className="field mt-5 min-h-16 text-center text-2xl font-semibold"
         />
@@ -99,7 +137,7 @@ export default function Question({ question, onDone }) {
               <button
                 key={slot}
                 type="button"
-                disabled={settled}
+                disabled={settled || busy}
                 onClick={() => setOrder(order.filter((_, s) => s !== slot))}
                 className="min-h-12 rounded-xl bg-accent-soft px-4 text-lg font-semibold"
               >
@@ -113,7 +151,7 @@ export default function Question({ question, onDone }) {
                 <button
                   key={i}
                   type="button"
-                  disabled={order.includes(i)}
+                  disabled={order.includes(i) || busy}
                   onClick={() => setOrder([...order, i])}
                   className="min-h-12 rounded-xl border-2 border-line bg-surface px-4 text-lg font-semibold hover:border-accent disabled:opacity-25"
                 >
@@ -132,20 +170,25 @@ export default function Question({ question, onDone }) {
         {status === 'retry' && (
           <div className="mt-5 rounded-xl bg-warn-soft p-4">
             <p className="font-semibold text-warn">Not quite. Try once more.</p>
-            <p className="mt-1">Hint: {question.hint}</p>
+            {reply?.hint && <p className="mt-1">Hint: {reply.hint}</p>}
           </div>
         )}
         {status === 'revealed' && (
           <div className="mt-5 rounded-xl bg-accent-soft p-4">
             <p className="font-semibold">The answer is {answerText}.</p>
-            <p className="mt-1">{question.explanation}</p>
+            {reply?.explanation && <p className="mt-1">{reply.explanation}</p>}
           </div>
+        )}
+        {error && (
+          <p role="alert" className="mt-5 font-semibold text-warn">
+            {error} Press Check to try again.
+          </p>
         )}
       </div>
 
       {!settled && (
-        <button type="submit" disabled={!ready} className="btn btn-primary mt-6 w-full text-lg">
-          Check
+        <button type="submit" disabled={!ready || busy} className="btn btn-primary mt-6 w-full text-lg">
+          {busy ? 'Checking...' : 'Check'}
         </button>
       )}
     </form>

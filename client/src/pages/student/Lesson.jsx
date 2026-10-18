@@ -1,13 +1,14 @@
 // A lesson is a few steps, shown one at a time:
 //   explain  - the idea in simple words
 //   example  - the idea in everyday life
-//   activity - a question to answer before moving on
-// After the last step the lesson is saved and the student sees their points.
+//   activity - something to try, sometimes with a question
+// Activity answers are checked by the server (the lesson arrives without
+// answers). After the last step the server records the lesson and says how
+// many points it earned.
 
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { getChapter, getChapters, useData } from '../../api'
-import { chapterStates, quizOpen, totalPoints } from '../../game'
+import { checkLessonAnswer, getStudentChapters, getStudentLesson, useData } from '../../api'
 import Question from '../../Question'
 import { useSession } from '../../session'
 
@@ -22,49 +23,29 @@ export default function Lesson() {
 
 function LessonSteps() {
   const { chapterId, lessonId } = useParams()
-  const { progress, completeLesson } = useSession()
-  const { data, error } = useData(() => Promise.all([getChapter(chapterId), getChapters()]), [chapterId])
+  const { finishLesson } = useSession()
+  const { data: lesson, error } = useData(() => getStudentLesson(lessonId), [lessonId])
 
   const [stepIndex, setStepIndex] = useState(0)
   const [answered, setAnswered] = useState(false)
   const [saving, setSaving] = useState(false)
-  const [finished, setFinished] = useState(null) // { pointsEarned, progress } once saved
+  const [saveError, setSaveError] = useState(null)
+  const [finished, setFinished] = useState(null) // the server's reply once the lesson is recorded
 
-  if (error) return <Back to="/student/learn" message={error} />
-  if (!data) return <p className="text-muted">Loading...</p>
-
-  const [{ chapter, lessons }, chapters] = data
-  const lesson = lessons.find((l) => l.id === lessonId)
-  const state = chapterStates(chapters, progress).find((c) => c.chapter.id === chapter.id).state
-  if (!lesson) return <Back to={`/student/learn/${chapter.id}`} message="We could not find that lesson." />
-  if (state === 'locked' || state === 'soon') {
-    return <Back to="/student/learn" message={`${chapter.title} isn't open yet.`} />
-  }
-
-  // ---- finished screen ----
-  if (finished) {
-    const index = lessons.indexOf(lesson)
-    const next = lessons[index + 1]
-    let main = { to: `/student/learn/${chapter.id}`, label: 'Back to the chapter' }
-    if (next) main = { to: `/student/learn/${chapter.id}/${next.id}`, label: 'Next lesson' }
-    else if (quizOpen(chapter, finished.progress)) main = { to: `/student/quiz/${chapter.quizId}`, label: 'Take the chapter quiz' }
-
+  if (error) {
     return (
-      <div className="card mx-auto max-w-xl p-8 text-center">
-        <h1 className="text-3xl font-semibold">You finished it!</h1>
-        <p className="mt-2 text-lg text-muted">{lesson.title}</p>
-        <p className="mt-6 text-4xl font-semibold text-accent">+{finished.pointsEarned} points</p>
-        {finished.pointsEarned === 0 && (
-          <p className="mt-2 text-muted">You had already done this lesson, so no new points. Good practice!</p>
-        )}
-        <Link to={main.to} className="btn btn-primary mt-8 w-full text-lg">
-          {main.label}
+      <div>
+        <p className="text-lg font-semibold">{error}</p>
+        <Link to={`/student/learn/${chapterId}`} className="btn btn-secondary mt-4">
+          Back to the chapter
         </Link>
       </div>
     )
   }
+  if (!lesson) return <p className="text-muted">Loading...</p>
 
-  // ---- one step ----
+  if (finished) return <FinishScreen lesson={lesson} result={finished} />
+
   const step = lesson.steps[stepIndex]
   const isLast = stepIndex === lesson.steps.length - 1
   const mustAnswer = step.type === 'activity' && step.question && !answered
@@ -76,15 +57,19 @@ function LessonSteps() {
       return
     }
     setSaving(true)
-    const before = totalPoints(progress)
-    const after = await completeLesson(lesson.id)
-    setFinished({ pointsEarned: totalPoints(after) - before, progress: after })
+    setSaveError(null)
+    try {
+      setFinished(await finishLesson(lesson.id))
+    } catch (err) {
+      setSaveError(err.message)
+      setSaving(false)
+    }
   }
 
   return (
     <div className="mx-auto max-w-2xl">
       <div className="flex items-center justify-between text-muted">
-        <Link to={`/student/learn/${chapter.id}`} className="inline-flex min-h-12 items-center font-semibold hover:text-ink">
+        <Link to={`/student/learn/${lesson.chapterId}`} className="inline-flex min-h-12 items-center font-semibold hover:text-ink">
           Close lesson
         </Link>
         <span>
@@ -98,12 +83,23 @@ function LessonSteps() {
         <p className="font-semibold text-accent">{STEP_NAMES[step.type]}</p>
         <p className="mt-2 text-lg leading-relaxed">{step.text}</p>
 
-        {step.type === 'activity' && step.question && (
+        {step.question && (
           <div className="mt-6 border-t border-line pt-6">
-            <Question key={step.question.id} question={step.question} onDone={() => setAnswered(true)} />
+            <Question
+              key={step.question.id}
+              question={step.question}
+              check={(given, tries) => checkLessonAnswer(lesson.id, step.question.id, given, tries)}
+              onDone={() => setAnswered(true)}
+            />
           </div>
         )}
       </section>
+
+      {saveError && (
+        <p role="alert" className="mt-4 font-semibold text-warn">
+          {saveError} Press Finish lesson to try again.
+        </p>
+      )}
 
       <div className="mt-6 flex gap-3">
         {stepIndex > 0 && (
@@ -119,7 +115,7 @@ function LessonSteps() {
         )}
         {!mustAnswer && (
           <button onClick={goNext} disabled={saving} className="btn btn-primary flex-1 text-lg">
-            {isLast ? 'Finish lesson' : 'Next'}
+            {saving ? 'Saving...' : isLast ? 'Finish lesson' : 'Next'}
           </button>
         )}
       </div>
@@ -127,13 +123,33 @@ function LessonSteps() {
   )
 }
 
-function Back({ to, message }) {
+// Points earned, any new badge, and one button to the next thing to do.
+function FinishScreen({ lesson, result }) {
+  const { data: chapters } = useData(() => getStudentChapters(), [])
+  const chapter = chapters?.find((c) => c.id === lesson.chapterId)
+  const index = chapter ? chapter.lessons.findIndex((l) => l.id === lesson.id) : -1
+  const nextLesson = chapter?.lessons[index + 1]
+
+  let main = { to: `/student/learn/${lesson.chapterId}`, label: 'Back to the chapter' }
+  if (nextLesson) main = { to: `/student/learn/${chapter.id}/${nextLesson.id}`, label: 'Next lesson' }
+  else if (chapter?.quiz?.open) main = { to: `/student/quiz/${chapter.quiz.id}`, label: 'Take the chapter quiz' }
+
   return (
-    <div>
-      <p className="text-lg font-semibold">{message}</p>
-      <Link to={to} className="btn btn-secondary mt-4">
-        Go back
-      </Link>
+    <div className="card mx-auto max-w-xl p-8 text-center">
+      <h1 className="text-3xl font-semibold">You finished it!</h1>
+      <p className="mt-2 text-lg text-muted">{lesson.title}</p>
+      <p className="mt-6 text-4xl font-semibold text-accent">+{result.pointsEarned} points</p>
+      {!result.firstTime && <p className="mt-2 text-muted">You had already done this lesson, so no new points. Good practice!</p>}
+      {result.newBadges.length > 0 && (
+        <p className="mt-4 rounded-xl bg-good-soft p-3 font-semibold text-good">New badge: {result.newBadges.join(', ')}</p>
+      )}
+      {chapters ? (
+        <Link to={main.to} className="btn btn-primary mt-8 w-full text-lg">
+          {main.label}
+        </Link>
+      ) : (
+        <p className="mt-8 text-muted">Loading...</p>
+      )}
     </div>
   )
 }

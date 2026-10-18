@@ -4,7 +4,7 @@
 
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getChapters, getClass, useData } from '../api'
+import { getDemoChapters, getDemoClass, useData } from '../api'
 import { activeDays, addDays, badges, chapterResults, chapterStates, currentStreak, today, totalPoints } from '../game'
 import Question from '../Question'
 import { useSession } from '../session'
@@ -30,7 +30,7 @@ export default function Landing() {
   const { user } = useSession()
   const [tried, setTried] = useState(false)
   // Demo class 4A, used for the previews further down.
-  const { data } = useData(() => Promise.all([getClass('4A'), getChapters()]), [])
+  const { data } = useData(() => Promise.all([getDemoClass('4A'), getDemoChapters()]), [])
 
   const home = user ? `/${user.role}` : '/login'
   const studentLink = user?.role === 'student' ? '/student' : '/login'

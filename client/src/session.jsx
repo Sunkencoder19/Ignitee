@@ -24,11 +24,23 @@ export function SessionProvider({ children }) {
       .finally(() => setChecking(false))
   }, [])
 
-  // A student's progress is loaded as soon as they log in.
-  // DEMO until phase 4: progress still comes from the browser, not the server.
+  // A student's progress (points, streak, badges, history) comes from the
+  // server as soon as they log in. If it fails, `progress` stays null and
+  // `progressError` says why, so the layout can offer "Try again".
+  const [progressError, setProgressError] = useState(null)
+
+  async function loadProgress() {
+    setProgressError(null)
+    try {
+      setProgress(await api.getProgress())
+    } catch (err) {
+      setProgressError(err.message)
+    }
+  }
+
   useEffect(() => {
     setProgress(null)
-    if (user?.role === 'student') api.getProgress(user.id).then(setProgress)
+    if (user?.role === 'student') loadProgress()
   }, [user])
 
   async function teacherSignup(name, email, password) {
@@ -54,29 +66,33 @@ export function SessionProvider({ children }) {
     setUser(null)
   }
 
-  // Both return the student's new progress, so a page can compare before and after.
-  async function completeLesson(lessonId) {
-    const next = await api.completeLesson(user.id, lessonId)
-    setProgress(next)
-    return next
+  // The server records the lesson and replies with the points earned and the
+  // student's new progress, which updates the header straight away.
+  async function finishLesson(lessonId) {
+    const result = await api.finishLesson(lessonId)
+    setProgress(result.progress)
+    return result
   }
 
-  async function submitQuiz(quizId, answers) {
-    const next = await api.submitQuiz(user.id, quizId, answers)
-    setProgress(next)
-    return next
+  // The server scores the quiz from its own records of each answer.
+  async function finishQuiz(attemptId) {
+    const result = await api.finishQuiz(attemptId)
+    setProgress(result.progress)
+    return result
   }
 
   const value = {
     user,
     checking,
     progress,
+    progressError,
+    reloadProgress: loadProgress,
     teacherSignup,
     teacherLogin,
     studentLogin,
     logout,
-    completeLesson,
-    submitQuiz,
+    finishLesson,
+    finishQuiz,
   }
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
 }

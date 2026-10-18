@@ -2,28 +2,31 @@
 // The quiz opens once every lesson is done.
 
 import { Link, useParams } from 'react-router-dom'
-import { getChapter, getChapters, useData } from '../../api'
-import { bestStars, chapterStates, lessonDone, quizOpen } from '../../game'
-import { useSession } from '../../session'
+import { getStudentChapters, useData } from '../../api'
 
 export default function Chapter() {
   const { chapterId } = useParams()
-  const { progress } = useSession()
-  const { data, error } = useData(() => Promise.all([getChapter(chapterId), getChapters()]), [chapterId])
+  const { data: chapters, error, reload } = useData(() => getStudentChapters(), [chapterId])
 
-  if (error) return <BackToChapters message={error} />
-  if (!data) return <p className="text-muted">Loading...</p>
-
-  const [{ chapter, lessons, quiz }, chapters] = data
-  const state = chapterStates(chapters, progress).find((c) => c.chapter.id === chapter.id).state
-  if (state === 'locked' || state === 'soon') {
-    return <BackToChapters message={`${chapter.title} isn't open yet.`} />
+  if (error) {
+    return (
+      <div>
+        <p className="text-lg font-semibold">{error}</p>
+        <button onClick={reload} className="btn btn-primary mt-4">
+          Try again
+        </button>
+      </div>
+    )
   }
+  if (!chapters) return <p className="text-muted">Loading...</p>
 
-  const doneCount = lessons.filter((l) => lessonDone(progress, l.id)).length
-  const nextLesson = lessons.find((l) => !lessonDone(progress, l.id))
-  const stars = bestStars(progress, chapter.quizId)
-  const taken = progress.attempts.some((a) => a.quizId === chapter.quizId)
+  const chapter = chapters.find((c) => c.id === chapterId)
+  if (!chapter) return <BackToChapters message="We couldn’t find that chapter." />
+  if (chapter.state === 'locked') return <BackToChapters message={`${chapter.title} isn’t open yet.`} />
+
+  const doneCount = chapter.lessons.filter((l) => l.done).length
+  const nextLesson = chapter.lessons.find((l) => !l.done)
+  const taken = chapter.stars > 0 || chapter.state === 'done'
 
   return (
     <div className="max-w-2xl">
@@ -34,12 +37,11 @@ export default function Chapter() {
         Chapter {chapter.number}: {chapter.title}
       </h1>
       <p className="mt-1 text-muted">
-        {doneCount} of {lessons.length} lessons done
+        {doneCount} of {chapter.lessons.length} lessons done
       </p>
 
       <ol className="mt-6 space-y-3">
-        {lessons.map((lesson, i) => {
-          const done = lessonDone(progress, lesson.id)
+        {chapter.lessons.map((lesson, i) => {
           const isNext = lesson === nextLesson
           return (
             <li key={lesson.id}>
@@ -49,8 +51,8 @@ export default function Chapter() {
               >
                 <span className="w-8 shrink-0 text-xl font-semibold text-muted">{i + 1}</span>
                 <span className="flex-1 font-semibold">{lesson.title}</span>
-                <span className={`${isNext ? 'font-semibold text-accent' : 'text-muted'}`}>
-                  {done ? 'Done' : isNext ? 'Up next' : 'Not started'}
+                <span className={isNext ? 'font-semibold text-accent' : 'text-muted'}>
+                  {lesson.done ? 'Done' : isNext ? 'Up next' : 'Not started'}
                 </span>
               </Link>
             </li>
@@ -58,21 +60,21 @@ export default function Chapter() {
         })}
       </ol>
 
-      {quiz && (
+      {chapter.quiz && (
         <section className="card mt-8 p-6">
           <h2 className="text-xl font-semibold">Chapter quiz</h2>
-          {quizOpen(chapter, progress) ? (
+          {chapter.quiz.open ? (
             <>
               <p className="mt-1 text-muted">
-                {quiz.questions.length} questions.{' '}
-                {taken ? `Your best so far: ${stars} of 3 stars.` : 'Get 1 star or more to open the next chapter.'}
+                {chapter.quiz.questionCount} questions.{' '}
+                {taken ? `Your best so far: ${chapter.stars} of 3 stars.` : 'Get 1 star or more to open the next chapter.'}
               </p>
-              <Link to={`/student/quiz/${quiz.id}`} className="btn btn-primary mt-5">
+              <Link to={`/student/quiz/${chapter.quiz.id}`} className="btn btn-primary mt-5">
                 {taken ? 'Retake the quiz' : 'Start the quiz'}
               </Link>
             </>
           ) : (
-            <p className="mt-1 text-muted">Finish all {lessons.length} lessons above to open the quiz.</p>
+            <p className="mt-1 text-muted">Finish all {chapter.lessons.length} lessons above to open the quiz.</p>
           )}
         </section>
       )}

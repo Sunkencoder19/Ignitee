@@ -7,6 +7,7 @@ import express from 'express'
 import { router as authRoutes } from './auth.js'
 import { router as classRoutes } from './classes.js'
 import { router as contentRoutes } from './content.js'
+import { router as progressRoutes } from './progress.js'
 import { connect, isConnected } from './db.js'
 
 for (const name of ['MONGODB_URI', 'JWT_SECRET']) {
@@ -37,6 +38,7 @@ app.use('/api', (req, res, next) => {
 app.use('/api/auth', authRoutes)
 app.use('/api', classRoutes)
 app.use('/api', contentRoutes)
+app.use('/api', progressRoutes)
 
 app.use('/api', (req, res) => res.status(404).json({ error: 'There is no such API route.' }))
 
