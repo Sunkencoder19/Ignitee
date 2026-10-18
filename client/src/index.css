@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap');
+@import 'tailwindcss';
+
+/*
+  Colours. Every class like bg-surface, text-muted or border-line reads one of
+  these variables, so dark mode is just a second set of values below.
+  One accent colour (orange) is used for every primary action in the app.
+  "good" and "warn" are only for answer feedback and teacher warnings.
+*/
+@theme {
+  --font-sans: 'Nunito', system-ui, sans-serif;
+
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-line: #e4e4e7;
+  --color-ink: #18181b;
+  --color-muted: #52525b;
+  --color-accent: #c2410c;
+  --color-accent-soft: #fff1e8;
+  --color-on-accent: #ffffff;
+  --color-good: #15803d;
+  --color-good-soft: #ecfdf3;
+  --color-warn: #b45309;
+  --color-warn-soft: #fff7e6;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-bg: #111113;
+    --color-surface: #1a1a1d;
+    --color-line: #2e2e33;
+    --color-ink: #f4f4f5;
+    --color-muted: #a1a1aa;
+    --color-accent: #fb923c;
+    --color-accent-soft: #3a1f10;
+    --color-on-accent: #18181b;
+    --color-good: #4ade80;
+    --color-good-soft: #12301d;
+    --color-warn: #fbbf24;
+    --color-warn-soft: #33260b;
+  }
+}
+
+body {
+  @apply bg-bg font-sans text-ink antialiased;
+}
+
+/*
+  The few shared styles. Every corner in the app is rounded-xl (12px).
+  Buttons are at least 48px tall so a child's thumb can hit them.
+*/
+@layer components {
+  .btn {
+    @apply inline-flex min-h-12 items-center justify-center rounded-xl px-5 font-bold transition active:scale-[0.98] disabled:pointer-events-none disabled:opacity-40;
+  }
+  /* Used together: className="btn btn-primary" */
+  .btn-primary {
+    @apply bg-accent text-on-accent hover:opacity-90;
+  }
+  .btn-secondary {
+    @apply border border-line bg-surface text-ink hover:border-accent;
+  }
+  .card {
+    @apply rounded-xl border border-line bg-surface p-5;
+  }
+  .field {
+    @apply min-h-12 w-full rounded-xl border border-line bg-surface px-4 text-ink focus:border-accent focus:outline-none;
+  }
+  .label {
+    @apply mb-2 block font-bold;
+  }
+  a,
+  button,
+  input,
+  select {
+    @apply focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent;
+  }
+}

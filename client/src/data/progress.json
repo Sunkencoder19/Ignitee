@@ -1,0 +1,635 @@
+[
+  {
+    "studentId": "s1",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 17
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 16
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 15
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 13
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 12
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 11
+      },
+      {
+        "lessonId": "ch3-l1",
+        "daysAgo": 8
+      },
+      {
+        "lessonId": "ch3-l2",
+        "daysAgo": 7
+      },
+      {
+        "lessonId": "ch3-l3",
+        "daysAgo": 6
+      },
+      {
+        "lessonId": "ch4-l1",
+        "daysAgo": 4
+      },
+      {
+        "lessonId": "ch4-l2",
+        "daysAgo": 3
+      },
+      {
+        "lessonId": "ch4-l3",
+        "daysAgo": 2
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 90,
+        "stars": 3,
+        "answerPoints": 70,
+        "daysAgo": 14
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 85,
+        "stars": 2,
+        "answerPoints": 70,
+        "daysAgo": 10
+      },
+      {
+        "quizId": "ch3-quiz",
+        "score": 95,
+        "stars": 3,
+        "answerPoints": 80,
+        "daysAgo": 5
+      },
+      {
+        "quizId": "ch4-quiz",
+        "score": 88,
+        "stars": 2,
+        "answerPoints": 70,
+        "daysAgo": 1
+      }
+    ]
+  },
+  {
+    "studentId": "s2",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 12
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 11
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 10
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 6
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 5
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 4
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 70,
+        "stars": 1,
+        "answerPoints": 60,
+        "daysAgo": 9
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 65,
+        "stars": 1,
+        "answerPoints": 50,
+        "daysAgo": 3
+      }
+    ]
+  },
+  {
+    "studentId": "s3",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 15
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 14
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 13
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 10
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 9
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 8
+      },
+      {
+        "lessonId": "ch3-l1",
+        "daysAgo": 5
+      },
+      {
+        "lessonId": "ch3-l2",
+        "daysAgo": 4
+      },
+      {
+        "lessonId": "ch3-l3",
+        "daysAgo": 3
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 92,
+        "stars": 3,
+        "answerPoints": 70,
+        "daysAgo": 12
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 88,
+        "stars": 2,
+        "answerPoints": 70,
+        "daysAgo": 7
+      },
+      {
+        "quizId": "ch3-quiz",
+        "score": 95,
+        "stars": 3,
+        "answerPoints": 80,
+        "daysAgo": 2
+      }
+    ]
+  },
+  {
+    "studentId": "s4",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 11
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 10
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 9
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 60,
+        "stars": 1,
+        "answerPoints": 50,
+        "daysAgo": 8
+      }
+    ]
+  },
+  {
+    "studentId": "s5",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 12
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 11
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 10
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 7
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 6
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 5
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 75,
+        "stars": 2,
+        "answerPoints": 60,
+        "daysAgo": 9
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 70,
+        "stars": 1,
+        "answerPoints": 60,
+        "daysAgo": 4
+      }
+    ]
+  },
+  {
+    "studentId": "s6",
+    "lessons": [],
+    "attempts": []
+  },
+  {
+    "studentId": "s7",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 18
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 17
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 16
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 14
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 13
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 12
+      },
+      {
+        "lessonId": "ch3-l1",
+        "daysAgo": 9
+      },
+      {
+        "lessonId": "ch3-l2",
+        "daysAgo": 8
+      },
+      {
+        "lessonId": "ch3-l3",
+        "daysAgo": 7
+      },
+      {
+        "lessonId": "ch4-l1",
+        "daysAgo": 4
+      },
+      {
+        "lessonId": "ch4-l2",
+        "daysAgo": 3
+      },
+      {
+        "lessonId": "ch4-l3",
+        "daysAgo": 2
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 96,
+        "stars": 3,
+        "answerPoints": 80,
+        "daysAgo": 15
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 90,
+        "stars": 3,
+        "answerPoints": 70,
+        "daysAgo": 11
+      },
+      {
+        "quizId": "ch3-quiz",
+        "score": 93,
+        "stars": 3,
+        "answerPoints": 70,
+        "daysAgo": 6
+      },
+      {
+        "quizId": "ch4-quiz",
+        "score": 91,
+        "stars": 3,
+        "answerPoints": 70,
+        "daysAgo": 1
+      }
+    ]
+  },
+  {
+    "studentId": "s8",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 13
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 12
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 11
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 8
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 7
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 6
+      },
+      {
+        "lessonId": "ch3-l1",
+        "daysAgo": 5
+      },
+      {
+        "lessonId": "ch3-l2",
+        "daysAgo": 4
+      },
+      {
+        "lessonId": "ch3-l3",
+        "daysAgo": 3
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 80,
+        "stars": 2,
+        "answerPoints": 60,
+        "daysAgo": 10
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 72,
+        "stars": 1,
+        "answerPoints": 60,
+        "daysAgo": 5
+      },
+      {
+        "quizId": "ch3-quiz",
+        "score": 78,
+        "stars": 2,
+        "answerPoints": 60,
+        "daysAgo": 2
+      }
+    ]
+  },
+  {
+    "studentId": "s9",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 13
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 12
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 11
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 55,
+        "stars": 1,
+        "answerPoints": 40,
+        "daysAgo": 10
+      }
+    ]
+  },
+  {
+    "studentId": "s10",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 12
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 11
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 10
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 8
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 7
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 6
+      },
+      {
+        "lessonId": "ch3-l1",
+        "daysAgo": 5
+      },
+      {
+        "lessonId": "ch3-l2",
+        "daysAgo": 4
+      },
+      {
+        "lessonId": "ch3-l3",
+        "daysAgo": 3
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 70,
+        "stars": 1,
+        "answerPoints": 60,
+        "daysAgo": 9
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 68,
+        "stars": 1,
+        "answerPoints": 50,
+        "daysAgo": 5
+      },
+      {
+        "quizId": "ch3-quiz",
+        "score": 74,
+        "stars": 1,
+        "answerPoints": 60,
+        "daysAgo": 2
+      }
+    ]
+  },
+  {
+    "studentId": "s11",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 16
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 15
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 14
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 12
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 11
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 10
+      },
+      {
+        "lessonId": "ch3-l1",
+        "daysAgo": 7
+      },
+      {
+        "lessonId": "ch3-l2",
+        "daysAgo": 6
+      },
+      {
+        "lessonId": "ch3-l3",
+        "daysAgo": 5
+      },
+      {
+        "lessonId": "ch4-l1",
+        "daysAgo": 3
+      },
+      {
+        "lessonId": "ch4-l2",
+        "daysAgo": 2
+      },
+      {
+        "lessonId": "ch4-l3",
+        "daysAgo": 1
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 89,
+        "stars": 2,
+        "answerPoints": 70,
+        "daysAgo": 13
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 94,
+        "stars": 3,
+        "answerPoints": 80,
+        "daysAgo": 8
+      },
+      {
+        "quizId": "ch3-quiz",
+        "score": 90,
+        "stars": 3,
+        "answerPoints": 70,
+        "daysAgo": 4
+      },
+      {
+        "quizId": "ch4-quiz",
+        "score": 85,
+        "stars": 2,
+        "answerPoints": 70,
+        "daysAgo": 0
+      }
+    ]
+  },
+  {
+    "studentId": "s12",
+    "lessons": [
+      {
+        "lessonId": "ch1-l1",
+        "daysAgo": 11
+      },
+      {
+        "lessonId": "ch1-l2",
+        "daysAgo": 10
+      },
+      {
+        "lessonId": "ch1-l3",
+        "daysAgo": 9
+      },
+      {
+        "lessonId": "ch2-l1",
+        "daysAgo": 6
+      },
+      {
+        "lessonId": "ch2-l2",
+        "daysAgo": 5
+      },
+      {
+        "lessonId": "ch2-l3",
+        "daysAgo": 4
+      }
+    ],
+    "attempts": [
+      {
+        "quizId": "ch1-quiz",
+        "score": 45,
+        "stars": 0,
+        "answerPoints": 40,
+        "daysAgo": 8
+      },
+      {
+        "quizId": "ch2-quiz",
+        "score": 40,
+        "stars": 0,
+        "answerPoints": 30,
+        "daysAgo": 3
+      }
+    ]
+  }
+]
