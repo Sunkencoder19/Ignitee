@@ -16,14 +16,30 @@
 // Either way, check returns one of:
 //   { result: 'correct' }  |  { result: 'retry', hint }  |  { result: 'revealed', answer, explanation }
 //
-// Three kinds of question:
-//   mcq   - tap one option
-//   input - type the answer
-//   order - tap the options in the right order
+// Kinds of question:
+//   mcq     - tap one option
+//   input   - type the answer
+//   order   - tap the options in the right order
+//   count, pattern - games (see Games.jsx). A student's question carries a
+//             `view` (the board, without the answer). Without `check` (landing
+//             page, teacher preview) the question carries its config and this
+//             file builds the view itself.
 
 import { useState } from 'react'
-import { checkAnswer } from './game'
+import { answerText } from './GameArt'
+import GameBoard from './Games'
+import { checkAnswer, gameReady, gameView, isGame } from './game'
 import { useT } from './i18n/t'
+
+// Mixes a list (for the tiles of a game shown without the server).
+function mixed(items) {
+  const copy = [...items]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
 
 // The local check, for questions that carry their own answer.
 function checkHere(question, given, tries) {
@@ -41,6 +57,9 @@ export default function Question({ question, onDone, check }) {
   const [wrongChoices, setWrongChoices] = useState([]) // mcq
   const [text, setText] = useState('') // input
   const [order, setOrder] = useState([]) // order: indexes into question.options
+  const [game, setGame] = useState(null) // count: the number as text; pattern: tile keys, one per gap
+  const [boardKey, setBoardKey] = useState(0) // a new key starts the game board fresh after a wrong try
+  const [view] = useState(() => question.view ?? (isGame(question.type) ? gameView(question, mixed) : null))
   const [busy, setBusy] = useState(false) // waiting for the server
   const [error, setError] = useState(null)
 
@@ -49,11 +68,13 @@ export default function Question({ question, onDone, check }) {
   let given = choice
   if (question.type === 'input') given = text.trim()
   if (question.type === 'order') given = order.map((i) => question.options[i])
+  if (isGame(question.type)) given = game
 
   const ready =
     (question.type === 'mcq' && choice !== null) ||
     (question.type === 'input' && text.trim() !== '') ||
-    (question.type === 'order' && order.length === question.options.length)
+    (question.type === 'order' && order.length === question.options.length) ||
+    (isGame(question.type) && gameReady(question.type, view, game))
 
   async function handleCheck(e) {
     e.preventDefault()
@@ -82,6 +103,8 @@ export default function Question({ question, onDone, check }) {
       setWrongChoices([choice])
       setChoice(null)
       setOrder([])
+      setGame(null)
+      setBoardKey(boardKey + 1)
     } else {
       setStatus('revealed')
       setRightAnswer(answer.answer)
@@ -90,7 +113,7 @@ export default function Question({ question, onDone, check }) {
     }
   }
 
-  const answerText = Array.isArray(rightAnswer) ? rightAnswer.join(', ') : rightAnswer
+  const shownAnswer = answerText(question.type, rightAnswer, t)
 
   return (
     <form onSubmit={handleCheck}>
@@ -116,6 +139,19 @@ export default function Question({ question, onDone, check }) {
             )
           })}
         </div>
+      )}
+
+      {isGame(question.type) && (
+        <GameBoard
+          key={boardKey}
+          type={question.type}
+          view={view}
+          value={game}
+          onChange={setGame}
+          locked={settled || busy}
+          result={settled ? status : null}
+          answer={status === 'revealed' ? rightAnswer : null}
+        />
       )}
 
       {question.type === 'input' && (
@@ -177,7 +213,7 @@ export default function Question({ question, onDone, check }) {
         )}
         {status === 'revealed' && (
           <div className="mt-5 rounded-xl bg-accent-soft p-4">
-            <p className="font-semibold">{t('question.revealed', { answer: answerText })}</p>
+            <p className="font-semibold">{t('question.revealed', { answer: shownAnswer })}</p>
             {reply?.explanation && <p className="mt-1">{reply.explanation}</p>}
           </div>
         )}

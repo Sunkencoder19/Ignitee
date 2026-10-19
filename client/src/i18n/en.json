@@ -177,6 +177,49 @@
     "checking": "Checking...",
     "pressCheck": "{error} Press Check to try again."
   },
+  "games": {
+    "shape": {
+      "circle": "circle",
+      "square": "square",
+      "triangle": "triangle",
+      "star": "star",
+      "diamond": "diamond",
+      "heart": "heart"
+    },
+    "colour": {
+      "red": "red",
+      "blue": "blue",
+      "green": "green",
+      "yellow": "yellow",
+      "purple": "purple"
+    },
+    "object": {
+      "mango": "mango",
+      "bird": "bird",
+      "tile": "tile",
+      "block": "block"
+    },
+    "named": "{colour} {object}",
+    "tileName": "{colour} {shape}",
+    "count": {
+      "howMany": "How many?",
+      "tapHint": "Tap each one as you count it.",
+      "counted": "Counted so far: {count}",
+      "yourCount": "Your count",
+      "more": "One more",
+      "fewer": "One fewer",
+      "tapToMark": "{name}. Tap to mark it as counted.",
+      "marked": "{name}, counted. Tap to undo."
+    },
+    "pattern": {
+      "row": "The pattern",
+      "help": "Drag a tile into the empty space, or tap a tile.",
+      "tray": "Tiles to choose from",
+      "choose": "{tile}. Choose this tile.",
+      "gapEmpty": "Empty space {number}",
+      "gapFilled": "Space {number} has {tile}. Tap to take it out."
+    }
+  },
   "login": {
     "title": "Log in",
     "iAmA": "I am a",

@@ -89,6 +89,9 @@ IGNITE/
         ├── layouts.jsx    student and teacher headers and navigation
         ├── Question.jsx   the answer box (two tries) used by lessons, quizzes and previews
         ├── QuestionForm.jsx  the editor for one question, used by both content editors
+        ├── Games.jsx      the play boards of the games (count, pattern): React, CSS/SVG, pointer events
+        ├── GameArt.jsx    the games' pictures, drawn as inline SVG (mangoes, birds, tiles, blocks, shapes)
+        ├── GameForm.jsx   the teacher's setup forms for each game
         ├── ThemeToggle.jsx   the Colours: Auto / Light / Dark switch in every header
         ├── i18n/          English, Hindi and Marathi: en.json hi.json mr.json (every word on the
         │                  student screens), t.js (the t() helper), LanguagePicker.jsx
@@ -107,7 +110,7 @@ IGNITE/
 | `students` | name (unique within the class), class, teacher, pinHash, language (en, hi, mr, or null until chosen), lessonsFinished: [{ lesson, date }] |
 | `chapters` | title, teacher, classes (which classes see it), status (draft or published), order |
 | `lessons` | title, chapter, teacher, order, steps: [{ type, text, question? }] |
-| `quizzes` | chapter (one each), teacher, questions: [{ type, prompt, options, answer, hint, explanation, topic }] |
+| `quizzes` | chapter (one each), teacher, questions: [{ type, prompt, options, config, answer, hint, explanation, topic }] |
 | `attempts` | student, class, chapter, quiz, language (the quiz is checked in it), status (in-progress or finished), answers: [{ question, prompt, topic, given, tries, outcome }], score, stars, answerPoints, date |
 
 Chapters, lessons, steps and questions may also carry optional `hi` and `mr` translations next to the English (for example a question's `hi: { prompt, options, items, hint, explanation }`). Anything left out is shown in English.
@@ -182,6 +185,7 @@ All in `shared/game.js`.
 - **Unlocking:** published chapters open in order. 1 star or more on a chapter's quiz opens the next one; a quiz opens once all its lessons are done.
 - **Badges (7):** First Step (finish a lesson), Chapter Champion (finish a chapter: every lesson, then pass the quiz), Star Student (3 stars on any quiz), Explorer (finish 3 chapters), On Fire (5 days in a row), Never Give Up (beat your best score on a retake), Sharp Mind (10 quiz answers right first time in a row).
 - **Leaderboard:** each class only, first names and points only.
+- **Games:** besides multiple choice, typing and ordering, a question can be a game. *Count objects*: several kinds of object (mango, bird, tile, block) sit on a board and students count one kind (tap each to keep track, then set the number). *Pattern puzzle*: a row of shape-and-colour tiles with one or two hidden; students drag the right tiles in (or tap them), with optional wrong tiles mixed in. Games work in lessons and quizzes, have the same two tries, hint and explanation, and score the same. The teacher sets the board, never the answer: it is worked out from the board. Students are sent the board only. All their words come from the language files, and the question, hint and explanation have Hindi and Marathi fields like any other.
 - **Languages:** student screens come in English, Hindi or Marathi. The choice made on the login page belongs to the phone; once a student logs in, their own saved language wins, so it follows them on a shared phone. Answers are checked in the language the quiz started in, and Devanagari digits (१२) count the same as 12. Teacher screens and reports stay in English. The starter chapters' Hindi and Marathi were machine-written by Claude and should be checked by a native speaker.
 
 ## Report rules

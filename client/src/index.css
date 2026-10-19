@@ -155,3 +155,14 @@ body {
     background-position: 100% 50%;
   }
 }
+
+/*
+  The game board: a light "tabletop" in both light and dark mode, so the drawings
+  (which have navy outlines and fixed colours) always read clearly.
+*/
+.game-board {
+  background: #f1f6ff;
+  border: 2px solid #d3e0f5;
+  border-radius: 1rem;
+  color: #0b1f3a;
+}

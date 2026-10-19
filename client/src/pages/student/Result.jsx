@@ -8,10 +8,12 @@
 
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { getQuizResult, useData } from '../../api'
+import { answerText } from '../../GameArt'
 import { useT } from '../../i18n/t'
 
-function show(value) {
-  return Array.isArray(value) ? value.join(', ') : value
+// An answer as words: a list joined, and a game's tiles named in the student's language.
+function show(type, value, t) {
+  return answerText(type, value, t)
 }
 
 export default function Result() {
@@ -79,11 +81,11 @@ export default function Result() {
               <li key={a.questionId} className="card">
                 <p className="font-semibold">{a.prompt}</p>
                 <p className="mt-2 text-muted">
-                  {a.outcome === 'hint' ? t('result.secondTry') : t('result.youSaid', { answer: show(a.given) })}
+                  {a.outcome === 'hint' ? t('result.secondTry') : t('result.youSaid', { answer: show(a.type, a.given, t) })}
                 </p>
                 {a.answer !== null && (
                   <p className="mt-1">
-                    {t('result.answer')} <strong>{show(a.answer)}</strong>. {a.explanation}
+                    {t('result.answer')} <strong>{show(a.type, a.answer, t)}</strong>. {a.explanation}
                   </p>
                 )}
               </li>

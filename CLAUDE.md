@@ -25,6 +25,7 @@ client/src/
   main.jsx         every route          api.js       the ONLY file that calls the server
   session.jsx      user + progress      layouts.jsx  headers and nav
   Question.jsx     answer box           QuestionForm.jsx  question editor
+  Games.jsx        play boards (count, pattern)   GameArt.jsx  inline SVG pictures   GameForm.jsx  teacher setup forms
   ThemeToggle.jsx  Colours: Auto / Light / Dark switch (saved in the browser)
   i18n/            en.json hi.json mr.json (UI text), t.js (t() + LanguageProvider), LanguagePicker.jsx
   game.js          re-exports ../../shared/game.js
@@ -57,6 +58,7 @@ client/src/
 - Badges (7): First Step, Chapter Champion, Star Student, Explorer, On Fire, Never Give Up, Sharp Mind.
 - Hindi/Marathi content: optional `hi` / `mr` beside the English (chapter and lesson `.title`, step `.text`, question `prompt options items hint explanation`). `inLanguage` and `localizeQuestion` pick a language and fall back to English field by field; options and items are all-or-none, one for one with the English (`translationProblems`). Answers are checked in the language the quiz started in (`attempt.language`); Devanagari digits count as digits.
 - Student language: `student.language` (null until chosen). Login adopts the phone's choice only while it is null; after that the account wins. Changing it on Home saves it to the account.
+- Games are question types (`count`, `pattern`; usable in lessons and quizzes) with a `config`; the answer is always derived from it (`gameAnswer`), never typed. Students receive `view` (`gameView`, no answer: pattern gaps are blanks, tiles shuffled), the server checks like any answer (two tries, hint, reveal). Count: `{groups:[{object,colour?,count}], target}`, answer = target's count, given = number text. Pattern: `{sequence:['shape:colour'], gaps, extras}`, given = tile keys per gap. Pictures are inline SVG (never emoji); every game word is in the language files (`games.*`); prompt/hint/explanation use the hi/mr fields. Boards are pointer events plus tap, no libraries. To add a game: rules in shared/game.js (`GAME_TYPES`, `gameProblems`, `gameAnswer`, `gameView`, `gameReady`), a board in Games.jsx, a form in GameForm.jsx, keys in all three language files.
 - Teachers' questions are checked by `questionProblems` (mcq answer must be an option, 2-6 options; order needs 2+ items; hint and explanation required; quiz questions need a topic), on the client and again on the server.
 
 ## Report rules

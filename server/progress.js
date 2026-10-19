@@ -21,7 +21,9 @@ import {
   chapterStates,
   checkAnswer,
   currentStreak,
+  gameView,
   inLanguage,
+  isGame,
   LANGUAGES,
   lastActive,
   localizeQuestion,
@@ -168,12 +170,24 @@ function local(question, lang) {
   return localizeQuestion(typeof question.toObject === 'function' ? question.toObject() : question, lang)
 }
 
+// Plain shuffle for a game's tiles (the right tiles and the wrong ones are mixed together).
+function shuffleAll(items) {
+  const copy = [...items]
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1)
+    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+  }
+  return copy
+}
+
 // Only what is needed to show the question. No answer, hint, explanation or topic.
 // `q` must already be in the student's language (see local()).
+// A game sends its board as `view` (gameView in shared/game.js builds it without the answer).
 function questionForStudent(q) {
   const out = { id: String(q._id), type: q.type, prompt: q.prompt }
   if (q.type === 'mcq') out.options = q.options
   if (q.type === 'order') out.options = shuffled(q.answer)
+  if (isGame(q.type)) out.view = gameView(q, shuffleAll)
   return out
 }
 
@@ -181,6 +195,9 @@ function questionForStudent(q) {
 function cleanGiven(question, given) {
   if (question.type === 'order') {
     return Array.isArray(given) ? given.slice(0, 20).map((x) => String(x).slice(0, 100)) : []
+  }
+  if (question.type === 'pattern') {
+    return Array.isArray(given) ? given.slice(0, 4).map((x) => (typeof x === 'string' ? x.slice(0, 40) : null)) : []
   }
   return String(given ?? '').slice(0, 100)
 }
@@ -360,6 +377,7 @@ function review(attempt, quiz) {
     const q = stored ? local(stored, attempt.language) : null
     return {
       questionId: String(a.question),
+      type: q ? q.type : null,
       prompt: q ? q.prompt : a.prompt,
       given: a.given,
       outcome: a.outcome,

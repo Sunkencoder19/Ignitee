@@ -69,8 +69,9 @@ function normalise(value) {
 }
 
 export function checkAnswer(question, given) {
-  if (question.type === 'order') {
-    return given.length === question.answer.length && given.every((v, i) => v === question.answer[i])
+  // order and pattern answers are lists that must match one for one
+  if (question.type === 'order' || question.type === 'pattern') {
+    return Array.isArray(given) && given.length === question.answer.length && given.every((v, i) => v === question.answer[i])
   }
   return normalise(given) === normalise(question.answer)
 }
@@ -132,21 +133,30 @@ export const LIMITS = {
   maxItems: 8,
   maxSteps: 12,
   maxQuestions: 40,
+  // games
+  maxGroups: 3, // count: kinds of object on the board
+  maxPerGroup: 12, // count: objects of one kind
+  maxObjects: 20, // count: objects on the board in all
+  minPattern: 3, // pattern: tiles in the row
+  maxPattern: 8,
+  maxGaps: 2, // pattern: missing tiles
+  maxDecoys: 3, // pattern: extra wrong tiles to choose from
 }
 
 const filled = (value) => typeof value === 'string' && value.trim() !== ''
 const tooLong = (value, max) => typeof value === 'string' && value.trim().length > max
 
-// A question has: type ('mcq' | 'input' | 'order'), prompt, hint, explanation,
+// A question has: type ('mcq' | 'input' | 'order' | a game, see GAME_TYPES), prompt, hint, explanation,
 // topic (quiz questions only), and an answer:
 //   mcq:   options (2-6 different texts) and answer (one of the options)
 //   input: answer (the text to type)
 //   order: answer (2-8 items, in the right order; students see them shuffled)
+//   games: a `config` (see the games section below); the answer is worked out from it
 export function questionProblems(question, { needsTopic = false } = {}) {
   const q = question ?? {}
   const problems = []
 
-  if (!['mcq', 'input', 'order'].includes(q.type)) return ['Choose a question type.']
+  if (!['mcq', 'input', 'order', ...GAME_TYPES].includes(q.type)) return ['Choose a question type.']
 
   if (!filled(q.prompt)) problems.push('Write the question.')
   else if (tooLong(q.prompt, LIMITS.prompt)) problems.push(`Keep the question under ${LIMITS.prompt} characters.`)
@@ -175,6 +185,8 @@ export function questionProblems(question, { needsTopic = false } = {}) {
     if (items.some((item) => !filled(item))) problems.push('Fill in every item, or remove the empty one.')
     if (items.some((item) => tooLong(item, LIMITS.option))) problems.push(`Keep each item under ${LIMITS.option} characters.`)
   }
+
+  if (isGame(q.type)) problems.push(...gameProblems(q))
 
   if (!filled(q.hint)) problems.push('Write a hint (shown after the first wrong answer).')
   else if (tooLong(q.hint, LIMITS.hint)) problems.push(`Keep the hint under ${LIMITS.hint} characters.`)
@@ -550,4 +562,148 @@ export function accuracyBy(answers, keyOf) {
 // accuracy first (at most `count`). Each says whether it counts as struggling.
 export function weakestTopics(topicRows, count = 3) {
   return topicRows.filter((t) => t.answers >= MIN_ANSWERS).slice(0, count)
+}
+
+// ---------- games ----------
+// A game is a question type that is played instead of read. Everything about it
+// lives in question.config, and the right answer is worked out from the config
+// (gameAnswer), so a teacher never types an answer that could disagree with the board.
+//
+//   count:   config { groups: [{ object, colour?, count }], target }
+//            Several kinds of object sit on a board; students count the `target` kind.
+//            Answer: that group's count, as text.
+//   pattern: config { sequence: [tile], gaps: [positions], extras: [tile] }
+//            A row of tiles with 1-2 missing; students drag the right tiles in.
+//            A tile is 'shape:colour', for example 'star:red'.
+//            Answer: the missing tiles, in order, as a list.
+//
+// What a student receives is gameView(): the board and nothing that gives the
+// answer away (a pattern's missing tiles are blanks; its choices are shuffled).
+// Teacher and student screens write their words in the language files, never here.
+
+export const GAME_TYPES = ['count', 'pattern']
+export const isGame = (type) => GAME_TYPES.includes(type)
+
+export const OBJECTS = ['mango', 'bird', 'tile', 'block']
+export const TINTED = ['tile', 'block'] // the objects that come in colours
+export const COLOURS = ['red', 'blue', 'green', 'yellow', 'purple']
+export const SHAPES = ['circle', 'square', 'triangle', 'star', 'diamond', 'heart']
+
+export const tileKey = (shape, colour) => `${shape}:${colour}`
+
+export function parseTile(key) {
+  const [shape, colour] = String(key).split(':')
+  return SHAPES.includes(shape) && COLOURS.includes(colour) ? { shape, colour } : null
+}
+
+const asList = (value) => (Array.isArray(value) ? value : [])
+
+// Shapes whatever the editor sent into a tidy config: trimmed text, whole numbers,
+// gaps in order. It never fixes a mistake; gameProblems reports it.
+export function cleanGameConfig(type, config) {
+  const c = config ?? {}
+  const int = (v) => (v === '' || v === null || v === undefined || !Number.isInteger(Number(v)) ? null : Number(v))
+  const text = (v) => (typeof v === 'string' ? v.trim() : '')
+  if (type === 'count') {
+    return {
+      groups: asList(c.groups).map((g) => {
+        const out = { object: text(g?.object) }
+        if (TINTED.includes(out.object)) out.colour = text(g?.colour)
+        out.count = int(g?.count)
+        return out
+      }),
+      target: int(c.target),
+    }
+  }
+  if (type === 'pattern') {
+    return {
+      sequence: asList(c.sequence).map(text),
+      gaps: [...new Set(asList(c.gaps).map(int).filter((n) => n !== null))].sort((a, b) => a - b),
+      extras: asList(c.extras).map(text),
+    }
+  }
+  return {}
+}
+
+// The right answer, from the config. '' or [] when the config is not valid yet.
+export function gameAnswer(q) {
+  const c = q?.config ?? {}
+  if (q?.type === 'count') {
+    const group = asList(c.groups)[c.target]
+    return group && Number.isInteger(group.count) ? String(group.count) : ''
+  }
+  if (q?.type === 'pattern') return asList(c.gaps).map((i) => asList(c.sequence)[i]).filter(Boolean)
+  return ''
+}
+
+export function gameProblems(q) {
+  const c = q?.config ?? {}
+  const problems = []
+
+  if (q?.type === 'count') {
+    const groups = asList(c.groups)
+    if (groups.length < 1) problems.push('Add at least one kind of object to count.')
+    if (groups.length > LIMITS.maxGroups) problems.push(`Use at most ${LIMITS.maxGroups} kinds of object.`)
+    groups.forEach((g, i) => {
+      const where = `Group ${i + 1}: `
+      if (!OBJECTS.includes(g?.object)) problems.push(where + 'choose an object.')
+      else if (TINTED.includes(g.object) && !COLOURS.includes(g.colour)) problems.push(where + 'choose a colour.')
+      if (!Number.isInteger(g?.count) || g.count < 1 || g.count > LIMITS.maxPerGroup) {
+        problems.push(where + `choose a number from 1 to ${LIMITS.maxPerGroup}.`)
+      }
+    })
+    const kinds = groups.map((g) => `${g?.object}/${g?.colour ?? ''}`)
+    if (new Set(kinds).size !== kinds.length) problems.push('Two groups look the same. Change the object or the colour.')
+    const total = groups.reduce((sum, g) => sum + (Number.isInteger(g?.count) ? g.count : 0), 0)
+    if (total > LIMITS.maxObjects) problems.push(`The board can hold ${LIMITS.maxObjects} objects in all. It has ${total}.`)
+    if (!Number.isInteger(c.target) || c.target < 0 || c.target >= groups.length) problems.push('Choose which group the students count.')
+  }
+
+  if (q?.type === 'pattern') {
+    const sequence = asList(c.sequence)
+    const gaps = asList(c.gaps)
+    const extras = asList(c.extras)
+    if (sequence.length < LIMITS.minPattern || sequence.length > LIMITS.maxPattern) {
+      problems.push(`The row needs ${LIMITS.minPattern} to ${LIMITS.maxPattern} tiles.`)
+    }
+    if (sequence.some((k) => !parseTile(k))) problems.push('Choose a shape and a colour for every tile.')
+    if (gaps.length < 1 || gaps.length > LIMITS.maxGaps) problems.push(`Hide ${LIMITS.maxGaps === 1 ? 'one tile' : `1 or ${LIMITS.maxGaps} tiles`} for students to find.`)
+    if (gaps.some((i) => !Number.isInteger(i) || i < 0 || i >= sequence.length)) problems.push('A hidden tile is outside the row.')
+    if (sequence.length - gaps.length < 2) problems.push('Leave at least 2 tiles showing.')
+    if (extras.length > LIMITS.maxDecoys) problems.push(`Use at most ${LIMITS.maxDecoys} extra tiles.`)
+    if (extras.some((k) => !parseTile(k))) problems.push('Choose a shape and a colour for every extra tile.')
+    const missing = gaps.map((i) => sequence[i])
+    if (extras.some((k) => missing.includes(k))) problems.push('An extra tile is the same as a hidden tile, so two answers would be right. Change it.')
+    if (new Set(extras).size !== extras.length) problems.push('Two extra tiles are the same.')
+  }
+
+  return problems
+}
+
+// What a student receives for a game: the board, without the answer. `shuffle`
+// mixes a list (the server and the app each pass their own).
+//   count:   { groups: [{ object, colour?, count }], ask: { object, colour? } }
+//            `ask` is the kind to count; the number is whatever is on the board.
+//   pattern: { sequence: [tile or null for a gap], gaps: [positions], choices: [tile, ...] }
+export function gameView(q, shuffle = (list) => list) {
+  const c = q.config
+  if (q.type === 'count') {
+    const kind = (g) => ({ object: g.object, ...(g.colour ? { colour: g.colour } : {}) })
+    return { groups: c.groups.map((g) => ({ ...kind(g), count: g.count })), ask: kind(c.groups[c.target]) }
+  }
+  if (q.type === 'pattern') {
+    return {
+      sequence: c.sequence.map((k, i) => (c.gaps.includes(i) ? null : k)),
+      gaps: c.gaps,
+      choices: shuffle([...c.gaps.map((i) => c.sequence[i]), ...c.extras]),
+    }
+  }
+  return null
+}
+
+// Is there enough of an answer to press Check? `view` is what gameView gave.
+export function gameReady(type, view, given) {
+  if (type === 'count') return Number(normalise(given ?? '')) >= 1
+  if (type === 'pattern') return Array.isArray(given) && given.length === view.gaps.length && given.every(Boolean)
+  return false
 }

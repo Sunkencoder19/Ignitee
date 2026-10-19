@@ -6,7 +6,7 @@
 import { readFileSync } from 'node:fs'
 import express from 'express'
 import mongoose from 'mongoose'
-import { lessonProblems, quizProblems } from '../shared/game.js'
+import { cleanGameConfig, gameAnswer, isGame, lessonProblems, quizProblems } from '../shared/game.js'
 import { requireTeacher } from './auth.js'
 import { Class, Student } from './classes.js'
 
@@ -47,10 +47,11 @@ export const Chapter = model('Chapter', chapterSchema, 'chapters')
 // One question. `answer` is text for mcq and input, and a list (the right
 // order) for order questions, so it is stored as a "Mixed" value.
 const questionSchema = new Schema({
-  type: { type: String, enum: ['mcq', 'input', 'order'], required: true },
+  type: { type: String, enum: ['mcq', 'input', 'order', 'count', 'pattern'], required: true },
   prompt: { type: String, required: true },
   options: [String], // mcq only
-  answer: { type: Schema.Types.Mixed, required: true },
+  config: { type: Schema.Types.Mixed, default: undefined }, // games only (see shared/game.js)
+  answer: { type: Schema.Types.Mixed, required: true }, // for games, worked out from config
   hint: { type: String, required: true },
   explanation: { type: String, required: true },
   topic: { type: String, default: '' }, // needed on quiz questions; reports group by it
@@ -124,6 +125,10 @@ function cleanQuestion(q, keepIds) {
     out.answer = trim(q.answer)
   } else if (q?.type === 'order') {
     out.answer = (Array.isArray(q.answer) ? q.answer : []).map(trim)
+  } else if (isGame(q?.type)) {
+    // A game's answer is never taken from the editor: it comes from the board.
+    out.config = cleanGameConfig(q.type, q.config)
+    out.answer = gameAnswer(out)
   } else {
     out.answer = trim(q?.answer)
   }
@@ -148,6 +153,7 @@ function cleanLesson(body, keepIds = new Set()) {
 function questionJson(q) {
   const out = { id: String(q._id), type: q.type, prompt: q.prompt, answer: q.answer, hint: q.hint, explanation: q.explanation, topic: q.topic ?? '' }
   if (q.type === 'mcq') out.options = q.options
+  if (isGame(q.type)) out.config = q.config
   return withTranslations(out, q)
 }
 

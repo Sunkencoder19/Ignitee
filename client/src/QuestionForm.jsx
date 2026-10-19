@@ -12,7 +12,8 @@
 // each with the English beside it. Translations are optional; anything left
 // empty falls back to English for students.
 
-import { LIMITS, questionProblems } from './game'
+import { CountForm, PatternForm, blankGame } from './GameForm'
+import { LIMITS, isGame, questionProblems } from './game'
 
 const LANGUAGE_TABS = [
   { code: 'en', label: 'English' },
@@ -46,6 +47,8 @@ const TYPES = [
   { value: 'mcq', label: 'Multiple choice' },
   { value: 'input', label: 'Type the answer' },
   { value: 'order', label: 'Put in order' },
+  { value: 'count', label: 'Game: count objects' },
+  { value: 'pattern', label: 'Game: pattern puzzle' },
 ]
 
 // A blank question of each type.
@@ -53,6 +56,7 @@ export function blankQuestion(type = 'mcq') {
   const base = { type, prompt: '', hint: '', explanation: '', topic: '' }
   if (type === 'mcq') return { ...base, options: ['', '', ''], answer: '' }
   if (type === 'order') return { ...base, answer: ['', '', ''] }
+  if (isGame(type)) return { ...base, ...blankGame(type) }
   return { ...base, answer: '' }
 }
 
@@ -119,6 +123,8 @@ export default function QuestionForm({ question, onChange, idPrefix, needsTopic 
         </div>
       )}
       {q.type === 'order' && <OrderItems q={q} set={set} id={id} />}
+      {q.type === 'count' && <CountForm q={q} onChange={onChange} id={id} />}
+      {q.type === 'pattern' && <PatternForm q={q} onChange={onChange} />}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
