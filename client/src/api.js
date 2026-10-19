@@ -221,6 +221,20 @@ export function deleteQuiz(chapterId) {
   return request('DELETE', `/chapters/${chapterId}/quiz`)
 }
 
+// ---------- reports (teacher) ----------
+// Accuracy uses each student's latest finished try at each quiz. Numbers that
+// can't be worked out yet (no answers) come back as null, never NaN.
+
+// GET /api/reports/classes/:id  ->  { class, summary, needsAttention, chapters, topics, students, lessonsPerDay }
+export function getClassReport(classId) {
+  return request('GET', `/reports/classes/${classId}`)
+}
+
+// GET /api/reports/students/:id  ->  { student, class, points, reasons, chapters, topics, weakestTopics, badges, recentAttempts, ... }
+export function getStudentReport(studentId) {
+  return request('GET', `/reports/students/${studentId}`)
+}
+
 // ---------- student: lessons, quizzes, progress ----------
 // Students never receive answers, hints or explanations up front: every
 // answer is sent to the server, which says whether it is right.

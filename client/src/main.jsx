@@ -26,6 +26,8 @@ import Content from './pages/teacher/Content'
 import ChapterEditor from './pages/teacher/ChapterEditor'
 import QuizEditor from './pages/teacher/QuizEditor'
 import Preview from './pages/teacher/Preview'
+import Reports from './pages/teacher/Reports'
+import Student from './pages/teacher/Student'
 
 // If any page throws an error, show this instead of a blank screen.
 // (React only lets a class component catch errors.)
@@ -83,6 +85,9 @@ createRoot(document.getElementById('root')).render(
             <Route path="content/:chapterId/quiz" element={<QuizEditor />} />
             <Route path="preview/:chapterId/lesson/:lessonId" element={<Preview />} />
             <Route path="preview/:chapterId/quiz" element={<Preview />} />
+            <Route path="reports" element={<Reports />} />
+            <Route path="reports/:classId" element={<Reports />} />
+            <Route path="students/:studentId" element={<Student />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

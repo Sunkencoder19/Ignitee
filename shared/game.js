@@ -80,8 +80,13 @@ export function starsFor(percent) {
 
 // Each outcome is 'first' (right first time), 'hint' (right on the second
 // try, after the hint) or 'missed'. A hinted answer counts as half.
+// The same credit is used for quiz scores and for accuracy in reports.
+export function answerCredit(outcome) {
+  return outcome === 'first' ? 1 : outcome === 'hint' ? 0.5 : 0
+}
+
 export function scoreQuiz(outcomes) {
-  const credit = outcomes.reduce((sum, o) => sum + (o === 'first' ? 1 : o === 'hint' ? 0.5 : 0), 0)
+  const credit = outcomes.reduce((sum, o) => sum + answerCredit(o), 0)
   const percent = outcomes.length ? (credit / outcomes.length) * 100 : 0
   return { score: Math.round(percent), stars: starsFor(percent) }
 }
@@ -423,4 +428,50 @@ export function lessonsPerDay(rows, todayIso, days = 14) {
     )
     return { date, count }
   })
+}
+
+// ---------- accuracy and "struggling" (teacher reports) ----------
+// Accuracy = credit / number of answers, as a percentage, with the same
+// credit as quiz scores: right first time 1, right after the hint 0.5, missed 0.
+// Reports look only at each student's LATEST finished attempt on each quiz,
+// so a student who retakes a quiz and improves stops being flagged.
+// A chapter or topic counts as "struggling" below 60% once there are at
+// least 3 answers to judge from. With no answers, accuracy is null (never NaN).
+
+export const STRUGGLING_BELOW = 60
+export const MIN_ANSWERS = 3
+
+// The latest attempt on each quiz. `attempts` must be oldest first.
+export function latestAttempts(attempts) {
+  const latest = new Map()
+  for (const attempt of attempts) latest.set(attempt.quizId, attempt)
+  return [...latest.values()]
+}
+
+// answers: [{ outcome, ... }]. Returns { answers, credit, accuracy, struggling }.
+export function accuracyOf(answers) {
+  const credit = answers.reduce((sum, a) => sum + answerCredit(a.outcome), 0)
+  const accuracy = answers.length ? Math.round((credit / answers.length) * 100) : null
+  const struggling = answers.length >= MIN_ANSWERS && accuracy < STRUGGLING_BELOW
+  return { answers: answers.length, credit, accuracy, struggling }
+}
+
+// Groups answers by keyOf(answer) (a topic, a chapter id...) and works out
+// the accuracy of each group, lowest accuracy first.
+export function accuracyBy(answers, keyOf) {
+  const groups = new Map()
+  for (const answer of answers) {
+    const key = keyOf(answer)
+    if (!groups.has(key)) groups.set(key, [])
+    groups.get(key).push(answer)
+  }
+  return [...groups.entries()]
+    .map(([key, list]) => ({ key, ...accuracyOf(list) }))
+    .sort((a, b) => a.accuracy - b.accuracy || b.answers - a.answers)
+}
+
+// A student's weakest topics: those with enough answers to judge, lowest
+// accuracy first (at most `count`). Each says whether it counts as struggling.
+export function weakestTopics(topicRows, count = 3) {
+  return topicRows.filter((t) => t.answers >= MIN_ANSWERS).slice(0, count)
 }

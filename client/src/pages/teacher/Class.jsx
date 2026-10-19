@@ -61,6 +61,10 @@ export default function Class() {
         )}
       </div>
 
+      <Link to={`/teacher/reports/${cls.id}`} className="btn btn-secondary">
+        See this class’s report
+      </Link>
+
       <section className="card p-5">
         <p className="text-muted">Class code</p>
         <p className="font-mono text-3xl font-semibold tracking-[0.2em]">{cls.code}</p>
@@ -266,7 +270,9 @@ function StudentRow({ student, onChanged, onNewPin }) {
 
   return (
     <li className="flex flex-wrap items-center gap-x-2 px-4 py-2 not-last:border-b not-last:border-line">
-      <span className="min-w-40 flex-1 font-semibold">{student.name}</span>
+      <Link to={`/teacher/students/${student.id}`} className="min-w-40 flex-1 font-semibold text-accent hover:underline">
+        {student.name}
+      </Link>
       <button disabled={busy} onClick={() => setRenaming(true)} className="inline-flex min-h-12 items-center px-2 font-semibold text-muted hover:text-ink">
         Rename
       </button>
