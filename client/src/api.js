@@ -3,14 +3,8 @@
 // Every function talks to the IGNITE server (server/) through request(),
 // which adds the login token and turns server errors into readable messages.
 // The comment above each function says which endpoint it calls.
-//
-// DEMO (until phase 6): only the landing page's examples still read ./data.
 
 import { useEffect, useRef, useState } from 'react'
-import chapters from './data/chapters.json'
-import seedProgress from './data/progress.json'
-import students from './data/students.json'
-import { addDays, today } from './game'
 
 // ---------- talking to the server ----------
 
@@ -290,32 +284,6 @@ export function getQuizResult(attemptId) {
 // GET /api/student/leaderboard  ->  [{ id, firstName, points, rank, isMe }]
 export function getLeaderboard() {
   return request('GET', '/student/leaderboard')
-}
-
-// ---------- landing page examples (removed in phase 6) ----------
-// DEMO: the landing page's previews still read the old JSON in ./data.
-
-function respond(data) {
-  return new Promise((resolve) => setTimeout(() => resolve(structuredClone(data)), 200))
-}
-
-export function getDemoChapters() {
-  return respond(chapters)
-}
-
-export function getDemoClass(classId) {
-  const rows = students
-    .filter((s) => s.classId === classId)
-    .map(({ pin, ...student }) => {
-      const seed = seedProgress.find((p) => p.studentId === student.id)
-      const progress = {
-        studentId: student.id,
-        lessons: (seed?.lessons ?? []).map((l) => ({ lessonId: l.lessonId, date: addDays(today(), -l.daysAgo) })),
-        attempts: (seed?.attempts ?? []).map(({ daysAgo, ...a }) => ({ ...a, date: addDays(today(), -daysAgo) })),
-      }
-      return { student, progress }
-    })
-  return respond(rows)
 }
 
 // ---------- helper for pages ----------

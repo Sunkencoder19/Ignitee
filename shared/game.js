@@ -281,8 +281,8 @@ export function quizOpen(chapter, progress) {
 
 // Chapters open in order. A chapter is 'done' once its quiz has 1 star or
 // more, the first chapter that isn't done is 'open', and the rest are
-// 'locked'. (Chapters marked `locked` show as 'soon'; the landing page's
-// examples use that.)
+// 'locked'. (A chapter marked `locked: true` shows as 'soon'; the server
+// only ever sends published chapters, so in the app that doesn't happen.)
 export function chapterStates(chapters, progress) {
   let previousDone = true
   return chapters.map((chapter) => {
