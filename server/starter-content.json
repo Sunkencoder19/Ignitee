@@ -441,6 +441,71 @@
             "hint": "त्रिकोणाला 3 बाजू, चौरसाला 4, पंचकोनाला 5 आणि षट्कोनाला 6 बाजू असतात.",
             "explanation": "त्रिकोण (3), चौरस (4), पंचकोन (5), षट्कोन (6): सर्वात कमी बाजू असलेला आधी."
           }
+        },
+        {
+          "type": "count",
+          "prompt": "How many blocks are there?",
+          "hint": "Count only the blocks, not the tiles.",
+          "explanation": "There are 6 blocks.",
+          "topic": "Solid shapes",
+          "config": {
+            "groups": [
+              {
+                "object": "block",
+                "colour": "blue",
+                "count": 6
+              },
+              {
+                "object": "tile",
+                "colour": "red",
+                "count": 4
+              }
+            ],
+            "target": 0
+          },
+          "hi": {
+            "prompt": "कितने ब्लॉक हैं?",
+            "hint": "सिर्फ़ ब्लॉक गिनो, टाइल नहीं।",
+            "explanation": "यहाँ 6 ब्लॉक हैं।"
+          },
+          "mr": {
+            "prompt": "किती ठोकळे आहेत?",
+            "hint": "फक्त ठोकळे मोजा, टाइल्स नाही.",
+            "explanation": "येथे 6 ठोकळे आहेत."
+          }
+        },
+        {
+          "type": "pattern",
+          "prompt": "Which tile is missing from the pattern?",
+          "hint": "Look at the shapes before and after the gap.",
+          "explanation": "The pattern repeats circle, square, so a circle fits here.",
+          "topic": "Flat shapes",
+          "config": {
+            "sequence": [
+              "circle:red",
+              "square:blue",
+              "circle:red",
+              "square:blue",
+              "circle:red",
+              "square:blue"
+            ],
+            "gaps": [
+              4
+            ],
+            "extras": [
+              "triangle:green"
+            ]
+          },
+          "hi": {
+            "prompt": "पैटर्न में कौन-सी टाइल गायब है?",
+            "hint": "खाली जगह से पहले और बाद की आकृतियाँ देखो।",
+            "explanation": "पैटर्न वृत्त, वर्ग दोहराता है, इसलिए यहाँ वृत्त आता है।"
+          },
+          "mr": {
+            "prompt": "नमुन्यात कोणती टाइल गायब आहे?",
+            "hint": "रिकाम्या जागेच्या आधीचे आणि नंतरचे आकार पाहा.",
+            "explanation": "नमुना वर्तुळ, चौरस असा पुन्हा येतो, म्हणून येथे वर्तुळ येते."
+          }
         }
       ]
     },
@@ -803,6 +868,69 @@
             "prompt": "या संख्या 4-4 च्या उडीच्या क्रमाने लावा.",
             "hint": "सर्वात लहान संख्येपासून सुरुवात करा.",
             "explanation": "4 पासून 4-4 ने मोजणी: 4, 8, 12, 16."
+          }
+        },
+        {
+          "type": "count",
+          "prompt": "How many mangoes are there?",
+          "hint": "Tap each mango as you count it.",
+          "explanation": "There are 6 mangoes.",
+          "topic": "Skip counting",
+          "config": {
+            "groups": [
+              {
+                "object": "mango",
+                "count": 6
+              },
+              {
+                "object": "bird",
+                "count": 4
+              }
+            ],
+            "target": 0
+          },
+          "hi": {
+            "prompt": "कितने आम हैं?",
+            "hint": "हर आम को छुकर गिनो।",
+            "explanation": "यहाँ 6 आम हैं।"
+          },
+          "mr": {
+            "prompt": "किती आंबे आहेत?",
+            "hint": "प्रत्येक आंब्याला टॅप करून मोजा.",
+            "explanation": "येथे 6 आंबे आहेत."
+          }
+        },
+        {
+          "type": "pattern",
+          "prompt": "Which tile is missing from the pattern?",
+          "hint": "The pattern is one heart, then two stars.",
+          "explanation": "The pattern is a heart and two stars, again and again, so a red heart fits here.",
+          "topic": "Number patterns",
+          "config": {
+            "sequence": [
+              "heart:red",
+              "star:yellow",
+              "star:yellow",
+              "heart:red",
+              "star:yellow",
+              "star:yellow"
+            ],
+            "gaps": [
+              3
+            ],
+            "extras": [
+              "heart:blue"
+            ]
+          },
+          "hi": {
+            "prompt": "पैटर्न में कौन-सी टाइल गायब है?",
+            "hint": "पैटर्न है: एक दिल, फिर दो तारे।",
+            "explanation": "एक दिल और दो तारे बार-बार आते हैं, इसलिए यहाँ लाल दिल आता है।"
+          },
+          "mr": {
+            "prompt": "नमुन्यात कोणती टाइल गायब आहे?",
+            "hint": "नमुना असा आहे: एक हृदय, मग दोन तारे.",
+            "explanation": "एक हृदय आणि दोन तारे पुन्हा पुन्हा येतात, म्हणून येथे लाल हृदय येते."
           }
         }
       ]
@@ -1285,6 +1413,70 @@
             "hint": "दोन रंग आलटून पालटून येतात.",
             "explanation": "फरश्या आलटून पालटून लाल, पिवळी, लाल, पिवळी आहेत."
           }
+        },
+        {
+          "type": "count",
+          "prompt": "How many birds are there?",
+          "hint": "Count only the birds.",
+          "explanation": "There are 5 birds.",
+          "topic": "Repeating patterns",
+          "config": {
+            "groups": [
+              {
+                "object": "bird",
+                "count": 5
+              },
+              {
+                "object": "tile",
+                "colour": "green",
+                "count": 4
+              }
+            ],
+            "target": 0
+          },
+          "hi": {
+            "prompt": "कितनी चिड़िया हैं?",
+            "hint": "सिर्फ़ चिड़िया गिनो।",
+            "explanation": "यहाँ 5 चिड़िया हैं।"
+          },
+          "mr": {
+            "prompt": "किती पक्षी आहेत?",
+            "hint": "फक्त पक्षी मोजा.",
+            "explanation": "येथे 5 पक्षी आहेत."
+          }
+        },
+        {
+          "type": "pattern",
+          "prompt": "Which tile is missing from the pattern?",
+          "hint": "Each group has a triangle, a circle and a square.",
+          "explanation": "The pattern repeats triangle, circle, square, so a square comes last.",
+          "topic": "Tiling patterns",
+          "config": {
+            "sequence": [
+              "triangle:green",
+              "circle:blue",
+              "square:red",
+              "triangle:green",
+              "circle:blue",
+              "square:red"
+            ],
+            "gaps": [
+              5
+            ],
+            "extras": [
+              "diamond:red"
+            ]
+          },
+          "hi": {
+            "prompt": "पैटर्न में कौन-सी टाइल गायब है?",
+            "hint": "हर समूह में एक त्रिभुज, एक वृत्त और एक वर्ग है।",
+            "explanation": "पैटर्न त्रिभुज, वृत्त, वर्ग दोहराता है, इसलिए आख़िर में वर्ग आता है।"
+          },
+          "mr": {
+            "prompt": "नमुन्यात कोणती टाइल गायब आहे?",
+            "hint": "प्रत्येक गटात एक त्रिकोण, एक वर्तुळ आणि एक चौरस आहे.",
+            "explanation": "नमुना त्रिकोण, वर्तुळ, चौरस असा पुन्हा येतो, म्हणून शेवटी चौरस येतो."
+          }
         }
       ]
     },
@@ -1644,6 +1836,72 @@
           "mr": {
             "prompt": "या संख्या सर्वात लहानपासून सर्वात मोठ्यापर्यंत क्रमाने लावा.",
             "hint": "आधी हजारांच्या अंकांची तुलना करा."
+          }
+        },
+        {
+          "type": "count",
+          "prompt": "How many yellow blocks are there?",
+          "hint": "Count only the yellow blocks.",
+          "explanation": "There are 7 yellow blocks.",
+          "topic": "Place value",
+          "config": {
+            "groups": [
+              {
+                "object": "block",
+                "colour": "yellow",
+                "count": 7
+              },
+              {
+                "object": "block",
+                "colour": "red",
+                "count": 3
+              }
+            ],
+            "target": 0
+          },
+          "hi": {
+            "prompt": "कितने पीले ब्लॉक हैं?",
+            "hint": "सिर्फ़ पीले ब्लॉक गिनो।",
+            "explanation": "यहाँ 7 पीले ब्लॉक हैं।"
+          },
+          "mr": {
+            "prompt": "किती पिवळे ठोकळे आहेत?",
+            "hint": "फक्त पिवळे ठोकळे मोजा.",
+            "explanation": "येथे 7 पिवळे ठोकळे आहेत."
+          }
+        },
+        {
+          "type": "pattern",
+          "prompt": "Which two tiles are missing from the pattern?",
+          "hint": "The pattern is a star, then a heart.",
+          "explanation": "A star and a heart come again and again, so a star and a heart fill the gaps.",
+          "topic": "Patterns",
+          "config": {
+            "sequence": [
+              "star:purple",
+              "heart:red",
+              "star:purple",
+              "heart:red",
+              "star:purple",
+              "heart:red"
+            ],
+            "gaps": [
+              2,
+              5
+            ],
+            "extras": [
+              "star:red"
+            ]
+          },
+          "hi": {
+            "prompt": "पैटर्न में कौन-सी दो टाइलें गायब हैं?",
+            "hint": "पैटर्न है: एक तारा, फिर एक दिल।",
+            "explanation": "तारा और दिल बार-बार आते हैं, इसलिए खाली जगहों में तारा और दिल आते हैं।"
+          },
+          "mr": {
+            "prompt": "नमुन्यात कोणत्या दोन टाइल गायब आहेत?",
+            "hint": "नमुना असा आहे: एक तारा, मग एक हृदय.",
+            "explanation": "तारा आणि हृदय पुन्हा पुन्हा येतात, म्हणून रिकाम्या जागांमध्ये तारा आणि हृदय येतात."
           }
         }
       ]
