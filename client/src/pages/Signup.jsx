@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useSession } from '../session'
+import ThemeToggle from '../ThemeToggle'
 
 export default function Signup() {
   const { user, checking, teacherSignup } = useSession()
@@ -31,7 +32,10 @@ export default function Signup() {
   }
 
   return (
-    <div className="flex min-h-dvh flex-col items-center px-4 py-10">
+    <div className="relative flex min-h-dvh flex-col items-center px-4 py-10">
+      <div className="absolute right-2 top-2">
+        <ThemeToggle />
+      </div>
       <Link to="/" className="inline-flex min-h-12 items-center text-2xl font-semibold tracking-tight">
         IGNITE
       </Link>

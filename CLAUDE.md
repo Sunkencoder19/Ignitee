@@ -25,6 +25,7 @@ client/src/
   main.jsx         every route          api.js       the ONLY file that calls the server
   session.jsx      user + progress      layouts.jsx  headers and nav
   Question.jsx     answer box           QuestionForm.jsx  question editor
+  ThemeToggle.jsx  Colours: Auto / Light / Dark switch (saved in the browser)
   game.js          re-exports ../../shared/game.js
   pages/           one file per page: Landing Login Signup NotFound,
                    student/ Home Learn Chapter Lesson Quiz Result Leaderboard,
@@ -70,6 +71,6 @@ client/src/
 
 ## Design
 
-- Geist from Google Fonts (`@import` in index.css). Colour tokens only (`bg-bg`, `bg-surface`, `text-ink`, `text-muted`, `bg-accent`, `text-good`, `text-warn`...); navy `#0b1f3a` text, orange accent `#c2410c`, automatic dark mode. `.gradient-band` for highlights; text on it is always navy.
+- Geist from Google Fonts (`@import` in index.css). Colour tokens only (`bg-bg`, `bg-surface`, `text-ink`, `text-muted`, `bg-accent`, `text-good`, `text-warn`...); navy `#0b1f3a` text, orange accent `#c2410c`. Dark mode: `:root[data-theme='dark']` in index.css; the attribute is set before the page draws by a script in index.html (saved choice, default Auto = follow the device) and kept up to date by ThemeToggle.jsx. `.gradient-band` for highlights; text on it is always navy.
 - Buttons and nav are pills, cards `rounded-2xl`, inputs `rounded-xl`. No decorative icons, chips or dots.
 - Student screens at 375px: text at least 16px (reading text 16-18px), every link and button at least 48px tall, no sideways scrolling, in light and dark.

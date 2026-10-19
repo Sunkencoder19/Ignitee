@@ -33,23 +33,29 @@
   --gradient: linear-gradient(115deg, #ff7a1a 0%, #ffb020 30%, #ff5d73 62%, #ff8a3d 100%);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-bg: #0a1424;
-    --color-surface: #111e33;
-    --color-line: #22324d;
-    --color-ink: #eef2f8;
-    --color-muted: #9fb0c8;
-    --color-accent: #ff8a3d;
-    --color-accent-soft: #3a1d0c;
-    --color-on-accent: #0a1424;
-    --color-good: #3ddc97;
-    --color-good-soft: #0f2e24;
-    --color-warn: #ffc35a;
-    --color-warn-soft: #33260b;
-    --shadow-card: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 24px -10px rgb(0 0 0 / 0.6);
-    --shadow-float: 0 30px 60px -20px rgb(0 0 0 / 0.7);
-  }
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
+/* Dark colours. data-theme is set by the script in index.html and by
+   ThemeToggle.jsx: 'dark' when the student or teacher picked Dark, or picked
+   'Auto' on a device that is in dark mode. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #0a1424;
+  --color-surface: #111e33;
+  --color-line: #22324d;
+  --color-ink: #eef2f8;
+  --color-muted: #9fb0c8;
+  --color-accent: #ff8a3d;
+  --color-accent-soft: #3a1d0c;
+  --color-on-accent: #0a1424;
+  --color-good: #3ddc97;
+  --color-good-soft: #0f2e24;
+  --color-warn: #ffc35a;
+  --color-warn-soft: #33260b;
+  --shadow-card: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 8px 24px -10px rgb(0 0 0 / 0.6);
+  --shadow-float: 0 30px 60px -20px rgb(0 0 0 / 0.7);
 }
 
 body {

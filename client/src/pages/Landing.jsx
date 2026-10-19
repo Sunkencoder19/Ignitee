@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { POINTS, badges } from '../game'
 import Question from '../Question'
+import ThemeToggle from '../ThemeToggle'
 import { useSession } from '../session'
 
 // One question from Chapter 1, checked right here (it carries its own answer).
@@ -62,7 +63,8 @@ export default function Landing() {
     <div className="min-h-dvh overflow-x-hidden">
       <header className="relative z-10 mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
         <span className="text-xl font-bold tracking-tight">IGNITE</span>
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-2 sm:gap-6">
+          <ThemeToggle />
           <a href="#teachers" className="hidden text-sm font-medium text-muted hover:text-ink sm:inline">
             For teachers
           </a>

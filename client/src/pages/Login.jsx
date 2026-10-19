@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { findClass } from '../api'
 import { useSession } from '../session'
+import ThemeToggle from '../ThemeToggle'
 
 export default function Login() {
   const { user, checking } = useSession()
@@ -18,7 +19,10 @@ export default function Login() {
   if (user) return <Navigate to={`/${user.role}`} replace />
 
   return (
-    <div className="flex min-h-dvh flex-col items-center px-4 py-10">
+    <div className="relative flex min-h-dvh flex-col items-center px-4 py-10">
+      <div className="absolute right-2 top-2">
+        <ThemeToggle />
+      </div>
       <Link to="/" className="inline-flex min-h-12 items-center text-2xl font-semibold tracking-tight">
         IGNITE
       </Link>

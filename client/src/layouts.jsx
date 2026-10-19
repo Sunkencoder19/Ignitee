@@ -5,6 +5,7 @@
 
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
 import { useSession } from './session'
+import ThemeToggle from './ThemeToggle'
 
 function navClass({ isActive }) {
   return `inline-flex min-h-12 items-center rounded-full px-4 font-semibold ${isActive ? 'bg-accent-soft text-accent' : 'text-muted hover:text-ink'}`
@@ -41,6 +42,7 @@ export function StudentLayout() {
                 <strong className="text-ink">{progress.streak}</strong> day streak
               </p>
             )}
+            <ThemeToggle />
             <button onClick={logout} className="inline-flex min-h-12 items-center px-2 text-base font-semibold text-muted hover:text-ink">
               Log out
             </button>
@@ -91,6 +93,7 @@ export function TeacherLayout() {
           </nav>
           <div className="ml-auto flex items-center gap-4">
             <span className="hidden text-sm text-muted md:inline">{user.name}</span>
+            <ThemeToggle />
             <button onClick={logout} className="inline-flex min-h-12 items-center px-2 text-base font-semibold text-muted hover:text-ink">
               Log out
             </button>

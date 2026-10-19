@@ -89,6 +89,7 @@ IGNITE/
         ├── layouts.jsx    student and teacher headers and navigation
         ├── Question.jsx   the answer box (two tries) used by lessons, quizzes and previews
         ├── QuestionForm.jsx  the editor for one question, used by both content editors
+        ├── ThemeToggle.jsx   the Colours: Auto / Light / Dark switch in every header
         └── pages/         one file per page
             ├── Landing, Login, Signup, NotFound
             ├── student/   Home, Learn, Chapter, Lesson, Quiz, Result, Leaderboard
@@ -199,5 +200,7 @@ All in `shared/game.js`.
 - **Secrets stay local:** `server/.env` is gitignored, and the dev server only serves files from `client/` and `shared/`.
 
 ## Tech
+
+Light and dark: every header has a **Colours** switch (Auto, Light, Dark). Auto follows the device, and the choice is remembered in the browser.
 
 Client: React 18, React Router 7, Tailwind CSS 4, Vite. Server: Express 5, Mongoose 9, bcryptjs, jsonwebtoken, cors, dotenv. Database: MongoDB Community Server. Everything runs in dev mode; there are no build, lint or test steps yet.
