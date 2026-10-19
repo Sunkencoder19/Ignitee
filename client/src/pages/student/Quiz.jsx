@@ -8,6 +8,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { answerQuizQuestion, getStudentChapters, startQuiz, useData } from '../../api'
+import { useT } from '../../i18n/t'
 import Question from '../../Question'
 import { useSession } from '../../session'
 
@@ -15,6 +16,7 @@ export default function Quiz() {
   const { quizId } = useParams()
   const navigate = useNavigate()
   const { finishQuiz } = useSession()
+  const t = useT()
   const { data: chapters, error } = useData(() => getStudentChapters(), [quizId])
 
   const [attempt, setAttempt] = useState(null) // { attemptId, chapterTitle, questions } once started
@@ -24,11 +26,11 @@ export default function Quiz() {
   const [actionError, setActionError] = useState(null)
 
   if (error) return <Back message={error} />
-  if (!chapters) return <p className="text-muted">Loading...</p>
+  if (!chapters) return <p className="text-muted">{t('common.loading')}</p>
 
   const chapter = chapters.find((c) => c.quiz?.id === quizId)
-  if (!chapter || chapter.state === 'locked') return <Back message="This quiz isn’t open yet." />
-  if (!chapter.quiz.open) return <Back message="This quiz opens when you finish every lesson in the chapter." to={`/student/learn/${chapter.id}`} />
+  if (!chapter || chapter.state === 'locked') return <Back message={t('quiz.notOpen')} />
+  if (!chapter.quiz.open) return <Back message={t('quiz.lessonsFirst')} to={`/student/learn/${chapter.id}`} />
 
   async function handleStart() {
     setBusy(true)
@@ -45,22 +47,20 @@ export default function Quiz() {
   if (!attempt) {
     return (
       <div className="card mx-auto max-w-xl p-8">
-        <p className="text-muted">Chapter {chapter.number}</p>
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight">{chapter.title} quiz</h1>
-        <p className="mt-4 text-lg">
-          {chapter.quiz.questionCount} questions. You get two tries at each one, and a hint if the first try is wrong.
-        </p>
-        <p className="mt-2 text-lg text-muted">Get 1 star or more to open the next chapter.</p>
+        <p className="text-muted">{t('quiz.chapterNumber', { number: chapter.number })}</p>
+        <h1 className="mt-1 text-3xl font-semibold tracking-tight">{t('quiz.title', { title: chapter.title })}</h1>
+        <p className="mt-4 text-lg">{t('quiz.intro', { count: chapter.quiz.questionCount })}</p>
+        <p className="mt-2 text-lg text-muted">{t('quiz.passToOpen')}</p>
         {actionError && (
           <p role="alert" className="mt-4 font-semibold text-warn">
             {actionError}
           </p>
         )}
         <button onClick={handleStart} disabled={busy} className="btn btn-primary mt-8 w-full text-lg">
-          {busy ? 'Starting...' : 'Start the quiz'}
+          {busy ? t('quiz.starting') : t('quiz.start')}
         </button>
         <Link to={`/student/learn/${chapter.id}`} className="btn btn-secondary mt-3 w-full">
-          Not now
+          {t('quiz.notNow')}
         </Link>
       </div>
     )
@@ -90,21 +90,19 @@ export default function Quiz() {
   }
 
   function leave(e) {
-    if (!window.confirm("Leave the quiz? You'll start again next time.")) e.preventDefault()
+    if (!window.confirm(t('quiz.leaveConfirm'))) e.preventDefault()
   }
 
   return (
     <div className="mx-auto max-w-2xl">
       <div className="flex items-center justify-between text-muted">
         <Link to={`/student/learn/${chapter.id}`} onClick={leave} className="inline-flex min-h-12 items-center font-semibold hover:text-ink">
-          Leave quiz
+          {t('quiz.leave')}
         </Link>
-        <span>
-          Question {index + 1} of {attempt.questions.length}
-        </span>
+        <span>{t('quiz.questionOf', { number: index + 1, total: attempt.questions.length })}</span>
       </div>
 
-      <h1 className="mt-4 text-2xl font-semibold tracking-tight">{attempt.chapterTitle} quiz</h1>
+      <h1 className="mt-4 text-2xl font-semibold tracking-tight">{t('quiz.title', { title: attempt.chapterTitle })}</h1>
 
       <section className="card mt-4 p-6 md:p-8">
         <Question
@@ -123,7 +121,7 @@ export default function Quiz() {
 
       {answered && (
         <button onClick={goNext} disabled={busy} className="btn btn-primary mt-6 w-full text-lg">
-          {busy ? 'Working out your score...' : isLast ? 'See my score' : 'Next question'}
+          {busy ? t('quiz.scoring') : isLast ? t('quiz.seeScore') : t('quiz.nextQuestion')}
         </button>
       )}
     </div>
@@ -131,11 +129,12 @@ export default function Quiz() {
 }
 
 function Back({ message, to = '/student/learn' }) {
+  const t = useT()
   return (
     <div>
       <p className="text-lg font-semibold">{message}</p>
       <Link to={to} className="btn btn-secondary mt-4">
-        Go back
+        {t('common.goBack')}
       </Link>
     </div>
   )

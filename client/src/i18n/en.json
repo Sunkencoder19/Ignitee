@@ -1,0 +1,311 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "loadingProgress": "Loading your progress...",
+    "tryAgain": "Try again",
+    "goBack": "Go back",
+    "backToChapters": "Back to chapters",
+    "backToChapter": "Back to the chapter",
+    "logOut": "Log out",
+    "plusPoints": "+{count} points",
+    "newBadge": "New badge: {names}"
+  },
+  "language": {
+    "label": "Language"
+  },
+  "theme": {
+    "button": "Colours: {name}",
+    "spoken": "Colours: {name}. Tap to change.",
+    "auto": "Auto",
+    "autoSpoken": "Auto, following this device",
+    "light": "Light",
+    "dark": "Dark"
+  },
+  "nav": {
+    "main": "Main",
+    "home": "Home",
+    "learn": "Learn",
+    "leaderboard": "Leaderboard"
+  },
+  "header": {
+    "points": "points",
+    "streak": "day streak"
+  },
+  "weekdays": [
+    "Sun",
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat"
+  ],
+  "home": {
+    "hello": "Hi {name}!",
+    "helloNew": "Hi {name}! Let's start.",
+    "noChaptersTitle": "No chapters yet",
+    "noChaptersText": "Your teacher hasn’t shared any chapters with {className} yet. Check again soon.",
+    "upNext": "Up next",
+    "allDoneTitle": "You have finished every chapter",
+    "allDoneText": "New chapters will appear when your teacher adds them. You can retake any quiz to get more stars.",
+    "seeAllChapters": "See all chapters",
+    "chapterLine": "Chapter {number}: {title}",
+    "startFirstLesson": "Start your first lesson",
+    "continue": "Continue",
+    "quizTitle": "{title} quiz",
+    "quizReady": "You finished every lesson in this chapter. Time for the quiz.",
+    "startQuiz": "Start the quiz",
+    "progressTitle": "Your progress",
+    "statPoints": "Points",
+    "statStreak": "Day streak",
+    "statBestStreak": "Best streak",
+    "statLessons": "Lessons done",
+    "statChapters": "Chapters done",
+    "xOfY": "{done} of {total}",
+    "weekTitle": "This week",
+    "weekHelp": "A filled day means you learned something that day.",
+    "dayLearned": "{day}: learned",
+    "dayNotLearned": "{day}: no learning",
+    "today": "(today)",
+    "badgesTitle": "Badges",
+    "badgesCount": "You have {earned} of {total}.",
+    "earned": "Earned",
+    "notYet": "Not yet",
+    "languageTitle": "Language"
+  },
+  "learn": {
+    "title": "Chapters",
+    "empty": "Your teacher hasn’t shared any chapters yet. Check again soon.",
+    "help": "Pass a chapter quiz to open the next chapter.",
+    "done": "Done, {stars} of 3 stars",
+    "open": "Open now",
+    "locked": "Finish Chapter {number} first"
+  },
+  "chapter": {
+    "notFound": "We couldn’t find that chapter.",
+    "notOpen": "{title} isn’t open yet.",
+    "title": "Chapter {number}: {title}",
+    "lessonsDone": "{done} of {total} lessons done",
+    "lessonDone": "Done",
+    "upNext": "Up next",
+    "notStarted": "Not started",
+    "quizTitle": "Chapter quiz",
+    "questions": {
+      "one": "1 question.",
+      "other": "{count} questions."
+    },
+    "bestSoFar": "Your best so far: {stars} of 3 stars.",
+    "passToOpen": "Get 1 star or more to open the next chapter.",
+    "retake": "Retake the quiz",
+    "start": "Start the quiz",
+    "finishLessonsFirst": {
+      "one": "Finish the lesson above to open the quiz.",
+      "other": "Finish all {count} lessons above to open the quiz."
+    }
+  },
+  "lesson": {
+    "step": {
+      "explain": "Learn",
+      "example": "Example",
+      "activity": "Try it"
+    },
+    "close": "Close lesson",
+    "stepOf": "Step {step} of {total}",
+    "back": "Back",
+    "next": "Next",
+    "finish": "Finish lesson",
+    "saving": "Saving...",
+    "saveFailed": "{error} Press Finish lesson to try again.",
+    "finishedTitle": "You finished it!",
+    "alreadyDone": "You had already done this lesson, so no new points. Good practice!",
+    "nextLesson": "Next lesson",
+    "takeQuiz": "Take the chapter quiz"
+  },
+  "quiz": {
+    "notOpen": "This quiz isn’t open yet.",
+    "lessonsFirst": "This quiz opens when you finish every lesson in the chapter.",
+    "chapterNumber": "Chapter {number}",
+    "title": "{title} quiz",
+    "intro": {
+      "one": "1 question. You get two tries, and a hint if the first try is wrong.",
+      "other": "{count} questions. You get two tries at each one, and a hint if the first try is wrong."
+    },
+    "passToOpen": "Get 1 star or more to open the next chapter.",
+    "starting": "Starting...",
+    "start": "Start the quiz",
+    "notNow": "Not now",
+    "leave": "Leave quiz",
+    "leaveConfirm": "Leave the quiz? You'll start again next time.",
+    "questionOf": "Question {number} of {total}",
+    "scoring": "Working out your score...",
+    "seeScore": "See my score",
+    "nextQuestion": "Next question"
+  },
+  "result": {
+    "headline": {
+      "0": "Nice try. Have another go.",
+      "1": "You passed! 1 star.",
+      "2": "Great work! 2 stars.",
+      "3": "Brilliant! 3 stars."
+    },
+    "quizTitle": "{title} quiz",
+    "firstTry": "{right} of {total} right first time",
+    "retakeNoPoints": "Retakes only earn quiz points when you beat your best score ({best}%).",
+    "opened": "{title} is now open.",
+    "tryAgain": "Try the quiz again",
+    "review": "Review",
+    "perfect": "Every answer was right first time. Nothing to review!",
+    "secondTry": "You got it on the second try.",
+    "youSaid": "You said: {answer}",
+    "answer": "Answer:"
+  },
+  "leaderboard": {
+    "title": "{className} leaderboard",
+    "noPoints": "Finish a lesson to get your first points.",
+    "rank": "You are number {rank} of {total}.",
+    "you": "(you)"
+  },
+  "question": {
+    "correct": "Correct, well done!",
+    "retry": "Not quite. Try once more.",
+    "hint": "Hint: {hint}",
+    "revealed": "The answer is {answer}.",
+    "yourOrder": "Your order (tap to take one back)",
+    "typeAnswer": "Type your answer",
+    "yourAnswer": "Your answer",
+    "check": "Check",
+    "checking": "Checking...",
+    "pressCheck": "{error} Press Check to try again."
+  },
+  "login": {
+    "title": "Log in",
+    "iAmA": "I am a",
+    "student": "I'm a student",
+    "teacher": "I'm a teacher",
+    "classCode": "Class code",
+    "classCodeHelp": "Your teacher gives you this code.",
+    "looking": "Looking...",
+    "findClass": "Find my class",
+    "classLabel": "Class",
+    "change": "Change",
+    "noStudents": "There are no students in this class yet. Ask your teacher to add you.",
+    "yourName": "Your name",
+    "pickName": "Pick your name",
+    "pin": "Your 4-digit PIN",
+    "loggingIn": "Logging in...",
+    "logIn": "Log in",
+    "email": "Email",
+    "password": "Password",
+    "newTeacher": "New teacher?",
+    "createAccount": "Create an account"
+  },
+  "landing": {
+    "forTeachers": "For teachers",
+    "logIn": "Log in",
+    "myHome": "My home",
+    "headline1": "Class 4 maths,",
+    "headline2": "a few minutes a day.",
+    "subtext": "Short lessons and friendly quizzes from the NCERT Maths Mela book. Made for any phone.",
+    "startLearning": "Start learning",
+    "tryOne": "Try one now",
+    "sample": {
+      "prompt": "A slice of pizza looks most like which shape?",
+      "circle": "Circle",
+      "square": "Square",
+      "triangle": "Triangle",
+      "rectangle": "Rectangle",
+      "hint": "Count its pointy corners.",
+      "explanation": "A pizza slice has 3 corners and 3 sides, like a triangle."
+    },
+    "tried": "That is how every lesson works.",
+    "startFirst": "Start the first one",
+    "exampleTitle": "Example: how chapters open",
+    "exampleChapter": "Chapter {number}",
+    "exampleDone": "Done",
+    "exampleOpen": "Open now",
+    "exampleLocked": "Opens after Chapter 2",
+    "lessonTitle": "Every lesson works the same way.",
+    "readWord": "Read",
+    "readText": "A short idea in simple words, with an example from everyday life.",
+    "tryWord": "Try",
+    "tryText": "Answer a question. A wrong answer shows a hint, then you try again.",
+    "quizWord": "Quiz",
+    "quizText": "Pass the chapter quiz to earn stars and open the next chapter.",
+    "rewardsTitle": "Points, badges and a class leaderboard.",
+    "pointsTitle": "How points add up",
+    "pointsLesson": "for each lesson, the first time",
+    "pointsFirstTry": "for a quiz answer right first time",
+    "pointsHint": "for a quiz answer right after the hint",
+    "pointsDay": "for each day you learn something",
+    "pointsRetake": "Retaking a quiz only earns points for beating your best score.",
+    "badgesTitle": "Seven badges to collect",
+    "leaderboardTitle": "A leaderboard for each class",
+    "leaderboardText": "Children see only their own class, with first names and points. Nothing else about anyone is shown.",
+    "teachersTitle": "See who needs help before the next class.",
+    "teachersText": "Every answer is checked by the server, so the reports show what children really know.",
+    "teacherView": "Open the teacher view",
+    "reportAccuracy": "Accuracy by topic and chapter",
+    "reportAccuracyText": "From each student’s latest try at each quiz.",
+    "reportStruggling": "Who is struggling",
+    "reportStrugglingText": "Below 60% on a topic or chapter, once there are 3 answers to go on.",
+    "reportAttention": "Who needs attention",
+    "reportAttentionText": "A low quiz score, or no learning for 3 days or more.",
+    "reportContent": "Your own content",
+    "reportContentText": "Write chapters, lessons and quizzes, preview them, then publish.",
+    "footer": "Maths practice for CBSE Class 4, based on NCERT Maths Mela."
+  },
+  "notFound": {
+    "title": "We can’t find that page",
+    "text": "The link might be old or have a typo.",
+    "goHome": "Go home"
+  },
+  "badges": {
+    "first-step": {
+      "name": "First Step",
+      "howTo": "Finish your first lesson."
+    },
+    "chapter-champion": {
+      "name": "Chapter Champion",
+      "howTo": "Finish a chapter: every lesson, then pass the quiz."
+    },
+    "star-student": {
+      "name": "Star Student",
+      "howTo": "Get 3 stars on any quiz."
+    },
+    "explorer": {
+      "name": "Explorer",
+      "howTo": "Finish 3 chapters."
+    },
+    "on-fire": {
+      "name": "On Fire",
+      "howTo": "Learn 5 days in a row."
+    },
+    "never-give-up": {
+      "name": "Never Give Up",
+      "howTo": "Beat your best score when you retake a quiz."
+    },
+    "sharp-mind": {
+      "name": "Sharp Mind",
+      "howTo": "Get 10 quiz answers right first time in a row."
+    }
+  },
+  "errors": {
+    "offline": "Can’t reach the IGNITE server. Check your connection and try again.",
+    "server-down": "Can’t reach the IGNITE server. Check that it is running and try again.",
+    "login-needed": "Please log in.",
+    "class-not-found": "We couldn’t find a class with that code. Check it with your teacher.",
+    "wrong-pin": "That PIN doesn’t match. Try again.",
+    "locked-out": "Too many wrong PINs. Ask your teacher, or try again in 15 minutes.",
+    "not-found": "We couldn’t find that. Ask your teacher.",
+    "chapter-locked": "This chapter isn’t open yet. Finish the one before it first.",
+    "lessons-first": "Finish every lesson in this chapter first.",
+    "quiz-changed": "This quiz was changed by your teacher. Start it again.",
+    "answer-in-order": "Answer the questions in order.",
+    "already-answered": "You already answered that question.",
+    "all-answered": "Every question is answered. Finish the quiz.",
+    "answer-everything": "Answer every question before finishing.",
+    "already-finished": "This quiz is already finished.",
+    "no-score": "The server works out the score itself. Send nothing when finishing a quiz.",
+    "bad-language": "Choose English, Hindi or Marathi."
+  }
+}

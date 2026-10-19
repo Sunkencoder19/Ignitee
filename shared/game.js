@@ -60,8 +60,12 @@ export function daysAgoLabel(days) {
 // ---------- answers and quiz scores ----------
 
 // "3,456", " 3456 " and "3456" count as the same answer; so do "b" and "B".
+// Devanagari digits (०-९) are turned into 0-9 first, so "३४५६" matches 3456.
 function normalise(value) {
-  return String(value).replace(/[\s,]/g, '').toLowerCase()
+  return String(value)
+    .replace(/[०-९]/g, (d) => String('०१२३४५६७८९'.indexOf(d)))
+    .replace(/[\s,]/g, '')
+    .toLowerCase()
 }
 
 export function checkAnswer(question, given) {
@@ -180,8 +184,73 @@ export function questionProblems(question, { needsTopic = false } = {}) {
   if (needsTopic && !filled(q.topic)) problems.push('Give the question a topic, for example "Place value".')
   if (tooLong(q.topic, LIMITS.topic)) problems.push(`Keep the topic under ${LIMITS.topic} characters.`)
 
+  for (const lang of ['hi', 'mr']) problems.push(...translationProblems(q, lang))
   return problems
 }
+
+// ---------- Hindi and Marathi ----------
+// Teachers write everything in English, and may add Hindi (hi) and Marathi
+// (mr) versions next to it, e.g. question.hi = { prompt, options, items, hint,
+// explanation }, step.hi = { text }, lesson.hi = { title }. Each field falls
+// back to English on its own when its translation is empty.
+// Options and order items are the exception: they are translated all together
+// or not at all, one for one with the English, so the right answer still
+// lines up (option 3 in Hindi is option 3 in English).
+
+export const LANGUAGES = ['en', 'hi', 'mr']
+const LANGUAGE_NAMES = { hi: 'Hindi', mr: 'Marathi' }
+
+function translationProblems(q, lang) {
+  const t = q?.[lang]
+  if (!t) return []
+  const problems = []
+  const name = LANGUAGE_NAMES[lang]
+  for (const [field, max] of [['prompt', LIMITS.prompt], ['hint', LIMITS.hint], ['explanation', LIMITS.explanation]]) {
+    if (tooLong(t[field], max)) problems.push(`${name}: keep the ${field === 'prompt' ? 'question' : field} under ${max} characters.`)
+  }
+  const list = (value) => (Array.isArray(value) ? value : [])
+  const english = q.type === 'mcq' ? list(q.options) : q.type === 'order' ? list(q.answer) : []
+  const translated = q.type === 'mcq' ? list(t.options) : q.type === 'order' ? list(t.items) : []
+  const word = q.type === 'mcq' ? 'option' : 'item'
+  if (translated.some(filled)) {
+    if (translated.length !== english.length || translated.some((x) => !filled(x))) {
+      problems.push(`${name}: translate every ${word}, or leave all of them empty.`)
+    } else if (q.type === 'mcq' && new Set(translated.map((x) => x.trim().toLowerCase())).size !== translated.length) {
+      problems.push(`${name}: two options are the same.`)
+    }
+    if (translated.some((x) => tooLong(x, LIMITS.option))) problems.push(`${name}: keep each ${word} under ${LIMITS.option} characters.`)
+  }
+  return problems
+}
+
+// The text of `field` in `lang`, or the English if there is no translation.
+export function inLanguage(thing, field, lang) {
+  const translated = lang && lang !== 'en' ? thing?.[lang]?.[field] : null
+  return filled(translated) ? translated : thing?.[field]
+}
+
+// A question as a student in `lang` sees it, with its answer in that same
+// language (so their answer can be checked against it). Falls back to English
+// field by field.
+export function localizeQuestion(q, lang) {
+  const t = lang && lang !== 'en' ? q[lang] : null
+  const out = {
+    ...q,
+    prompt: inLanguage(q, 'prompt', lang),
+    hint: inLanguage(q, 'hint', lang),
+    explanation: inLanguage(q, 'explanation', lang),
+  }
+  const complete = (list, length) => Array.isArray(list) && list.length === length && list.every(filled)
+  if (q.type === 'mcq' && t && complete(t.options, q.options.length)) {
+    out.options = t.options
+    out.answer = t.options[q.options.indexOf(q.answer)]
+  }
+  if (q.type === 'order' && t && complete(t.items, q.answer.length)) out.answer = t.items
+  return out
+}
+
+// "Give it a hint." -> "give it a hint.", to follow "Question 2: ". Language names keep their capital.
+const lowerFirst = (p) => (/^(Hindi|Marathi)\b/.test(p) ? p : p.charAt(0).toLowerCase() + p.slice(1))
 
 // A lesson: a title and 1-12 steps. Each step is explain, example or activity,
 // with some text; an activity step may also have one question.
@@ -189,6 +258,9 @@ export function lessonProblems(lesson) {
   const problems = []
   if (!filled(lesson?.title)) problems.push('Give the lesson a title.')
   else if (tooLong(lesson.title, LIMITS.title)) problems.push(`Keep the title under ${LIMITS.title} characters.`)
+  for (const lang of ['hi', 'mr']) {
+    if (tooLong(lesson?.[lang]?.title, LIMITS.title)) problems.push(`${LANGUAGE_NAMES[lang]} title is over ${LIMITS.title} characters.`)
+  }
 
   const steps = Array.isArray(lesson?.steps) ? lesson.steps : []
   if (steps.length === 0) problems.push('Add at least one step.')
@@ -198,9 +270,12 @@ export function lessonProblems(lesson) {
     if (!['explain', 'example', 'activity'].includes(step?.type)) problems.push(where + 'choose a step type.')
     if (!filled(step?.text)) problems.push(where + 'write the text.')
     else if (tooLong(step.text, LIMITS.stepText)) problems.push(where + `keep the text under ${LIMITS.stepText} characters.`)
+    for (const lang of ['hi', 'mr']) {
+      if (tooLong(step?.[lang]?.text, LIMITS.stepText)) problems.push(where + `${LANGUAGE_NAMES[lang]} text is over ${LIMITS.stepText} characters.`)
+    }
     if (step?.question) {
       if (step.type !== 'activity') problems.push(where + 'only an activity step can have a question.')
-      for (const p of questionProblems(step.question)) problems.push(where + p.charAt(0).toLowerCase() + p.slice(1))
+      for (const p of questionProblems(step.question)) problems.push(where + lowerFirst(p))
     }
   })
   return problems
@@ -213,7 +288,7 @@ export function quizProblems(questions) {
   if (list.length === 0) problems.push('Add at least one question.')
   if (list.length > LIMITS.maxQuestions) problems.push(`A quiz can have at most ${LIMITS.maxQuestions} questions.`)
   list.forEach((q, i) => {
-    for (const p of questionProblems(q, { needsTopic: true })) problems.push(`Question ${i + 1}: ${p.charAt(0).toLowerCase()}${p.slice(1)}`)
+    for (const p of questionProblems(q, { needsTopic: true })) problems.push(`Question ${i + 1}: ${lowerFirst(p)}`)
   })
   return problems
 }
@@ -338,18 +413,19 @@ function longestFirstTryRun(progress) {
 }
 
 const BADGES = [
-  { name: 'First Step', howTo: 'Finish your first lesson.', check: (p) => p.lessons.length > 0 },
-  { name: 'Chapter Champion', howTo: 'Finish a chapter: every lesson, then pass the quiz.', check: (p, c) => chaptersFinished(c, p) >= 1 },
-  { name: 'Star Student', howTo: 'Get 3 stars on any quiz.', check: (p) => p.attempts.some((a) => a.stars === 3) },
-  { name: 'Explorer', howTo: 'Finish 3 chapters.', check: (p, c) => chaptersFinished(c, p) >= 3 },
-  { name: 'On Fire', howTo: 'Learn 5 days in a row.', check: (p) => bestStreak(p) >= 5 },
-  { name: 'Never Give Up', howTo: 'Beat your best score when you retake a quiz.', check: (p) => improvedOnRetake(p) },
-  { name: 'Sharp Mind', howTo: 'Get 10 quiz answers right first time in a row.', check: (p) => longestFirstTryRun(p) >= 10 },
+  { id: 'first-step', name: 'First Step', howTo: 'Finish your first lesson.', check: (p) => p.lessons.length > 0 },
+  { id: 'chapter-champion', name: 'Chapter Champion', howTo: 'Finish a chapter: every lesson, then pass the quiz.', check: (p, c) => chaptersFinished(c, p) >= 1 },
+  { id: 'star-student', name: 'Star Student', howTo: 'Get 3 stars on any quiz.', check: (p) => p.attempts.some((a) => a.stars === 3) },
+  { id: 'explorer', name: 'Explorer', howTo: 'Finish 3 chapters.', check: (p, c) => chaptersFinished(c, p) >= 3 },
+  { id: 'on-fire', name: 'On Fire', howTo: 'Learn 5 days in a row.', check: (p) => bestStreak(p) >= 5 },
+  { id: 'never-give-up', name: 'Never Give Up', howTo: 'Beat your best score when you retake a quiz.', check: (p) => improvedOnRetake(p) },
+  { id: 'sharp-mind', name: 'Sharp Mind', howTo: 'Get 10 quiz answers right first time in a row.', check: (p) => longestFirstTryRun(p) >= 10 },
 ]
 
-// Every badge with whether this student has earned it: [{ name, howTo, earned }]
+// Every badge with whether this student has earned it: [{ id, name, howTo, earned }]
+// (The app shows the name and how-to in the student's language, looked up by id.)
 export function badges(progress, chapters) {
-  return BADGES.map((b) => ({ name: b.name, howTo: b.howTo, earned: b.check(progress, chapters) }))
+  return BADGES.map((b) => ({ id: b.id, name: b.name, howTo: b.howTo, earned: b.check(progress, chapters) }))
 }
 
 // ---------- teacher numbers ----------

@@ -4,6 +4,7 @@
 // While a saved login is being checked (`checking`), they show "Loading..." instead.
 
 import { Link, Navigate, NavLink, Outlet } from 'react-router-dom'
+import { useT } from './i18n/t'
 import { useSession } from './session'
 import ThemeToggle from './ThemeToggle'
 
@@ -13,7 +14,8 @@ function navClass({ isActive }) {
 
 export function StudentLayout() {
   const { user, checking, progress, progressError, reloadProgress, logout } = useSession()
-  if (checking) return <p className="px-4 py-8 text-muted">Loading...</p>
+  const t = useT()
+  if (checking) return <p className="px-4 py-8 text-muted">{t('common.loading')}</p>
   if (user?.role !== 'student') return <Navigate to="/login" replace />
 
   return (
@@ -23,28 +25,28 @@ export function StudentLayout() {
           <Link to="/student" className="inline-flex min-h-12 items-center text-xl font-semibold tracking-tight">
             IGNITE
           </Link>
-          <nav className="order-last flex w-full gap-1 sm:order-none sm:w-auto">
+          <nav aria-label={t('nav.main')} className="order-last flex w-full gap-1 sm:order-none sm:w-auto">
             <NavLink to="/student" end className={navClass}>
-              Home
+              {t('nav.home')}
             </NavLink>
             <NavLink to="/student/learn" className={navClass}>
-              Learn
+              {t('nav.learn')}
             </NavLink>
             <NavLink to="/student/leaderboard" className={navClass}>
-              Leaderboard
+              {t('nav.leaderboard')}
             </NavLink>
           </nav>
           <div className="ml-auto flex items-center gap-4">
             {progress && (
               <p className="hidden text-base text-muted sm:block">
-                <strong className="text-ink">{progress.points}</strong> points
+                <strong className="text-ink">{progress.points}</strong> {t('header.points')}
                 <span className="mx-2">|</span>
-                <strong className="text-ink">{progress.streak}</strong> day streak
+                <strong className="text-ink">{progress.streak}</strong> {t('header.streak')}
               </p>
             )}
             <ThemeToggle />
             <button onClick={logout} className="inline-flex min-h-12 items-center px-2 text-base font-semibold text-muted hover:text-ink">
-              Log out
+              {t('common.logOut')}
             </button>
           </div>
         </div>
@@ -57,11 +59,11 @@ export function StudentLayout() {
           <div>
             <p className="text-lg font-semibold">{progressError}</p>
             <button onClick={reloadProgress} className="btn btn-primary mt-4">
-              Try again
+              {t('common.tryAgain')}
             </button>
           </div>
         ) : (
-          <p className="text-muted">Loading your progress...</p>
+          <p className="text-muted">{t('common.loadingProgress')}</p>
         )}
       </main>
     </div>

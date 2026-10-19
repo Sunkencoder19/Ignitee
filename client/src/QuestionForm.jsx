@@ -6,8 +6,41 @@
 // game.js, the same check the server runs) show once `showProblems` is true,
 // which pages switch on after the first Save, so a half-typed question isn't
 // covered in red.
+//
+// Hindi and Marathi: the page shows <LanguageTabs> (also in this file) and
+// passes `lang`. In 'hi' or 'mr' the form shows the translation boxes instead,
+// each with the English beside it. Translations are optional; anything left
+// empty falls back to English for students.
 
 import { LIMITS, questionProblems } from './game'
+
+const LANGUAGE_TABS = [
+  { code: 'en', label: 'English' },
+  { code: 'hi', label: 'हिन्दी (Hindi)' },
+  { code: 'mr', label: 'मराठी (Marathi)' },
+]
+
+// English / Hindi / Marathi tabs for an editor page.
+export function LanguageTabs({ lang, onChange }) {
+  return (
+    <div role="tablist" aria-label="Language to edit" className="inline-flex flex-wrap gap-1 rounded-full bg-bg p-1 ring-1 ring-line">
+      {LANGUAGE_TABS.map((tab) => (
+        <button
+          key={tab.code}
+          type="button"
+          role="tab"
+          aria-selected={lang === tab.code}
+          onClick={() => onChange(tab.code)}
+          className={`min-h-11 rounded-full px-4 font-semibold ${lang === tab.code ? 'bg-surface text-ink shadow-card' : 'text-muted hover:text-ink'}`}
+        >
+          {tab.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+const LANGUAGE_WORD = { hi: 'Hindi', mr: 'Marathi' }
 
 const TYPES = [
   { value: 'mcq', label: 'Multiple choice' },
@@ -23,16 +56,20 @@ export function blankQuestion(type = 'mcq') {
   return { ...base, answer: '' }
 }
 
-export default function QuestionForm({ question, onChange, idPrefix, needsTopic = false, topics = [], showProblems = false }) {
+export default function QuestionForm({ question, onChange, idPrefix, needsTopic = false, topics = [], showProblems = false, lang = 'en' }) {
   const q = question
   const set = (changes) => onChange({ ...q, ...changes })
   const problems = showProblems ? questionProblems(q, { needsTopic }) : []
   const id = (name) => `${idPrefix}-${name}`
 
+  if (lang !== 'en') return <TranslationFields q={q} onChange={onChange} lang={lang} id={id} problems={problems} />
+
   // Switching type keeps the shared fields and starts the answer part fresh.
+  // Translated options or items no longer line up, so only the text translations stay.
   function changeType(type) {
     const fresh = blankQuestion(type)
-    onChange({ ...fresh, id: q.id, prompt: q.prompt, hint: q.hint, explanation: q.explanation, topic: q.topic })
+    const keepText = (t) => (t ? { prompt: t.prompt, hint: t.hint, explanation: t.explanation } : undefined)
+    onChange({ ...fresh, id: q.id, prompt: q.prompt, hint: q.hint, explanation: q.explanation, topic: q.topic, hi: keepText(q.hi), mr: keepText(q.mr) })
   }
 
   return (
@@ -254,5 +291,89 @@ function OrderItems({ q, set, id }) {
         </button>
       )}
     </fieldset>
+  )
+}
+
+// The Hindi or Marathi boxes for one question. Each shows the English it
+// translates; options and order items get one box per English one, so they
+// stay in the same order (the right answer is the same position).
+function TranslationFields({ q, onChange, lang, id, problems }) {
+  const t = q[lang] ?? {}
+  const word = LANGUAGE_WORD[lang]
+  const set = (changes) => onChange({ ...q, [lang]: { ...t, ...changes } })
+  const list = q.type === 'mcq' ? q.options : q.type === 'order' ? q.answer : []
+  const listField = q.type === 'mcq' ? 'options' : 'items'
+  const translatedList = Array.isArray(t[listField]) ? t[listField] : []
+
+  function Field({ field, label, english, max, rows }) {
+    const props = {
+      id: id(`${lang}-${field}`),
+      lang,
+      value: t[field] ?? '',
+      onChange: (e) => set({ [field]: e.target.value }),
+      maxLength: max,
+      className: `field ${rows ? 'py-3' : ''}`,
+    }
+    return (
+      <div>
+        <label htmlFor={props.id} className="label">
+          {label} in {word}
+        </label>
+        <p className="-mt-1 mb-2 text-sm text-muted">English: {english || '(empty)'}</p>
+        {rows ? <textarea rows={rows} {...props} /> : <input {...props} />}
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-4">
+      {Field({ field: 'prompt', label: 'Question', english: q.prompt, max: LIMITS.prompt, rows: 2 })}
+
+      {list.length > 0 && (
+        <fieldset>
+          <legend className="label">
+            {q.type === 'mcq' ? 'Options' : 'Items, in the right order'} in {word}
+          </legend>
+          <p className="-mt-1 mb-2 text-sm text-muted">Translate all of them, or leave all empty to use the English.</p>
+          <ol className="space-y-2">
+            {list.map((english, i) => (
+              <li key={i} className="grid gap-1 sm:grid-cols-[12rem_1fr] sm:items-center sm:gap-3">
+                <span className="text-sm text-muted">
+                  {i + 1}. {english || '(empty)'}
+                  {q.type === 'mcq' && english && english === q.answer && ' (right answer)'}
+                </span>
+                <input
+                  lang={lang}
+                  value={translatedList[i] ?? ''}
+                  onChange={(e) => {
+                    const next = list.map((_, j) => (j === i ? e.target.value : translatedList[j] ?? ''))
+                    set({ [listField]: next })
+                  }}
+                  maxLength={LIMITS.option}
+                  aria-label={`${word} for ${q.type === 'mcq' ? 'option' : 'item'} ${i + 1}`}
+                  className="field"
+                />
+              </li>
+            ))}
+          </ol>
+        </fieldset>
+      )}
+      {q.type === 'input' && <p className="text-muted">The right answer stays the same in every language: {q.answer || '(empty)'}.</p>}
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        {Field({ field: 'hint', label: 'Hint', english: q.hint, max: LIMITS.hint })}
+        {Field({ field: 'explanation', label: 'Explanation', english: q.explanation, max: LIMITS.explanation })}
+      </div>
+
+      {problems.length > 0 && (
+        <ul role="alert" className="rounded-xl bg-warn-soft p-4 text-warn">
+          {problems.map((p) => (
+            <li key={p} className="font-semibold">
+              {p}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   )
 }

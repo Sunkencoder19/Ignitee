@@ -7,11 +7,23 @@
         "steps": [
           {
             "type": "explain",
-            "text": "Flat shapes are shapes that lie on a page. A circle, a square, a rectangle and a triangle are all flat shapes."
+            "text": "Flat shapes are shapes that lie on a page. A circle, a square, a rectangle and a triangle are all flat shapes.",
+            "hi": {
+              "text": "समतल आकृतियाँ वे आकृतियाँ हैं जो कागज़ पर सपाट बनती हैं। वृत्त, वर्ग, आयत और त्रिभुज सभी समतल आकृतियाँ हैं।"
+            },
+            "mr": {
+              "text": "सपाट आकार म्हणजे कागदावर सपाट काढता येणारे आकार. वर्तुळ, चौरस, आयत आणि त्रिकोण हे सर्व सपाट आकार आहेत."
+            }
           },
           {
             "type": "example",
-            "text": "A clock is round like a circle. A book cover is a rectangle. A slice of pizza is like a triangle."
+            "text": "A clock is round like a circle. A book cover is a rectangle. A slice of pizza is like a triangle.",
+            "hi": {
+              "text": "घड़ी वृत्त की तरह गोल होती है। किताब का कवर आयत होता है। पिज़्ज़ा का टुकड़ा त्रिभुज जैसा होता है।"
+            },
+            "mr": {
+              "text": "घड्याळ वर्तुळासारखे गोल असते. पुस्तकाचे मुखपृष्ठ आयताकृती असते. पिझ्झाचा तुकडा त्रिकोणासारखा असतो."
+            }
           },
           {
             "type": "activity",
@@ -27,21 +39,67 @@
               ],
               "answer": "Triangle",
               "hint": "Count its pointy corners. It has 3.",
-              "explanation": "A pizza slice has 3 corners and 3 sides, like a triangle."
+              "explanation": "A pizza slice has 3 corners and 3 sides, like a triangle.",
+              "hi": {
+                "prompt": "पिज़्ज़ा का टुकड़ा सबसे ज़्यादा किस आकृति जैसा दिखता है?",
+                "options": [
+                  "वृत्त",
+                  "वर्ग",
+                  "त्रिभुज",
+                  "आयत"
+                ],
+                "hint": "इसके नुकीले कोने गिनो। इसके 3 कोने हैं।",
+                "explanation": "पिज़्ज़ा के टुकड़े के 3 कोने और 3 भुजाएँ होती हैं, बिल्कुल त्रिभुज की तरह।"
+              },
+              "mr": {
+                "prompt": "पिझ्झाचा तुकडा कोणत्या आकारासारखा सर्वात जास्त दिसतो?",
+                "options": [
+                  "वर्तुळ",
+                  "चौरस",
+                  "त्रिकोण",
+                  "आयत"
+                ],
+                "hint": "त्याचे टोकदार कोपरे मोजा. त्याला 3 कोपरे आहेत.",
+                "explanation": "पिझ्झाच्या तुकड्याला 3 कोपरे आणि 3 बाजू असतात, अगदी त्रिकोणासारख्या."
+              }
+            },
+            "hi": {
+              "text": "अपने कमरे में चारों ओर देखो। एक चीज़ ढूँढो जो वृत्त जैसी हो और एक जो वर्ग जैसी हो।"
+            },
+            "mr": {
+              "text": "तुमच्या खोलीत आजूबाजूला बघा. वर्तुळासारखी एक वस्तू आणि चौरसासारखी एक वस्तू शोधा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "हमारे आस-पास की समतल आकृतियाँ"
+        },
+        "mr": {
+          "title": "आपल्या आजूबाजूचे सपाट आकार"
+        }
       },
       {
         "title": "Solid shapes around us",
         "steps": [
           {
             "type": "explain",
-            "text": "Solid shapes can be picked up and held. A cube, a cuboid, a sphere, a cylinder and a cone are all solid shapes."
+            "text": "Solid shapes can be picked up and held. A cube, a cuboid, a sphere, a cylinder and a cone are all solid shapes.",
+            "hi": {
+              "text": "ठोस आकृतियों को हम उठाकर हाथ में पकड़ सकते हैं। घन, घनाभ, गोला, बेलन और शंकु सभी ठोस आकृतियाँ हैं।"
+            },
+            "mr": {
+              "text": "त्रिमितीय आकार आपण उचलून हातात धरू शकतो. घन, इष्टिकाचिती, गोल, दंडगोल आणि शंकू हे सर्व त्रिमितीय आकार आहेत."
+            }
           },
           {
             "type": "example",
-            "text": "A dice is a cube. A can of juice is a cylinder. A ball is a sphere. An ice cream cone is a cone."
+            "text": "A dice is a cube. A can of juice is a cylinder. A ball is a sphere. An ice cream cone is a cone.",
+            "hi": {
+              "text": "पासा एक घन है। जूस का डिब्बा एक बेलन है। गेंद एक गोला है। आइसक्रीम का कोन एक शंकु है।"
+            },
+            "mr": {
+              "text": "फासा हा घन आहे. रसाचा डबा हा दंडगोल आहे. चेंडू हा गोल आहे. आइस्क्रीमचा कोन हा शंकू आहे."
+            }
           },
           {
             "type": "activity",
@@ -57,21 +115,67 @@
               ],
               "answer": "Cylinder",
               "hint": "It has a round top and a round bottom.",
-              "explanation": "A can has two round, flat ends and a curved side. That is a cylinder."
+              "explanation": "A can has two round, flat ends and a curved side. That is a cylinder.",
+              "hi": {
+                "prompt": "जूस का डिब्बा किस आकार का होता है?",
+                "options": [
+                  "घन",
+                  "बेलन",
+                  "शंकु",
+                  "गोला"
+                ],
+                "hint": "इसका ऊपर और नीचे का भाग गोल होता है।",
+                "explanation": "डिब्बे के दो गोल, सपाट सिरे और एक मुड़ी हुई सतह होती है। यह बेलन है।"
+              },
+              "mr": {
+                "prompt": "रसाचा डबा कोणत्या आकाराचा असतो?",
+                "options": [
+                  "घन",
+                  "दंडगोल",
+                  "शंकू",
+                  "गोल"
+                ],
+                "hint": "त्याचा वरचा आणि खालचा भाग गोल असतो.",
+                "explanation": "डब्याला दोन गोल, सपाट टोके आणि एक वक्र बाजू असते. हा दंडगोल आहे."
+              }
+            },
+            "hi": {
+              "text": "घर पर एक डिब्बा ढूँढो। वह घन है या घनाभ? देखो कि उसकी सभी भुजाएँ एक जैसी हैं या नहीं।"
+            },
+            "mr": {
+              "text": "घरी एक खोका शोधा. तो घन आहे की इष्टिकाचिती? त्याच्या सर्व बाजू सारख्याच आकाराच्या आहेत का ते तपासा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "हमारे आस-पास की ठोस आकृतियाँ"
+        },
+        "mr": {
+          "title": "आपल्या आजूबाजूचे त्रिमितीय आकार"
+        }
       },
       {
         "title": "Faces, edges and corners",
         "steps": [
           {
             "type": "explain",
-            "text": "A face is a flat side of a solid shape. An edge is where two faces meet. A corner is where edges meet."
+            "text": "A face is a flat side of a solid shape. An edge is where two faces meet. A corner is where edges meet.",
+            "hi": {
+              "text": "फलक किसी ठोस आकृति की सपाट सतह होता है। जहाँ दो फलक मिलते हैं, उसे किनारा कहते हैं। जहाँ किनारे मिलते हैं, उसे कोना कहते हैं।"
+            },
+            "mr": {
+              "text": "पृष्ठ म्हणजे त्रिमितीय आकाराची सपाट बाजू. जिथे दोन पृष्ठे मिळतात ती कडा. जिथे कडा मिळतात तो कोपरा."
+            }
           },
           {
             "type": "example",
-            "text": "A cube has 6 flat faces, 12 edges and 8 corners. Count them on a dice."
+            "text": "A cube has 6 flat faces, 12 edges and 8 corners. Count them on a dice.",
+            "hi": {
+              "text": "घन के 6 सपाट फलक, 12 किनारे और 8 कोने होते हैं। इन्हें पासे पर गिनो।"
+            },
+            "mr": {
+              "text": "घनाला 6 सपाट पृष्ठे, 12 कडा आणि 8 कोपरे असतात. ते फाशावर मोजा."
+            }
           },
           {
             "type": "activity",
@@ -81,10 +185,32 @@
               "prompt": "A box shaped like a cuboid has how many faces?",
               "answer": "6",
               "hint": "Count top, bottom, front, back, left and right.",
-              "explanation": "A cuboid has 6 faces: top, bottom, front, back, left and right."
+              "explanation": "A cuboid has 6 faces: top, bottom, front, back, left and right.",
+              "hi": {
+                "prompt": "घनाभ के आकार के डिब्बे के कितने फलक होते हैं?",
+                "hint": "ऊपर, नीचे, आगे, पीछे, बाएँ और दाएँ गिनो।",
+                "explanation": "घनाभ के 6 फलक होते हैं: ऊपर, नीचे, आगे, पीछे, बायाँ और दायाँ।"
+              },
+              "mr": {
+                "prompt": "इष्टिकाचितीच्या आकाराच्या खोक्याला किती पृष्ठे असतात?",
+                "hint": "वर, खाली, पुढे, मागे, डावीकडे आणि उजवीकडे मोजा.",
+                "explanation": "इष्टिकाचितीला 6 पृष्ठे असतात: वरचे, खालचे, पुढचे, मागचे, डावे आणि उजवे."
+              }
+            },
+            "hi": {
+              "text": "एक डिब्बा उठाओ। एक किनारे पर उँगली फिराओ, फिर एक कोने को छुओ।"
+            },
+            "mr": {
+              "text": "एक खोका उचला. एका कडेवरून बोट फिरवा, मग एका कोपऱ्याला स्पर्श करा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "फलक, किनारे और कोने"
+        },
+        "mr": {
+          "title": "पृष्ठे, कडा आणि कोपरे"
+        }
       }
     ],
     "quiz": {
@@ -101,7 +227,17 @@
           "answer": "3",
           "hint": "Tri means three.",
           "explanation": "A triangle always has 3 sides and 3 corners.",
-          "topic": "Flat shapes"
+          "topic": "Flat shapes",
+          "hi": {
+            "prompt": "त्रिभुज की कितनी भुजाएँ होती हैं?",
+            "hint": "\"त्रि\" का मतलब है तीन।",
+            "explanation": "त्रिभुज की हमेशा 3 भुजाएँ और 3 कोने होते हैं।"
+          },
+          "mr": {
+            "prompt": "त्रिकोणाला किती बाजू असतात?",
+            "hint": "\"त्रि\" म्हणजे तीन.",
+            "explanation": "त्रिकोणाला नेहमी 3 बाजू आणि 3 कोपरे असतात."
+          }
         },
         {
           "type": "mcq",
@@ -115,7 +251,29 @@
           "answer": "Circle",
           "hint": "It rolls smoothly with no straight edges.",
           "explanation": "A circle is round all the way, so it has no corners.",
-          "topic": "Flat shapes"
+          "topic": "Flat shapes",
+          "hi": {
+            "prompt": "किस आकृति में कोई कोना नहीं होता?",
+            "options": [
+              "वर्ग",
+              "त्रिभुज",
+              "वृत्त",
+              "आयत"
+            ],
+            "hint": "यह बिना सीधे किनारों के आसानी से लुढ़कती है।",
+            "explanation": "वृत्त पूरा गोल होता है, इसलिए इसमें कोई कोना नहीं होता।"
+          },
+          "mr": {
+            "prompt": "कोणत्या आकाराला एकही कोपरा नसतो?",
+            "options": [
+              "चौरस",
+              "त्रिकोण",
+              "वर्तुळ",
+              "आयत"
+            ],
+            "hint": "सरळ कडा नसल्याने तो सहज घरंगळतो.",
+            "explanation": "वर्तुळ सगळीकडून गोल असते, म्हणून त्याला कोपरा नसतो."
+          }
         },
         {
           "type": "mcq",
@@ -129,7 +287,17 @@
           "answer": "6",
           "hint": "Think of a dice.",
           "explanation": "A cube has 6 flat square faces, like a dice.",
-          "topic": "Faces, edges and corners"
+          "topic": "Faces, edges and corners",
+          "hi": {
+            "prompt": "घन के कितने फलक होते हैं?",
+            "hint": "पासे के बारे में सोचो।",
+            "explanation": "पासे की तरह घन के 6 सपाट, वर्गाकार फलक होते हैं।"
+          },
+          "mr": {
+            "prompt": "घनाला किती पृष्ठे असतात?",
+            "hint": "फाशाचा विचार करा.",
+            "explanation": "फाशाप्रमाणे घनाला 6 सपाट, चौरसाकृती पृष्ठे असतात."
+          }
         },
         {
           "type": "input",
@@ -137,7 +305,17 @@
           "answer": "12",
           "hint": "Count where the faces meet.",
           "explanation": "A cube has 12 edges, where two faces meet.",
-          "topic": "Faces, edges and corners"
+          "topic": "Faces, edges and corners",
+          "hi": {
+            "prompt": "घन के कितने किनारे होते हैं?",
+            "hint": "जहाँ फलक मिलते हैं, उन्हें गिनो।",
+            "explanation": "घन के 12 किनारे होते हैं, जहाँ दो फलक मिलते हैं।"
+          },
+          "mr": {
+            "prompt": "घनाला किती कडा असतात?",
+            "hint": "जिथे पृष्ठे मिळतात त्या जागा मोजा.",
+            "explanation": "घनाला 12 कडा असतात, जिथे दोन पृष्ठे मिळतात."
+          }
         },
         {
           "type": "mcq",
@@ -151,7 +329,29 @@
           "answer": "Sphere",
           "hint": "You can hold it in your hand like a ball.",
           "explanation": "A sphere is a solid, round 3D shape, like a ball.",
-          "topic": "Solid shapes"
+          "topic": "Solid shapes",
+          "hi": {
+            "prompt": "इनमें से कौन-सी ठोस (3D) आकृति है?",
+            "options": [
+              "वृत्त",
+              "वर्ग",
+              "गोला",
+              "त्रिभुज"
+            ],
+            "hint": "इसे तुम गेंद की तरह हाथ में पकड़ सकते हो।",
+            "explanation": "गोला गेंद जैसी एक ठोस, गोल 3D आकृति है।"
+          },
+          "mr": {
+            "prompt": "यांपैकी त्रिमितीय (3D) आकार कोणता?",
+            "options": [
+              "वर्तुळ",
+              "चौरस",
+              "गोल",
+              "त्रिकोण"
+            ],
+            "hint": "तो चेंडूसारखा हातात धरता येतो.",
+            "explanation": "गोल हा चेंडूसारखा एक गोलाकार त्रिमितीय आकार आहे."
+          }
         },
         {
           "type": "mcq",
@@ -165,7 +365,29 @@
           "answer": "Sphere",
           "hint": "It is round in every direction.",
           "explanation": "A ball is a sphere.",
-          "topic": "Solid shapes"
+          "topic": "Solid shapes",
+          "hi": {
+            "prompt": "गेंद किस आकार की होती है?",
+            "options": [
+              "घन",
+              "बेलन",
+              "गोला",
+              "शंकु"
+            ],
+            "hint": "यह हर तरफ़ से गोल होती है।",
+            "explanation": "गेंद एक गोला है।"
+          },
+          "mr": {
+            "prompt": "चेंडू कोणत्या आकाराचा असतो?",
+            "options": [
+              "घन",
+              "दंडगोल",
+              "गोल",
+              "शंकू"
+            ],
+            "hint": "तो प्रत्येक दिशेने गोल असतो.",
+            "explanation": "चेंडू हा गोल आहे."
+          }
         },
         {
           "type": "input",
@@ -173,7 +395,17 @@
           "answer": "8",
           "hint": "Count the pointy corners of a dice.",
           "explanation": "A cube has 8 corners.",
-          "topic": "Faces, edges and corners"
+          "topic": "Faces, edges and corners",
+          "hi": {
+            "prompt": "घन के कितने कोने होते हैं?",
+            "hint": "पासे के नुकीले कोने गिनो।",
+            "explanation": "घन के 8 कोने होते हैं।"
+          },
+          "mr": {
+            "prompt": "घनाला किती कोपरे असतात?",
+            "hint": "फाशाचे टोकदार कोपरे मोजा.",
+            "explanation": "घनाला 8 कोपरे असतात."
+          }
         },
         {
           "type": "order",
@@ -186,9 +418,37 @@
           ],
           "hint": "Triangle has 3 sides, square 4, pentagon 5, hexagon 6.",
           "explanation": "Triangle (3), Square (4), Pentagon (5), Hexagon (6): fewest sides first.",
-          "topic": "Flat shapes"
+          "topic": "Flat shapes",
+          "hi": {
+            "prompt": "इन आकृतियों को सबसे कम भुजाओं से सबसे ज़्यादा भुजाओं के क्रम में लगाओ।",
+            "items": [
+              "त्रिभुज",
+              "वर्ग",
+              "पंचभुज",
+              "षट्भुज"
+            ],
+            "hint": "त्रिभुज की 3 भुजाएँ, वर्ग की 4, पंचभुज की 5 और षट्भुज की 6 होती हैं।",
+            "explanation": "त्रिभुज (3), वर्ग (4), पंचभुज (5), षट्भुज (6): सबसे कम भुजाओं वाली पहले।"
+          },
+          "mr": {
+            "prompt": "हे आकार सर्वात कमी बाजूंपासून सर्वात जास्त बाजूंपर्यंत क्रमाने लावा.",
+            "items": [
+              "त्रिकोण",
+              "चौरस",
+              "पंचकोन",
+              "षट्कोन"
+            ],
+            "hint": "त्रिकोणाला 3 बाजू, चौरसाला 4, पंचकोनाला 5 आणि षट्कोनाला 6 बाजू असतात.",
+            "explanation": "त्रिकोण (3), चौरस (4), पंचकोन (5), षट्कोन (6): सर्वात कमी बाजू असलेला आधी."
+          }
         }
       ]
+    },
+    "hi": {
+      "title": "हमारे आस-पास की आकृतियाँ"
+    },
+    "mr": {
+      "title": "आपल्या आजूबाजूचे आकार"
     }
   },
   {
@@ -199,11 +459,23 @@
         "steps": [
           {
             "type": "explain",
-            "text": "Skip counting means counting by jumps instead of one by one. We can skip count by 2s, 5s or 10s."
+            "text": "Skip counting means counting by jumps instead of one by one. We can skip count by 2s, 5s or 10s.",
+            "hi": {
+              "text": "छलांग लगाकर गिनती का मतलब है एक-एक करके नहीं, बल्कि छलांग लगाकर गिनना। हम 2-2, 5-5 या 10-10 की छलांग लगाकर गिन सकते हैं।"
+            },
+            "mr": {
+              "text": "उड्या मारत मोजणे म्हणजे एकेक करून न मोजता उड्या मारत मोजणे. आपण 2-2, 5-5 किंवा 10-10 च्या उड्या मारत मोजू शकतो."
+            }
           },
           {
             "type": "example",
-            "text": "Counting by 5s: 5, 10, 15, 20, 25. Each jump adds 5."
+            "text": "Counting by 5s: 5, 10, 15, 20, 25. Each jump adds 5.",
+            "hi": {
+              "text": "5-5 करके गिनती: 5, 10, 15, 20, 25. हर छलांग में 5 जुड़ता है।"
+            },
+            "mr": {
+              "text": "5-5 ने मोजणी: 5, 10, 15, 20, 25. प्रत्येक उडीत 5 मिळवले जातात."
+            }
           },
           {
             "type": "activity",
@@ -218,21 +490,55 @@
                 "20"
               ],
               "hint": "Start with the smallest number.",
-              "explanation": "Counting by 5s: 5, 10, 15, 20."
+              "explanation": "Counting by 5s: 5, 10, 15, 20.",
+              "hi": {
+                "prompt": "5-5 करके गिनते हुए संख्याओं को क्रम से दबाओ।",
+                "hint": "सबसे छोटी संख्या से शुरू करो।",
+                "explanation": "5-5 करके गिनती: 5, 10, 15, 20."
+              },
+              "mr": {
+                "prompt": "5-5 ने मोजत संख्यांवर क्रमाने टॅप करा.",
+                "hint": "सर्वात लहान संख्येपासून सुरुवात करा.",
+                "explanation": "5-5 ने मोजणी: 5, 10, 15, 20."
+              }
+            },
+            "hi": {
+              "text": "अपने हाथों और पैरों की उँगलियों को 5-5 करके गिनो। गिनते समय संख्याएँ ज़ोर से बोलो।"
+            },
+            "mr": {
+              "text": "तुमच्या हाताची आणि पायाची बोटे 5-5 ने मोजा. मोजताना संख्या मोठ्याने म्हणा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "छलांग लगाकर गिनती"
+        },
+        "mr": {
+          "title": "उड्या मारत मोजणी"
+        }
       },
       {
         "title": "Number patterns",
         "steps": [
           {
             "type": "explain",
-            "text": "A number pattern follows a rule. Once you find the rule, you can guess what comes next."
+            "text": "A number pattern follows a rule. Once you find the rule, you can guess what comes next.",
+            "hi": {
+              "text": "संख्याओं का पैटर्न एक नियम पर चलता है। नियम पता चलते ही तुम बता सकते हो कि आगे क्या आएगा।"
+            },
+            "mr": {
+              "text": "संख्यांचा आकृतिबंध एका नियमाने चालतो. नियम सापडला की पुढे काय येईल ते तुम्ही ओळखू शकता."
+            }
           },
           {
             "type": "example",
-            "text": "2, 4, 6, 8, __. Each number is 2 more than the last, so the next number is 10."
+            "text": "2, 4, 6, 8, __. Each number is 2 more than the last, so the next number is 10.",
+            "hi": {
+              "text": "2, 4, 6, 8, __. हर संख्या पिछली संख्या से 2 ज़्यादा है, इसलिए अगली संख्या 10 है।"
+            },
+            "mr": {
+              "text": "2, 4, 6, 8, __. प्रत्येक संख्या आधीच्या संख्येपेक्षा 2 ने जास्त आहे, म्हणून पुढची संख्या 10 आहे."
+            }
           },
           {
             "type": "activity",
@@ -242,21 +548,53 @@
               "prompt": "What comes next? 1, 4, 7, 10, __",
               "answer": "13",
               "hint": "Each number is 3 more than the one before.",
-              "explanation": "10 + 3 = 13."
+              "explanation": "10 + 3 = 13.",
+              "hi": {
+                "prompt": "आगे क्या आएगा? 1, 4, 7, 10, __",
+                "hint": "हर संख्या पिछली संख्या से 3 ज़्यादा है।"
+              },
+              "mr": {
+                "prompt": "पुढे काय येईल? 1, 4, 7, 10, __",
+                "hint": "प्रत्येक संख्या आधीच्या संख्येपेक्षा 3 ने जास्त आहे."
+              }
+            },
+            "hi": {
+              "text": "अपना एक पैटर्न लिखो जिसमें हर बार 3 जुड़ता हो। 1 से शुरू करो।"
+            },
+            "mr": {
+              "text": "प्रत्येक वेळी 3 मिळवणारा तुमचा स्वतःचा आकृतिबंध लिहा. 1 पासून सुरुवात करा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "संख्याओं के पैटर्न"
+        },
+        "mr": {
+          "title": "संख्यांचे आकृतिबंध"
+        }
       },
       {
         "title": "Missing numbers",
         "steps": [
           {
             "type": "explain",
-            "text": "Sometimes a number in a pattern is hidden. Look at the numbers before and after it to find the rule."
+            "text": "Sometimes a number in a pattern is hidden. Look at the numbers before and after it to find the rule.",
+            "hi": {
+              "text": "कभी-कभी पैटर्न में कोई संख्या छिपी होती है। नियम जानने के लिए उससे पहले और बाद की संख्याएँ देखो।"
+            },
+            "mr": {
+              "text": "कधी कधी आकृतिबंधातील एखादी संख्या लपलेली असते. नियम शोधण्यासाठी तिच्या आधीच्या आणि नंतरच्या संख्या पहा."
+            }
           },
           {
             "type": "example",
-            "text": "10, 20, __, 40. The rule is add 10, so the missing number is 30."
+            "text": "10, 20, __, 40. The rule is add 10, so the missing number is 30.",
+            "hi": {
+              "text": "10, 20, __, 40. नियम है 10 जोड़ो, इसलिए छूटी हुई संख्या 30 है।"
+            },
+            "mr": {
+              "text": "10, 20, __, 40. नियम आहे 10 मिळवा, म्हणून गाळलेली संख्या 30 आहे."
+            }
           },
           {
             "type": "activity",
@@ -272,10 +610,32 @@
               ],
               "answer": "40",
               "hint": "The rule is add 10.",
-              "explanation": "30 + 10 = 40, and 40 + 10 = 50."
+              "explanation": "30 + 10 = 40, and 40 + 10 = 50.",
+              "hi": {
+                "prompt": "छूटी हुई संख्या ढूँढो: 20, 30, __, 50",
+                "hint": "नियम है 10 जोड़ो।",
+                "explanation": "30 + 10 = 40, और 40 + 10 = 50."
+              },
+              "mr": {
+                "prompt": "गाळलेली संख्या शोधा: 20, 30, __, 50",
+                "hint": "नियम आहे 10 मिळवा.",
+                "explanation": "30 + 10 = 40, आणि 40 + 10 = 50."
+              }
+            },
+            "hi": {
+              "text": "किसी दोस्त से कहो कि गिनती के पैटर्न में एक संख्या छिपा दे। नियम की मदद से उसे ढूँढो।"
+            },
+            "mr": {
+              "text": "मित्राला मोजणीच्या आकृतिबंधातील एक संख्या लपवायला सांगा. नियम वापरून ती शोधा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "छूटी हुई संख्याएँ"
+        },
+        "mr": {
+          "title": "गाळलेल्या संख्या"
+        }
       }
     ],
     "quiz": {
@@ -292,7 +652,15 @@
           "answer": "8",
           "hint": "Add 2 to the last number.",
           "explanation": "6 + 2 = 8.",
-          "topic": "Skip counting"
+          "topic": "Skip counting",
+          "hi": {
+            "prompt": "2-2 करके गिनो: 2, 4, 6, __?",
+            "hint": "पिछली संख्या में 2 जोड़ो।"
+          },
+          "mr": {
+            "prompt": "2-2 ने मोजा: 2, 4, 6, __?",
+            "hint": "शेवटच्या संख्येत 2 मिळवा."
+          }
         },
         {
           "type": "input",
@@ -300,7 +668,15 @@
           "answer": "25",
           "hint": "Each jump adds 5.",
           "explanation": "20 + 5 = 25.",
-          "topic": "Skip counting"
+          "topic": "Skip counting",
+          "hi": {
+            "prompt": "आगे क्या आएगा? 5, 10, 15, 20, __",
+            "hint": "हर छलांग में 5 जुड़ता है।"
+          },
+          "mr": {
+            "prompt": "पुढे काय येईल? 5, 10, 15, 20, __",
+            "hint": "प्रत्येक उडीत 5 मिळवले जातात."
+          }
         },
         {
           "type": "mcq",
@@ -314,7 +690,15 @@
           "answer": "20",
           "hint": "Add 5 to the last number.",
           "explanation": "15 + 5 = 20.",
-          "topic": "Skip counting"
+          "topic": "Skip counting",
+          "hi": {
+            "prompt": "5-5 करके गिनो: 5, 10, 15, __?",
+            "hint": "पिछली संख्या में 5 जोड़ो।"
+          },
+          "mr": {
+            "prompt": "5-5 ने मोजा: 5, 10, 15, __?",
+            "hint": "शेवटच्या संख्येत 5 मिळवा."
+          }
         },
         {
           "type": "input",
@@ -322,7 +706,17 @@
           "answer": "12",
           "hint": "Each jump adds 3.",
           "explanation": "9 + 3 = 12, and 12 + 3 = 15.",
-          "topic": "Missing numbers"
+          "topic": "Missing numbers",
+          "hi": {
+            "prompt": "छूटी हुई संख्या ढूँढो: 3, 6, 9, __, 15",
+            "hint": "हर छलांग में 3 जुड़ता है।",
+            "explanation": "9 + 3 = 12, और 12 + 3 = 15."
+          },
+          "mr": {
+            "prompt": "गाळलेली संख्या शोधा: 3, 6, 9, __, 15",
+            "hint": "प्रत्येक उडीत 3 मिळवले जातात.",
+            "explanation": "9 + 3 = 12, आणि 12 + 3 = 15."
+          }
         },
         {
           "type": "mcq",
@@ -336,7 +730,17 @@
           "answer": "10, 20, 30, 40",
           "hint": "Each jump should add exactly 10.",
           "explanation": "10, 20, 30, 40 each add 10.",
-          "topic": "Number patterns"
+          "topic": "Number patterns",
+          "hi": {
+            "prompt": "संख्याओं का कौन-सा पैटर्न 10-10 की छलांग लगाता है?",
+            "hint": "हर छलांग में ठीक 10 जुड़ना चाहिए।",
+            "explanation": "10, 20, 30, 40 में हर बार 10 जुड़ता है।"
+          },
+          "mr": {
+            "prompt": "कोणता संख्यांचा आकृतिबंध 10-10 च्या उड्या मारतो?",
+            "hint": "प्रत्येक उडीत बरोबर 10 मिळवले पाहिजेत.",
+            "explanation": "10, 20, 30, 40 मध्ये प्रत्येक वेळी 10 मिळवले जातात."
+          }
         },
         {
           "type": "input",
@@ -344,7 +748,17 @@
           "answer": "70",
           "hint": "This pattern counts down by 10.",
           "explanation": "80 - 10 = 70, and 70 - 10 = 60.",
-          "topic": "Missing numbers"
+          "topic": "Missing numbers",
+          "hi": {
+            "prompt": "छूटी हुई संख्या क्या है? 100, 90, 80, __, 60",
+            "hint": "यह पैटर्न 10-10 करके उल्टी गिनती करता है।",
+            "explanation": "80 - 10 = 70, और 70 - 10 = 60."
+          },
+          "mr": {
+            "prompt": "गाळलेली संख्या कोणती? 100, 90, 80, __, 60",
+            "hint": "हा आकृतिबंध 10-10 ने उलटी मोजणी करतो.",
+            "explanation": "80 - 10 = 70, आणि 70 - 10 = 60."
+          }
         },
         {
           "type": "mcq",
@@ -358,7 +772,15 @@
           "answer": "15",
           "hint": "Add 3 to the last number.",
           "explanation": "12 + 3 = 15.",
-          "topic": "Skip counting"
+          "topic": "Skip counting",
+          "hi": {
+            "prompt": "3-3 करके गिनती: 3, 6, 9, 12, __?",
+            "hint": "पिछली संख्या में 3 जोड़ो।"
+          },
+          "mr": {
+            "prompt": "3-3 ने मोजणी: 3, 6, 9, 12, __?",
+            "hint": "शेवटच्या संख्येत 3 मिळवा."
+          }
         },
         {
           "type": "order",
@@ -371,9 +793,25 @@
           ],
           "hint": "Start from the smallest number.",
           "explanation": "Counting by 4s from 4: 4, 8, 12, 16.",
-          "topic": "Skip counting"
+          "topic": "Skip counting",
+          "hi": {
+            "prompt": "इन संख्याओं को 4-4 की छलांग वाले क्रम में लगाओ।",
+            "hint": "सबसे छोटी संख्या से शुरू करो।",
+            "explanation": "4 से 4-4 करके गिनती: 4, 8, 12, 16."
+          },
+          "mr": {
+            "prompt": "या संख्या 4-4 च्या उडीच्या क्रमाने लावा.",
+            "hint": "सर्वात लहान संख्येपासून सुरुवात करा.",
+            "explanation": "4 पासून 4-4 ने मोजणी: 4, 8, 12, 16."
+          }
         }
       ]
+    },
+    "hi": {
+      "title": "छुपन-छुपाई"
+    },
+    "mr": {
+      "title": "लपाछपी"
     }
   },
   {
@@ -384,11 +822,23 @@
         "steps": [
           {
             "type": "explain",
-            "text": "A repeating pattern uses the same group of shapes or colours again and again."
+            "text": "A repeating pattern uses the same group of shapes or colours again and again.",
+            "hi": {
+              "text": "दोहराने वाले पैटर्न में आकृतियों या रंगों का एक ही समूह बार-बार आता है।"
+            },
+            "mr": {
+              "text": "पुनरावृत्ती होणाऱ्या आकृतिबंधात आकारांचा किंवा रंगांचा तोच गट पुन्हा पुन्हा येतो."
+            }
           },
           {
             "type": "example",
-            "text": "Red, blue, red, blue, red, blue is a repeating pattern with two colours."
+            "text": "Red, blue, red, blue, red, blue is a repeating pattern with two colours.",
+            "hi": {
+              "text": "लाल, नीला, लाल, नीला, लाल, नीला दो रंगों वाला एक दोहराने वाला पैटर्न है।"
+            },
+            "mr": {
+              "text": "लाल, निळा, लाल, निळा, लाल, निळा हा दोन रंगांचा पुनरावृत्ती होणारा आकृतिबंध आहे."
+            }
           },
           {
             "type": "activity",
@@ -403,21 +853,67 @@
                 "Blue"
               ],
               "hint": "Start with red, then take turns.",
-              "explanation": "The two colours take turns: red, blue, red, blue."
+              "explanation": "The two colours take turns: red, blue, red, blue.",
+              "hi": {
+                "prompt": "टाइलों को दबाकर लाल, नीला, लाल, नीला पैटर्न बनाओ।",
+                "items": [
+                  "लाल",
+                  "नीला",
+                  "लाल",
+                  "नीला"
+                ],
+                "hint": "लाल से शुरू करो, फिर बारी-बारी से।",
+                "explanation": "दोनों रंग बारी-बारी से आते हैं: लाल, नीला, लाल, नीला।"
+              },
+              "mr": {
+                "prompt": "टाइलवर टॅप करून लाल, निळा, लाल, निळा असा आकृतिबंध बनवा.",
+                "items": [
+                  "लाल",
+                  "निळा",
+                  "लाल",
+                  "निळा"
+                ],
+                "hint": "लालपासून सुरुवात करा, मग आलटून पालटून.",
+                "explanation": "दोन रंग आलटून पालटून येतात: लाल, निळा, लाल, निळा."
+              }
+            },
+            "hi": {
+              "text": "दो रंगों के मोतियों, ब्लॉकों या चित्रों से एक पैटर्न बनाओ।"
+            },
+            "mr": {
+              "text": "दोन रंगांचे मणी, ठोकळे किंवा चित्रे वापरून एक आकृतिबंध तयार करा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "दोहराने वाले पैटर्न"
+        },
+        "mr": {
+          "title": "पुनरावृत्ती होणारे आकृतिबंध"
+        }
       },
       {
         "title": "Growing patterns",
         "steps": [
           {
             "type": "explain",
-            "text": "Some patterns grow. Each step adds the same amount as the step before."
+            "text": "Some patterns grow. Each step adds the same amount as the step before.",
+            "hi": {
+              "text": "कुछ पैटर्न बढ़ते जाते हैं। हर कदम में उतना ही जुड़ता है जितना पिछले कदम में जुड़ा था।"
+            },
+            "mr": {
+              "text": "काही आकृतिबंध वाढत जातात. प्रत्येक पायरीत आधीच्या पायरीइतकेच मिळवले जाते."
+            }
           },
           {
             "type": "example",
-            "text": "1 dot, 3 dots, 5 dots, 7 dots. Each step adds 2 more dots."
+            "text": "1 dot, 3 dots, 5 dots, 7 dots. Each step adds 2 more dots.",
+            "hi": {
+              "text": "1 बिंदु, 3 बिंदु, 5 बिंदु, 7 बिंदु। हर कदम में 2 बिंदु और जुड़ते हैं।"
+            },
+            "mr": {
+              "text": "1 ठिपका, 3 ठिपके, 5 ठिपके, 7 ठिपके. प्रत्येक पायरीत आणखी 2 ठिपके मिळवले जातात."
+            }
           },
           {
             "type": "activity",
@@ -427,21 +923,55 @@
               "prompt": "1 dot, 3 dots, 5 dots, 7 dots. How many dots come next?",
               "answer": "9",
               "hint": "Each step adds 2 dots.",
-              "explanation": "7 + 2 = 9 dots."
+              "explanation": "7 + 2 = 9 dots.",
+              "hi": {
+                "prompt": "1 बिंदु, 3 बिंदु, 5 बिंदु, 7 बिंदु। अगले कदम में कितने बिंदु आएँगे?",
+                "hint": "हर कदम में 2 बिंदु जुड़ते हैं।",
+                "explanation": "7 + 2 = 9 बिंदु।"
+              },
+              "mr": {
+                "prompt": "1 ठिपका, 3 ठिपके, 5 ठिपके, 7 ठिपके. पुढे किती ठिपके येतील?",
+                "hint": "प्रत्येक पायरीत 2 ठिपके मिळवले जातात.",
+                "explanation": "7 + 2 = 9 ठिपके."
+              }
+            },
+            "hi": {
+              "text": "हर कदम के लिए बिंदु बनाओ। अगले कदम में कितने आएँगे?"
+            },
+            "mr": {
+              "text": "प्रत्येक पायरीसाठी ठिपके काढा. पुढच्या पायरीत किती येतील?"
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "बढ़ते हुए पैटर्न"
+        },
+        "mr": {
+          "title": "वाढणारे आकृतिबंध"
+        }
       },
       {
         "title": "Tiling patterns",
         "steps": [
           {
             "type": "explain",
-            "text": "Tiling means covering a space with shapes that fit together with no gaps."
+            "text": "Tiling means covering a space with shapes that fit together with no gaps.",
+            "hi": {
+              "text": "टाइल लगाना यानी किसी जगह को ऐसी आकृतियों से ढकना जो बिना खाली जगह छोड़े आपस में फिट हो जाएँ।"
+            },
+            "mr": {
+              "text": "फरशी बसवणे म्हणजे एखादी जागा अशा आकारांनी झाकणे जे मध्ये फट न ठेवता एकमेकांत बसतात."
+            }
           },
           {
             "type": "example",
-            "text": "Square tiles fit together neatly on a floor with no space between them."
+            "text": "Square tiles fit together neatly on a floor with no space between them.",
+            "hi": {
+              "text": "वर्गाकार टाइलें फ़र्श पर बिना किसी खाली जगह के आपस में ठीक से फिट हो जाती हैं।"
+            },
+            "mr": {
+              "text": "चौरस फरश्या जमिनीवर मध्ये जागा न सोडता एकमेकांत व्यवस्थित बसतात."
+            }
           },
           {
             "type": "activity",
@@ -457,10 +987,44 @@
               ],
               "answer": "Square",
               "hint": "Think of the floor tiles at school.",
-              "explanation": "Squares fit edge to edge with no gaps. Circles always leave gaps."
+              "explanation": "Squares fit edge to edge with no gaps. Circles always leave gaps.",
+              "hi": {
+                "prompt": "कौन-सी आकृति फ़र्श को बिना खाली जगह छोड़े ढक सकती है?",
+                "options": [
+                  "वृत्त",
+                  "वर्ग",
+                  "तारा",
+                  "दिल"
+                ],
+                "hint": "स्कूल के फ़र्श की टाइलों के बारे में सोचो।",
+                "explanation": "वर्ग किनारे से किनारा मिलाकर बिना खाली जगह के फिट होते हैं। वृत्त हमेशा खाली जगह छोड़ते हैं।"
+              },
+              "mr": {
+                "prompt": "कोणता आकार फट न ठेवता जमीन झाकू शकतो?",
+                "options": [
+                  "वर्तुळ",
+                  "चौरस",
+                  "तारा",
+                  "बदाम"
+                ],
+                "hint": "शाळेतील फरश्यांचा विचार करा.",
+                "explanation": "चौरस कडेला कडा जुळवून फट न ठेवता बसतात. वर्तुळे नेहमी फट सोडतात."
+              }
+            },
+            "hi": {
+              "text": "घर या स्कूल के फ़र्श की टाइलें देखो। वे किस आकार की हैं?"
+            },
+            "mr": {
+              "text": "घरातील किंवा शाळेतील फरश्या पहा. त्या कोणत्या आकाराच्या आहेत?"
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "टाइल वाले पैटर्न"
+        },
+        "mr": {
+          "title": "फरशीचे आकृतिबंध"
+        }
       }
     ],
     "quiz": {
@@ -477,7 +1041,29 @@
           "answer": "Circle",
           "hint": "The pattern repeats every 2 shapes.",
           "explanation": "The pattern is circle, square, circle, square, so it repeats with circle.",
-          "topic": "Repeating patterns"
+          "topic": "Repeating patterns",
+          "hi": {
+            "prompt": "पैटर्न में आगे क्या आएगा: वृत्त, वर्ग, वृत्त, वर्ग, __?",
+            "options": [
+              "वृत्त",
+              "त्रिभुज",
+              "वर्ग",
+              "तारा"
+            ],
+            "hint": "पैटर्न हर 2 आकृतियों के बाद दोहराता है।",
+            "explanation": "पैटर्न वृत्त, वर्ग, वृत्त, वर्ग है, इसलिए आगे फिर वृत्त आएगा।"
+          },
+          "mr": {
+            "prompt": "आकृतिबंधात पुढे काय येईल: वर्तुळ, चौरस, वर्तुळ, चौरस, __?",
+            "options": [
+              "वर्तुळ",
+              "त्रिकोण",
+              "चौरस",
+              "तारा"
+            ],
+            "hint": "आकृतिबंध दर 2 आकारांनंतर पुन्हा सुरू होतो.",
+            "explanation": "आकृतिबंध वर्तुळ, चौरस, वर्तुळ, चौरस असा आहे, म्हणून पुढे पुन्हा वर्तुळ येईल."
+          }
         },
         {
           "type": "mcq",
@@ -491,7 +1077,17 @@
           "answer": "4",
           "hint": "Each step adds 1 square.",
           "explanation": "3 + 1 = 4 squares.",
-          "topic": "Growing patterns"
+          "topic": "Growing patterns",
+          "hi": {
+            "prompt": "एक पैटर्न बढ़ता है: 1 वर्ग, 2 वर्ग, 3 वर्ग। आगे कितने वर्ग आएँगे?",
+            "hint": "हर कदम में 1 वर्ग जुड़ता है।",
+            "explanation": "3 + 1 = 4 वर्ग।"
+          },
+          "mr": {
+            "prompt": "एक आकृतिबंध वाढतो: 1 चौरस, 2 चौरस, 3 चौरस. पुढे किती चौरस येतील?",
+            "hint": "प्रत्येक पायरीत 1 चौरस मिळवला जातो.",
+            "explanation": "3 + 1 = 4 चौरस."
+          }
         },
         {
           "type": "mcq",
@@ -505,7 +1101,29 @@
           "answer": "Star",
           "hint": "The pattern repeats every 3 shapes.",
           "explanation": "The group star, star, moon repeats, so after moon comes star again.",
-          "topic": "Repeating patterns"
+          "topic": "Repeating patterns",
+          "hi": {
+            "prompt": "इस पैटर्न में आगे क्या आएगा: तारा, तारा, चाँद, तारा, तारा, चाँद, __?",
+            "options": [
+              "तारा",
+              "चाँद",
+              "सूरज",
+              "बादल"
+            ],
+            "hint": "पैटर्न हर 3 आकृतियों के बाद दोहराता है।",
+            "explanation": "तारा, तारा, चाँद का समूह दोहराता है, इसलिए चाँद के बाद फिर तारा आता है।"
+          },
+          "mr": {
+            "prompt": "या आकृतिबंधात पुढे काय येईल: तारा, तारा, चंद्र, तारा, तारा, चंद्र, __?",
+            "options": [
+              "तारा",
+              "चंद्र",
+              "सूर्य",
+              "ढग"
+            ],
+            "hint": "आकृतिबंध दर 3 आकारांनंतर पुन्हा सुरू होतो.",
+            "explanation": "तारा, तारा, चंद्र हा गट पुन्हा येतो, म्हणून चंद्रानंतर पुन्हा तारा येतो."
+          }
         },
         {
           "type": "mcq",
@@ -519,7 +1137,29 @@
           "answer": "red, blue, green, red, blue, green",
           "hint": "Count how many shapes before it starts again.",
           "explanation": "Red, blue, green repeats as a group of 3 before starting over.",
-          "topic": "Repeating patterns"
+          "topic": "Repeating patterns",
+          "hi": {
+            "prompt": "कौन-सा पैटर्न हर 3 आकृतियों के बाद दोहराता है?",
+            "options": [
+              "लाल, नीला, लाल, नीला",
+              "लाल, नीला, हरा, लाल, नीला, हरा",
+              "लाल, लाल, नीला, नीला",
+              "नीला, लाल, लाल, नीला"
+            ],
+            "hint": "गिनो कि दोबारा शुरू होने से पहले कितनी आकृतियाँ आती हैं।",
+            "explanation": "लाल, नीला, हरा, 3 का एक समूह है जो बार-बार आता है।"
+          },
+          "mr": {
+            "prompt": "कोणता आकृतिबंध दर 3 आकारांनंतर पुन्हा सुरू होतो?",
+            "options": [
+              "लाल, निळा, लाल, निळा",
+              "लाल, निळा, हिरवा, लाल, निळा, हिरवा",
+              "लाल, लाल, निळा, निळा",
+              "निळा, लाल, लाल, निळा"
+            ],
+            "hint": "पुन्हा सुरू होण्याआधी किती आकार येतात ते मोजा.",
+            "explanation": "लाल, निळा, हिरवा हा 3 चा गट पुन्हा पुन्हा येतो."
+          }
         },
         {
           "type": "mcq",
@@ -533,7 +1173,29 @@
           "answer": "Red",
           "hint": "Odd positions are one colour, even positions are the other.",
           "explanation": "Positions 1, 3, 5 are red, so the 5th tile is red.",
-          "topic": "Repeating patterns"
+          "topic": "Repeating patterns",
+          "hi": {
+            "prompt": "एक दीवार पर लाल, पीली, लाल, पीली टाइलें लगी हैं। 5वीं टाइल किस रंग की होगी?",
+            "options": [
+              "लाल",
+              "पीला",
+              "नीला",
+              "हरा"
+            ],
+            "hint": "विषम स्थानों पर एक रंग है और सम स्थानों पर दूसरा।",
+            "explanation": "स्थान 1, 3, 5 लाल हैं, इसलिए 5वीं टाइल लाल है।"
+          },
+          "mr": {
+            "prompt": "एका भिंतीवर लाल, पिवळी, लाल, पिवळी फरशी लावली आहे. 5वी फरशी कोणत्या रंगाची असेल?",
+            "options": [
+              "लाल",
+              "पिवळा",
+              "निळा",
+              "हिरवा"
+            ],
+            "hint": "विषम स्थानांवर एक रंग आणि सम स्थानांवर दुसरा रंग आहे.",
+            "explanation": "स्थान 1, 3, 5 लाल आहेत, म्हणून 5वी फरशी लाल आहे."
+          }
         },
         {
           "type": "input",
@@ -541,7 +1203,17 @@
           "answer": "B",
           "hint": "The pattern alternates between two letters.",
           "explanation": "The pattern swaps A and B each time, so after A comes B.",
-          "topic": "Repeating patterns"
+          "topic": "Repeating patterns",
+          "hi": {
+            "prompt": "पैटर्न A, B, A, B, A, __ में आगे कौन-सा अक्षर आएगा?",
+            "hint": "पैटर्न दो अक्षरों के बीच बारी-बारी से बदलता है।",
+            "explanation": "पैटर्न में हर बार A और B बदलते हैं, इसलिए A के बाद B आएगा।"
+          },
+          "mr": {
+            "prompt": "A, B, A, B, A, __ या आकृतिबंधात पुढे कोणते अक्षर येईल?",
+            "hint": "आकृतिबंधात दोन अक्षरे आलटून पालटून येतात.",
+            "explanation": "प्रत्येक वेळी A आणि B बदलतात, म्हणून A नंतर B येईल."
+          }
         },
         {
           "type": "mcq",
@@ -555,7 +1227,29 @@
           "answer": "Hexagon",
           "hint": "It has 6 sides that fit snugly together.",
           "explanation": "Hexagons fit side by side with no gaps, so they tile a surface.",
-          "topic": "Tiling patterns"
+          "topic": "Tiling patterns",
+          "hi": {
+            "prompt": "मधुमक्खियाँ बिना खाली जगह के छत्ता बनाती हैं। वे किस आकृति का उपयोग करती हैं?",
+            "options": [
+              "वृत्त",
+              "षट्भुज",
+              "तारा",
+              "दिल"
+            ],
+            "hint": "इसकी 6 भुजाएँ होती हैं जो आपस में अच्छी तरह फिट होती हैं।",
+            "explanation": "षट्भुज बिना खाली जगह के एक-दूसरे से सटकर फिट होते हैं।"
+          },
+          "mr": {
+            "prompt": "मधमाश्या फट न ठेवता पोळे बनवतात. त्या कोणता आकार वापरतात?",
+            "options": [
+              "वर्तुळ",
+              "षट्कोन",
+              "तारा",
+              "बदाम"
+            ],
+            "hint": "त्याला 6 बाजू असतात ज्या एकमेकांत घट्ट बसतात.",
+            "explanation": "षट्कोन फट न ठेवता एकमेकांना लागून बसतात."
+          }
         },
         {
           "type": "order",
@@ -568,9 +1262,37 @@
           ],
           "hint": "Two colours take turns.",
           "explanation": "The tiles alternate red, yellow, red, yellow.",
-          "topic": "Repeating patterns"
+          "topic": "Repeating patterns",
+          "hi": {
+            "prompt": "यह पैटर्न दोहराता है। टाइलों को सही दोहराने वाले क्रम में लगाओ।",
+            "items": [
+              "लाल",
+              "पीला",
+              "लाल",
+              "पीला"
+            ],
+            "hint": "दो रंग बारी-बारी से आते हैं।",
+            "explanation": "टाइलें बारी-बारी से लाल, पीली, लाल, पीली हैं।"
+          },
+          "mr": {
+            "prompt": "हा आकृतिबंध पुन्हा पुन्हा येतो. फरश्या योग्य क्रमाने लावा.",
+            "items": [
+              "लाल",
+              "पिवळा",
+              "लाल",
+              "पिवळा"
+            ],
+            "hint": "दोन रंग आलटून पालटून येतात.",
+            "explanation": "फरश्या आलटून पालटून लाल, पिवळी, लाल, पिवळी आहेत."
+          }
         }
       ]
+    },
+    "hi": {
+      "title": "हमारे आस-पास के पैटर्न"
+    },
+    "mr": {
+      "title": "आपल्या आजूबाजूचे आकृतिबंध"
     }
   },
   {
@@ -581,11 +1303,23 @@
         "steps": [
           {
             "type": "explain",
-            "text": "In a number like 4,236, each digit has a place: thousands, hundreds, tens and ones."
+            "text": "In a number like 4,236, each digit has a place: thousands, hundreds, tens and ones.",
+            "hi": {
+              "text": "4,236 जैसी संख्या में हर अंक का एक स्थान होता है: हज़ार, सैकड़ा, दहाई और इकाई।"
+            },
+            "mr": {
+              "text": "4,236 सारख्या संख्येत प्रत्येक अंकाचे एक स्थान असते: हजार, शतक, दशक आणि एकक."
+            }
           },
           {
             "type": "example",
-            "text": "In 4,236: 4 is thousands, 2 is hundreds, 3 is tens, 6 is ones."
+            "text": "In 4,236: 4 is thousands, 2 is hundreds, 3 is tens, 6 is ones.",
+            "hi": {
+              "text": "4,236 में: 4 हज़ार के स्थान पर, 2 सैकड़े के स्थान पर, 3 दहाई के स्थान पर और 6 इकाई के स्थान पर है।"
+            },
+            "mr": {
+              "text": "4,236 मध्ये: 4 हजारच्या स्थानी, 2 शतकाच्या स्थानी, 3 दशकाच्या स्थानी आणि 6 एककाच्या स्थानी आहे."
+            }
           },
           {
             "type": "activity",
@@ -599,21 +1333,55 @@
                 "4,632"
               ],
               "hint": "The thousands are the same, so compare the hundreds.",
-              "explanation": "2 hundreds < 3 hundreds < 6 hundreds, so 4,236 < 4,326 < 4,632."
+              "explanation": "2 hundreds < 3 hundreds < 6 hundreds, so 4,236 < 4,326 < 4,632.",
+              "hi": {
+                "prompt": "इन संख्याओं को सबसे छोटी से सबसे बड़ी के क्रम में दबाओ।",
+                "hint": "हज़ार एक जैसे हैं, इसलिए सैकड़ों की तुलना करो।",
+                "explanation": "2 सैकड़े < 3 सैकड़े < 6 सैकड़े, इसलिए 4,236 < 4,326 < 4,632."
+              },
+              "mr": {
+                "prompt": "या संख्यांवर सर्वात लहानपासून सर्वात मोठ्यापर्यंत क्रमाने टॅप करा.",
+                "hint": "हजार सारखेच आहेत, म्हणून शतकांची तुलना करा.",
+                "explanation": "2 शतक < 3 शतक < 6 शतक, म्हणून 4,236 < 4,326 < 4,632."
+              }
+            },
+            "hi": {
+              "text": "4 अंकों की कोई संख्या चुनो। ज़ोर से बोलो कि हर अंक किस स्थान पर है।"
+            },
+            "mr": {
+              "text": "4 अंकी एखादी संख्या निवडा. प्रत्येक अंक कोणत्या स्थानी आहे ते मोठ्याने सांगा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "हज़ार तक स्थानीय मान"
+        },
+        "mr": {
+          "title": "हजारापर्यंत स्थानिक किंमत"
+        }
       },
       {
         "title": "Expanded form",
         "steps": [
           {
             "type": "explain",
-            "text": "Expanded form writes a number as the sum of the value of each digit."
+            "text": "Expanded form writes a number as the sum of the value of each digit.",
+            "hi": {
+              "text": "विस्तारित रूप में संख्या को उसके हर अंक के मान के जोड़ के रूप में लिखा जाता है।"
+            },
+            "mr": {
+              "text": "विस्तारित रूपात संख्या तिच्या प्रत्येक अंकाच्या किमतीची बेरीज म्हणून लिहिली जाते."
+            }
           },
           {
             "type": "example",
-            "text": "5,821 in expanded form is 5000 + 800 + 20 + 1."
+            "text": "5,821 in expanded form is 5000 + 800 + 20 + 1.",
+            "hi": {
+              "text": "5,821 का विस्तारित रूप 5000 + 800 + 20 + 1 है।"
+            },
+            "mr": {
+              "text": "5,821 चे विस्तारित रूप 5000 + 800 + 20 + 1 आहे."
+            }
           },
           {
             "type": "activity",
@@ -623,21 +1391,53 @@
               "prompt": "6000 + 400 + 70 + 2 = ?",
               "answer": "6472",
               "hint": "Put the digits in order: thousands, hundreds, tens, ones.",
-              "explanation": "6 thousands, 4 hundreds, 7 tens and 2 ones make 6,472."
+              "explanation": "6 thousands, 4 hundreds, 7 tens and 2 ones make 6,472.",
+              "hi": {
+                "hint": "अंकों को क्रम से लिखो: हज़ार, सैकड़ा, दहाई, इकाई।",
+                "explanation": "6 हज़ार, 4 सैकड़े, 7 दहाई और 2 इकाई मिलकर 6,472 बनाते हैं।"
+              },
+              "mr": {
+                "hint": "अंक क्रमाने लिहा: हजार, शतक, दशक, एकक.",
+                "explanation": "6 हजार, 4 शतक, 7 दशक आणि 2 एकक मिळून 6,472 होतात."
+              }
+            },
+            "hi": {
+              "text": "अपने घर का नंबर या किसी बस का नंबर विस्तारित रूप में लिखो।"
+            },
+            "mr": {
+              "text": "तुमच्या घराचा क्रमांक किंवा एखाद्या बसचा क्रमांक विस्तारित रूपात लिहा."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "विस्तारित रूप"
+        },
+        "mr": {
+          "title": "विस्तारित रूप"
+        }
       },
       {
         "title": "Adding and subtracting big numbers",
         "steps": [
           {
             "type": "explain",
-            "text": "To add or subtract big numbers, line up the ones, tens, hundreds and thousands, then work column by column."
+            "text": "To add or subtract big numbers, line up the ones, tens, hundreds and thousands, then work column by column.",
+            "hi": {
+              "text": "बड़ी संख्याओं को जोड़ने या घटाने के लिए इकाई, दहाई, सैकड़ा और हज़ार को एक सीध में लिखो, फिर एक-एक स्तंभ हल करो।"
+            },
+            "mr": {
+              "text": "मोठ्या संख्यांची बेरीज किंवा वजाबाकी करताना एकक, दशक, शतक आणि हजार एका ओळीत लिहा, मग एकेक स्तंभ सोडवा."
+            }
           },
           {
             "type": "example",
-            "text": "2,450 + 1,300 = 3,750. Add ones, then tens, then hundreds, then thousands."
+            "text": "2,450 + 1,300 = 3,750. Add ones, then tens, then hundreds, then thousands.",
+            "hi": {
+              "text": "2,450 + 1,300 = 3,750. पहले इकाई, फिर दहाई, फिर सैकड़े और फिर हज़ार जोड़ो।"
+            },
+            "mr": {
+              "text": "2,450 + 1,300 = 3,750. आधी एकक, मग दशक, मग शतक आणि मग हजार मिळवा."
+            }
           },
           {
             "type": "activity",
@@ -647,10 +1447,28 @@
               "prompt": "1,200 + 1,500 = ?",
               "answer": "2700",
               "hint": "Add the hundreds: 2 + 5, then the thousands: 1 + 1.",
-              "explanation": "1,200 + 1,500 = 2,700."
+              "explanation": "1,200 + 1,500 = 2,700.",
+              "hi": {
+                "hint": "पहले सैकड़े जोड़ो: 2 + 5, फिर हज़ार: 1 + 1."
+              },
+              "mr": {
+                "hint": "आधी शतक मिळवा: 2 + 5, मग हजार: 1 + 1."
+              }
+            },
+            "hi": {
+              "text": "दो चीज़ों के दाम जोड़ो जो तुम्हें पता हों, जैसे 1,200 और 1,500."
+            },
+            "mr": {
+              "text": "तुम्हाला माहीत असलेल्या दोन वस्तूंच्या किमती मिळवा, जसे 1,200 आणि 1,500."
             }
           }
-        ]
+        ],
+        "hi": {
+          "title": "बड़ी संख्याओं का जोड़ और घटाव"
+        },
+        "mr": {
+          "title": "मोठ्या संख्यांची बेरीज आणि वजाबाकी"
+        }
       }
     ],
     "quiz": {
@@ -667,7 +1485,17 @@
           "answer": "2",
           "hint": "Count from the right: ones, tens, hundreds.",
           "explanation": "In 4,236, the hundreds digit is 2.",
-          "topic": "Place value"
+          "topic": "Place value",
+          "hi": {
+            "prompt": "संख्या 4,236 में सैकड़े के स्थान पर कौन-सा अंक है?",
+            "hint": "दाईं ओर से गिनो: इकाई, दहाई, सैकड़ा।",
+            "explanation": "4,236 में सैकड़े का अंक 2 है।"
+          },
+          "mr": {
+            "prompt": "4,236 या संख्येत शतकाच्या स्थानी कोणता अंक आहे?",
+            "hint": "उजवीकडून मोजा: एकक, दशक, शतक.",
+            "explanation": "4,236 मध्ये शतकाचा अंक 2 आहे."
+          }
         },
         {
           "type": "input",
@@ -675,7 +1503,17 @@
           "answer": "3456",
           "hint": "Put the digits in order: thousands, hundreds, tens, ones.",
           "explanation": "3 thousands + 4 hundreds + 5 tens + 6 ones = 3,456.",
-          "topic": "Place value"
+          "topic": "Place value",
+          "hi": {
+            "prompt": "संख्या लिखो: 3 हज़ार, 4 सैकड़े, 5 दहाई, 6 इकाई।",
+            "hint": "अंकों को क्रम से लिखो: हज़ार, सैकड़ा, दहाई, इकाई।",
+            "explanation": "3 हज़ार + 4 सैकड़े + 5 दहाई + 6 इकाई = 3,456."
+          },
+          "mr": {
+            "prompt": "संख्या लिहा: 3 हजार, 4 शतक, 5 दशक, 6 एकक.",
+            "hint": "अंक क्रमाने लिहा: हजार, शतक, दशक, एकक.",
+            "explanation": "3 हजार + 4 शतक + 5 दशक + 6 एकक = 3,456."
+          }
         },
         {
           "type": "mcq",
@@ -689,7 +1527,15 @@
           "answer": "5000 + 800 + 20 + 1",
           "hint": "Match each digit to its place value.",
           "explanation": "5,821 = 5000 + 800 + 20 + 1.",
-          "topic": "Expanded form"
+          "topic": "Expanded form",
+          "hi": {
+            "prompt": "5,821 का विस्तारित रूप क्या है?",
+            "hint": "हर अंक को उसके स्थानीय मान से मिलाओ।"
+          },
+          "mr": {
+            "prompt": "5,821 चे विस्तारित रूप कोणते?",
+            "hint": "प्रत्येक अंक त्याच्या स्थानिक किमतीशी जुळवा."
+          }
         },
         {
           "type": "input",
@@ -697,7 +1543,13 @@
           "answer": "3750",
           "hint": "Add the hundreds and thousands separately, then the tens.",
           "explanation": "2,450 + 1,300 = 3,750.",
-          "topic": "Adding and subtracting"
+          "topic": "Adding and subtracting",
+          "hi": {
+            "hint": "सैकड़े और हज़ार अलग-अलग जोड़ो, फिर दहाई।"
+          },
+          "mr": {
+            "hint": "शतक आणि हजार वेगवेगळे मिळवा, मग दशक."
+          }
         },
         {
           "type": "mcq",
@@ -711,7 +1563,17 @@
           "answer": "3,954",
           "hint": "Compare the hundreds digit first, since the thousands digit is the same.",
           "explanation": "3,954 has the biggest hundreds digit (9) among these numbers.",
-          "topic": "Comparing numbers"
+          "topic": "Comparing numbers",
+          "hi": {
+            "prompt": "सबसे बड़ी संख्या कौन-सी है?",
+            "hint": "हज़ार का अंक एक जैसा है, इसलिए पहले सैकड़े के अंक की तुलना करो।",
+            "explanation": "इन संख्याओं में 3,954 का सैकड़े का अंक (9) सबसे बड़ा है।"
+          },
+          "mr": {
+            "prompt": "सर्वात मोठी संख्या कोणती?",
+            "hint": "हजारांचा अंक सारखाच आहे, म्हणून आधी शतकाच्या अंकांची तुलना करा.",
+            "explanation": "या संख्यांमध्ये 3,954 चा शतकाचा अंक (9) सर्वात मोठा आहे."
+          }
         },
         {
           "type": "input",
@@ -719,7 +1581,13 @@
           "answer": "3500",
           "hint": "Subtract the thousands, then the hundreds.",
           "explanation": "6,000 - 2,500 = 3,500.",
-          "topic": "Adding and subtracting"
+          "topic": "Adding and subtracting",
+          "hi": {
+            "hint": "पहले हज़ार घटाओ, फिर सैकड़े।"
+          },
+          "mr": {
+            "hint": "आधी हजार वजा करा, मग शतक."
+          }
         },
         {
           "type": "mcq",
@@ -733,7 +1601,29 @@
           "answer": "Thousands",
           "hint": "It is the leftmost digit.",
           "explanation": "In 7,382, the 7 is in the thousands place.",
-          "topic": "Place value"
+          "topic": "Place value",
+          "hi": {
+            "prompt": "7,382 में अंक 7 किस स्थान पर है?",
+            "options": [
+              "इकाई",
+              "दहाई",
+              "सैकड़ा",
+              "हज़ार"
+            ],
+            "hint": "यह सबसे बाईं ओर का अंक है।",
+            "explanation": "7,382 में 7 हज़ार के स्थान पर है।"
+          },
+          "mr": {
+            "prompt": "7,382 मध्ये 7 हा अंक कोणत्या स्थानी आहे?",
+            "options": [
+              "एकक",
+              "दशक",
+              "शतक",
+              "हजार"
+            ],
+            "hint": "हा सर्वात डावीकडचा अंक आहे.",
+            "explanation": "7,382 मध्ये 7 हजारच्या स्थानी आहे."
+          }
         },
         {
           "type": "order",
@@ -746,9 +1636,23 @@
           ],
           "hint": "Compare the thousands digit first.",
           "explanation": "1,999 < 2,099 < 2,750 < 3,001.",
-          "topic": "Comparing numbers"
+          "topic": "Comparing numbers",
+          "hi": {
+            "prompt": "इन संख्याओं को सबसे छोटी से सबसे बड़ी के क्रम में लगाओ।",
+            "hint": "पहले हज़ार के अंक की तुलना करो।"
+          },
+          "mr": {
+            "prompt": "या संख्या सर्वात लहानपासून सर्वात मोठ्यापर्यंत क्रमाने लावा.",
+            "hint": "आधी हजारांच्या अंकांची तुलना करा."
+          }
         }
       ]
+    },
+    "hi": {
+      "title": "हमारे आस-पास के हज़ार"
+    },
+    "mr": {
+      "title": "आपल्या आजूबाजूचे हजार"
     }
   }
 ]

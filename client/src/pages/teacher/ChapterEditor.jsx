@@ -19,7 +19,7 @@ import {
   useData,
 } from '../../api'
 import { LIMITS, lessonProblems } from '../../game'
-import QuestionForm, { blankQuestion } from '../../QuestionForm'
+import QuestionForm, { LanguageTabs, blankQuestion } from '../../QuestionForm'
 
 const STEP_TYPES = [
   { value: 'explain', label: 'Explain', help: 'The idea, in simple words.' },
@@ -96,7 +96,7 @@ export default function ChapterEditor() {
         <Link to="/teacher/content" className="inline-flex min-h-12 items-center font-semibold text-muted hover:text-ink">
           Content
         </Link>
-        <TitleEditor title={chapter.title} onSave={(title) => updateChapter(chapter.id, { title }).then(reload)} />
+        <TitleEditor chapter={chapter} onSave={(changes) => updateChapter(chapter.id, changes).then(reload)} />
       </div>
 
       {actionError && (
@@ -285,24 +285,31 @@ export default function ChapterEditor() {
   )
 }
 
-function TitleEditor({ title, onSave }) {
+// The chapter title, plus optional Hindi and Marathi titles for students.
+function TitleEditor({ chapter, onSave }) {
   const [editing, setEditing] = useState(false)
-  const [value, setValue] = useState(title)
+  const [values, setValues] = useState({})
   const [error, setError] = useState(null)
 
+  function start() {
+    setValues({ title: chapter.title, hi: chapter.hi?.title ?? '', mr: chapter.mr?.title ?? '' })
+    setError(null)
+    setEditing(true)
+  }
+
   if (!editing) {
+    const translated = [chapter.hi?.title && 'Hindi', chapter.mr?.title && 'Marathi'].filter(Boolean)
     return (
-      <div className="flex flex-wrap items-center gap-x-4">
-        <h1 className="text-3xl font-semibold tracking-tight">{title}</h1>
-        <button
-          onClick={() => {
-            setValue(title)
-            setEditing(true)
-          }}
-          className="inline-flex min-h-12 items-center font-semibold text-muted hover:text-ink"
-        >
-          Rename
-        </button>
+      <div>
+        <div className="flex flex-wrap items-center gap-x-4">
+          <h1 className="text-3xl font-semibold tracking-tight">{chapter.title}</h1>
+          <button onClick={start} className="inline-flex min-h-12 items-center font-semibold text-muted hover:text-ink">
+            Rename
+          </button>
+        </div>
+        <p className="text-sm text-muted">
+          {translated.length ? `Title also in ${translated.join(' and ')}.` : 'No Hindi or Marathi title yet (students see the English).'}
+        </p>
       </div>
     )
   }
@@ -310,21 +317,37 @@ function TitleEditor({ title, onSave }) {
   async function handleSubmit(e) {
     e.preventDefault()
     try {
-      await onSave(value)
+      // An empty translated title removes it, so students see the English.
+      await onSave({ title: values.title, hi: { title: values.hi }, mr: { title: values.mr } })
       setEditing(false)
     } catch (err) {
       setError(err.message)
     }
   }
 
-  return (
-    <form onSubmit={handleSubmit} className="mt-2 max-w-xl">
-      <label htmlFor="chapter-title" className="label">
-        Chapter title
+  const field = (key, label, lang) => (
+    <div>
+      <label htmlFor={`chapter-title-${key}`} className="label">
+        {label}
       </label>
-      <input id="chapter-title" value={value} onChange={(e) => setValue(e.target.value)} maxLength={80} autoFocus className="field" />
-      <div className="mt-3 flex gap-3">
-        <button type="submit" disabled={!value.trim()} className="btn btn-primary">
+      <input
+        id={`chapter-title-${key}`}
+        lang={lang}
+        value={values[key]}
+        onChange={(e) => setValues({ ...values, [key]: e.target.value })}
+        maxLength={80}
+        className="field"
+      />
+    </div>
+  )
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-2 max-w-xl space-y-4">
+      {field('title', 'Chapter title', 'en')}
+      {field('hi', 'Title in Hindi (optional)', 'hi')}
+      {field('mr', 'Title in Marathi (optional)', 'mr')}
+      <div className="flex gap-3">
+        <button type="submit" disabled={!values.title.trim()} className="btn btn-primary">
           Save
         </button>
         <button type="button" onClick={() => setEditing(false)} className="btn btn-secondary">
@@ -332,7 +355,7 @@ function TitleEditor({ title, onSave }) {
         </button>
       </div>
       {error && (
-        <p role="alert" className="mt-2 font-semibold text-warn">
+        <p role="alert" className="font-semibold text-warn">
           {error}
         </p>
       )}
@@ -345,11 +368,14 @@ function TitleEditor({ title, onSave }) {
 function LessonForm({ initial, onSave, onCancel }) {
   const [title, setTitle] = useState(initial.title)
   const [steps, setSteps] = useState(initial.steps)
+  // Lesson title translations: { hi: { title }, mr: { title } }
+  const [titles, setTitles] = useState({ hi: initial.hi, mr: initial.mr })
+  const [lang, setLang] = useState('en') // which language is being edited
   const [checked, setChecked] = useState(false) // true after the first Save, to show problems
   const [serverError, setServerError] = useState(null)
   const [busy, setBusy] = useState(false)
 
-  const lesson = { title, steps }
+  const lesson = { title, steps, hi: titles.hi, mr: titles.mr }
   const problems = checked ? lessonProblems(lesson) : []
 
   function setStep(i, changes) {
@@ -384,6 +410,10 @@ function LessonForm({ initial, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="card space-y-6 p-5 ring-2 ring-accent">
+      <LanguageTabs lang={lang} onChange={setLang} />
+
+      {lang === 'en' ? (
+        <>
       <div>
         <label htmlFor="lesson-title" className="label">
           Lesson title
@@ -472,6 +502,19 @@ function LessonForm({ initial, onSave, onCancel }) {
         </button>
       )}
 
+        </>
+      ) : (
+        <TranslatedLesson
+          lang={lang}
+          title={title}
+          steps={steps}
+          titleTranslation={titles[lang]?.title ?? ''}
+          onTitle={(value) => setTitles({ ...titles, [lang]: { title: value } })}
+          setStep={setStep}
+          checked={checked}
+        />
+      )}
+
       {(problems.length > 0 || serverError) && (
         <div role="alert" className="rounded-xl bg-warn-soft p-4 text-warn">
           <p className="font-semibold">{serverError ?? 'Fix these before saving:'}</p>
@@ -494,5 +537,54 @@ function LessonForm({ initial, onSave, onCancel }) {
         </button>
       </div>
     </form>
+  )
+}
+
+// The Hindi or Marathi view of the lesson form: the title and each step's
+// text, with the English beside each box, and each step's question.
+function TranslatedLesson({ lang, title, steps, titleTranslation, onTitle, setStep, checked }) {
+  const word = lang === 'hi' ? 'Hindi' : 'Marathi'
+  return (
+    <div className="space-y-5">
+      <p className="text-muted">Optional. Anything left empty is shown to students in English.</p>
+      <div>
+        <label htmlFor={`lesson-title-${lang}`} className="label">
+          Lesson title in {word}
+        </label>
+        <p className="-mt-1 mb-2 text-sm text-muted">English: {title || '(empty)'}</p>
+        <input id={`lesson-title-${lang}`} lang={lang} value={titleTranslation} onChange={(e) => onTitle(e.target.value)} maxLength={LIMITS.title} className="field" />
+      </div>
+      <ol className="space-y-5">
+        {steps.map((step, i) => (
+          <li key={i} className="rounded-2xl bg-bg p-4">
+            <label htmlFor={`step-${i}-${lang}`} className="label">
+              Step {i + 1} in {word}
+            </label>
+            <p className="-mt-1 mb-2 text-sm text-muted">English: {step.text || '(empty)'}</p>
+            <textarea
+              id={`step-${i}-${lang}`}
+              lang={lang}
+              value={step[lang]?.text ?? ''}
+              onChange={(e) => setStep(i, { [lang]: { text: e.target.value } })}
+              maxLength={LIMITS.stepText}
+              rows={3}
+              className="field py-3"
+            />
+            {step.question && (
+              <div className="mt-4 rounded-2xl bg-surface p-4 ring-1 ring-line">
+                <p className="mb-2 font-semibold">Question</p>
+                <QuestionForm
+                  question={step.question}
+                  onChange={(question) => setStep(i, { question })}
+                  idPrefix={`step-${i}-q`}
+                  showProblems={checked}
+                  lang={lang}
+                />
+              </div>
+            )}
+          </li>
+        ))}
+      </ol>
+    </div>
   )
 }

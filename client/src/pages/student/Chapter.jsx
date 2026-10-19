@@ -3,9 +3,11 @@
 
 import { Link, useParams } from 'react-router-dom'
 import { getStudentChapters, useData } from '../../api'
+import { useT } from '../../i18n/t'
 
 export default function Chapter() {
   const { chapterId } = useParams()
+  const t = useT()
   const { data: chapters, error, reload } = useData(() => getStudentChapters(), [chapterId])
 
   if (error) {
@@ -13,16 +15,16 @@ export default function Chapter() {
       <div>
         <p className="text-lg font-semibold">{error}</p>
         <button onClick={reload} className="btn btn-primary mt-4">
-          Try again
+          {t('common.tryAgain')}
         </button>
       </div>
     )
   }
-  if (!chapters) return <p className="text-muted">Loading...</p>
+  if (!chapters) return <p className="text-muted">{t('common.loading')}</p>
 
   const chapter = chapters.find((c) => c.id === chapterId)
-  if (!chapter) return <BackToChapters message="We couldn’t find that chapter." />
-  if (chapter.state === 'locked') return <BackToChapters message={`${chapter.title} isn’t open yet.`} />
+  if (!chapter) return <BackToChapters message={t('chapter.notFound')} />
+  if (chapter.state === 'locked') return <BackToChapters message={t('chapter.notOpen', { title: chapter.title })} />
 
   const doneCount = chapter.lessons.filter((l) => l.done).length
   const nextLesson = chapter.lessons.find((l) => !l.done)
@@ -31,14 +33,12 @@ export default function Chapter() {
   return (
     <div className="max-w-2xl">
       <Link to="/student/learn" className="inline-flex min-h-12 items-center font-semibold text-muted hover:text-ink">
-        Back to chapters
+        {t('common.backToChapters')}
       </Link>
       <h1 className="mt-3 text-3xl font-semibold tracking-tight">
-        Chapter {chapter.number}: {chapter.title}
+        {t('chapter.title', { number: chapter.number, title: chapter.title })}
       </h1>
-      <p className="mt-1 text-muted">
-        {doneCount} of {chapter.lessons.length} lessons done
-      </p>
+      <p className="mt-1 text-muted">{t('chapter.lessonsDone', { done: doneCount, total: chapter.lessons.length })}</p>
 
       <ol className="mt-6 space-y-3">
         {chapter.lessons.map((lesson, i) => {
@@ -52,7 +52,7 @@ export default function Chapter() {
                 <span className="w-8 shrink-0 text-xl font-semibold text-muted">{i + 1}</span>
                 <span className="flex-1 font-semibold">{lesson.title}</span>
                 <span className={isNext ? 'font-semibold text-accent' : 'text-muted'}>
-                  {lesson.done ? 'Done' : isNext ? 'Up next' : 'Not started'}
+                  {lesson.done ? t('chapter.lessonDone') : isNext ? t('chapter.upNext') : t('chapter.notStarted')}
                 </span>
               </Link>
             </li>
@@ -62,19 +62,19 @@ export default function Chapter() {
 
       {chapter.quiz && (
         <section className="card mt-8 p-6">
-          <h2 className="text-xl font-semibold">Chapter quiz</h2>
+          <h2 className="text-xl font-semibold">{t('chapter.quizTitle')}</h2>
           {chapter.quiz.open ? (
             <>
               <p className="mt-1 text-muted">
-                {chapter.quiz.questionCount} questions.{' '}
-                {taken ? `Your best so far: ${chapter.stars} of 3 stars.` : 'Get 1 star or more to open the next chapter.'}
+                {t('chapter.questions', { count: chapter.quiz.questionCount })}{' '}
+                {taken ? t('chapter.bestSoFar', { stars: chapter.stars }) : t('chapter.passToOpen')}
               </p>
               <Link to={`/student/quiz/${chapter.quiz.id}`} className="btn btn-primary mt-5">
-                {taken ? 'Retake the quiz' : 'Start the quiz'}
+                {taken ? t('chapter.retake') : t('chapter.start')}
               </Link>
             </>
           ) : (
-            <p className="mt-1 text-muted">Finish all {chapter.lessons.length} lessons above to open the quiz.</p>
+            <p className="mt-1 text-muted">{t('chapter.finishLessonsFirst', { count: chapter.lessons.length })}</p>
           )}
         </section>
       )}
@@ -83,11 +83,12 @@ export default function Chapter() {
 }
 
 function BackToChapters({ message }) {
+  const t = useT()
   return (
     <div>
       <p className="text-lg font-semibold">{message}</p>
       <Link to="/student/learn" className="btn btn-secondary mt-4">
-        Back to chapters
+        {t('common.backToChapters')}
       </Link>
     </div>
   )

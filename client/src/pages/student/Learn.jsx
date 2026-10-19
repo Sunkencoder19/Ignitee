@@ -3,8 +3,10 @@
 
 import { Link } from 'react-router-dom'
 import { getStudentChapters, useData } from '../../api'
+import { useT } from '../../i18n/t'
 
 export default function Learn() {
+  const t = useT()
   const { data: chapters, error, reload } = useData(() => getStudentChapters(), [])
 
   if (error) {
@@ -12,26 +14,26 @@ export default function Learn() {
       <div>
         <p className="text-lg font-semibold">{error}</p>
         <button onClick={reload} className="btn btn-primary mt-4">
-          Try again
+          {t('common.tryAgain')}
         </button>
       </div>
     )
   }
-  if (!chapters) return <p className="text-muted">Loading...</p>
+  if (!chapters) return <p className="text-muted">{t('common.loading')}</p>
 
   function statusText(chapter, index) {
-    if (chapter.state === 'done') return `Done, ${chapter.stars} of 3 stars`
-    if (chapter.state === 'open') return 'Open now'
-    return `Finish Chapter ${chapters[index - 1].number} first`
+    if (chapter.state === 'done') return t('learn.done', { stars: chapter.stars })
+    if (chapter.state === 'open') return t('learn.open')
+    return t('learn.locked', { number: chapters[index - 1].number })
   }
 
   return (
     <div>
-      <h1 className="text-3xl font-semibold tracking-tight">Chapters</h1>
+      <h1 className="text-3xl font-semibold tracking-tight">{t('learn.title')}</h1>
       {chapters.length === 0 ? (
-        <p className="mt-2 text-lg text-muted">Your teacher hasn’t shared any chapters yet. Check again soon.</p>
+        <p className="mt-2 text-lg text-muted">{t('learn.empty')}</p>
       ) : (
-        <p className="mt-1 text-muted">Pass a chapter quiz to open the next chapter.</p>
+        <p className="mt-1 text-muted">{t('learn.help')}</p>
       )}
 
       <ol className="mt-6 space-y-3">

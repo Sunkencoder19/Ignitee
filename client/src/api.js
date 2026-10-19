@@ -5,6 +5,7 @@
 // The comment above each function says which endpoint it calls.
 
 import { useEffect, useRef, useState } from 'react'
+import { hasTranslation, translate } from './i18n/t'
 
 // ---------- talking to the server ----------
 
@@ -27,6 +28,18 @@ function setToken(token) {
   }
 }
 
+// Error messages for students are shown in their language: the server sends a
+// short `code` (like 'wrong-pin') that is looked up in i18n/*.json under
+// errors.<code>. Teachers see English. session.jsx keeps this up to date.
+let errorLanguage = 'en'
+export function setErrorLanguage(lang) {
+  errorLanguage = lang
+}
+
+function errorText(code, fallback) {
+  return code && hasTranslation(`errors.${code}`) ? translate(errorLanguage, `errors.${code}`) : fallback
+}
+
 // Sends one request to /api/... and returns the JSON reply.
 // If the server says no, it throws an Error whose message the page can show.
 async function request(method, path, body) {
@@ -38,14 +51,19 @@ async function request(method, path, body) {
   try {
     res = await fetch(`/api${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined })
   } catch {
-    throw new Error('Can’t reach the IGNITE server. Check your connection and try again.')
+    throw new Error(errorText('offline', 'Can’t reach the IGNITE server. Check your connection and try again.'))
   }
 
   const data = await res.json().catch(() => ({}))
   if (res.status === 401) setToken(null) // the saved login no longer works
   if (!res.ok) {
     // The Vite proxy answers 500/502/504 with no JSON when the server isn't running.
-    const error = new Error(data.error ?? 'Can’t reach the IGNITE server. Check that it is running and try again.')
+    const error = new Error(
+      data.error
+        ? errorText(data.code, data.error)
+        : errorText('server-down', 'Can’t reach the IGNITE server. Check that it is running and try again.')
+    )
+    error.code = data.code
     error.problems = data.problems ?? [] // every problem the server found, for editors to list
     throw error
   }
@@ -84,9 +102,10 @@ export function findClass(code) {
   return request('GET', `/auth/class/${encodeURIComponent(code.trim())}`)
 }
 
-// POST /api/auth/student/login  { classCode, studentId, pin }
-export async function studentLogin(classCode, studentId, pin) {
-  const { token, user } = await request('POST', '/auth/student/login', { classCode, studentId, pin })
+// POST /api/auth/student/login  { classCode, studentId, pin, language }
+// `language` is the login screen's; the server keeps it only if the child has none yet.
+export async function studentLogin(classCode, studentId, pin, language) {
+  const { token, user } = await request('POST', '/auth/student/login', { classCode, studentId, pin, language })
   setToken(token)
   return user
 }
@@ -236,6 +255,11 @@ export function getStudentReport(studentId) {
 // GET /api/student/chapters  ->  [{ id, number, title, state, stars, lessons: [{ id, title, done }], quiz }]
 export function getStudentChapters() {
   return request('GET', '/student/chapters')
+}
+
+// PATCH /api/student/language  { language }   saved on the student's account
+export function setStudentLanguage(language) {
+  return request('PATCH', '/student/language', { language })
 }
 
 // GET /api/student/progress  ->  { lessons, attempts, points, streak, bestStreak, lastActive, badges }

@@ -23,6 +23,7 @@
 
 import { useState } from 'react'
 import { checkAnswer } from './game'
+import { useT } from './i18n/t'
 
 // The local check, for questions that carry their own answer.
 function checkHere(question, given, tries) {
@@ -32,6 +33,7 @@ function checkHere(question, given, tries) {
 }
 
 export default function Question({ question, onDone, check }) {
+  const t = useT()
   const [status, setStatus] = useState('answering') // answering | retry | correct | revealed
   const [reply, setReply] = useState(null) // the last reply from check: hint, answer, explanation
   const [rightAnswer, setRightAnswer] = useState(null) // known once correct or revealed
@@ -118,20 +120,20 @@ export default function Question({ question, onDone, check }) {
 
       {question.type === 'input' && (
         <input
-          aria-label="Your answer"
+          aria-label={t('question.yourAnswer')}
           value={text}
           onChange={(e) => setText(e.target.value)}
           disabled={settled || busy}
           autoComplete="off"
           inputMode="text"
-          placeholder="Type your answer"
+          placeholder={t('question.typeAnswer')}
           className="field mt-5 min-h-16 text-center text-2xl font-semibold"
         />
       )}
 
       {question.type === 'order' && (
         <div className="mt-5">
-          <p className="font-semibold text-muted">Your order (tap to take one back)</p>
+          <p className="font-semibold text-muted">{t('question.yourOrder')}</p>
           <div className="mt-2 flex min-h-14 flex-wrap gap-2 rounded-xl border-2 border-dashed border-line p-2">
             {order.map((optionIndex, slot) => (
               <button
@@ -165,30 +167,30 @@ export default function Question({ question, onDone, check }) {
 
       <div aria-live="polite">
         {status === 'correct' && (
-          <p className="mt-5 rounded-xl bg-good-soft p-4 font-semibold text-good">Correct, well done!</p>
+          <p className="mt-5 rounded-xl bg-good-soft p-4 font-semibold text-good">{t('question.correct')}</p>
         )}
         {status === 'retry' && (
           <div className="mt-5 rounded-xl bg-warn-soft p-4">
-            <p className="font-semibold text-warn">Not quite. Try once more.</p>
-            {reply?.hint && <p className="mt-1">Hint: {reply.hint}</p>}
+            <p className="font-semibold text-warn">{t('question.retry')}</p>
+            {reply?.hint && <p className="mt-1">{t('question.hint', { hint: reply.hint })}</p>}
           </div>
         )}
         {status === 'revealed' && (
           <div className="mt-5 rounded-xl bg-accent-soft p-4">
-            <p className="font-semibold">The answer is {answerText}.</p>
+            <p className="font-semibold">{t('question.revealed', { answer: answerText })}</p>
             {reply?.explanation && <p className="mt-1">{reply.explanation}</p>}
           </div>
         )}
         {error && (
           <p role="alert" className="mt-5 font-semibold text-warn">
-            {error} Press Check to try again.
+            {t('question.pressCheck', { error })}
           </p>
         )}
       </div>
 
       {!settled && (
         <button type="submit" disabled={!ready || busy} className="btn btn-primary mt-6 w-full text-lg">
-          {busy ? 'Checking...' : 'Check'}
+          {busy ? t('question.checking') : t('question.check')}
         </button>
       )}
     </form>

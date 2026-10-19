@@ -90,6 +90,8 @@ IGNITE/
         ├── Question.jsx   the answer box (two tries) used by lessons, quizzes and previews
         ├── QuestionForm.jsx  the editor for one question, used by both content editors
         ├── ThemeToggle.jsx   the Colours: Auto / Light / Dark switch in every header
+        ├── i18n/          English, Hindi and Marathi: en.json hi.json mr.json (every word on the
+        │                  student screens), t.js (the t() helper), LanguagePicker.jsx
         └── pages/         one file per page
             ├── Landing, Login, Signup, NotFound
             ├── student/   Home, Learn, Chapter, Lesson, Quiz, Result, Leaderboard
@@ -102,11 +104,13 @@ IGNITE/
 |---|---|
 | `teachers` | name, email, passwordHash, createdAt |
 | `classes` | name, code (6 characters, unique), teacher |
-| `students` | name (unique within the class), class, teacher, pinHash, lessonsFinished: [{ lesson, date }] |
+| `students` | name (unique within the class), class, teacher, pinHash, language (en, hi, mr, or null until chosen), lessonsFinished: [{ lesson, date }] |
 | `chapters` | title, teacher, classes (which classes see it), status (draft or published), order |
 | `lessons` | title, chapter, teacher, order, steps: [{ type, text, question? }] |
 | `quizzes` | chapter (one each), teacher, questions: [{ type, prompt, options, answer, hint, explanation, topic }] |
-| `attempts` | student, class, chapter, quiz, status (in-progress or finished), answers: [{ question, prompt, topic, given, tries, outcome }], score, stars, answerPoints, date |
+| `attempts` | student, class, chapter, quiz, language (the quiz is checked in it), status (in-progress or finished), answers: [{ question, prompt, topic, given, tries, outcome }], score, stars, answerPoints, date |
+
+Chapters, lessons, steps and questions may also carry optional `hi` and `mr` translations next to the English (for example a question's `hi: { prompt, options, items, hint, explanation }`). Anything left out is shown in English.
 
 A student's progress is only a history: `lessonsFinished` plus their finished attempts. Points, streak and badges are always worked out from it and never stored.
 
@@ -121,7 +125,7 @@ Every route is under `/api`. **Who** means: *anyone*; a logged-in *teacher*; a l
 | POST | /auth/teacher/signup | anyone | Create a teacher account `{ name, email, password }` (8 to 72 characters) |
 | POST | /auth/teacher/login | anyone | Teacher login `{ email, password }` |
 | GET | /auth/class/:code | anyone | The class name and its students' names, for the student login list |
-| POST | /auth/student/login | anyone | Student login `{ classCode, studentId, pin }` |
+| POST | /auth/student/login | anyone | Student login `{ classCode, studentId, pin, language }`; `language` (the phone's choice) is saved only if the student has none yet |
 | GET | /auth/me | logged in | Who the saved login belongs to |
 | **Classes and students** | | | |
 | GET | /classes | teacher | Their classes, with student counts |
@@ -159,6 +163,7 @@ Every route is under `/api`. **Who** means: *anyone*; a logged-in *teacher*; a l
 | POST | /student/attempts/:attemptId/finish | student | Finish; **no body**. The server scores it from its own records |
 | GET | /student/attempts/:attemptId | student | A finished attempt, with the right answers and explanations |
 | GET | /student/leaderboard | student | First names and points for their own class |
+| PATCH | /student/language | student | Save the student's language `{ language: 'en' \| 'hi' \| 'mr' }`; their content then comes in it |
 | **Reports** | | | |
 | GET | /reports/classes/:classId | owner | Summary, needs attention, accuracy by chapter and topic, struggling students, each student's weakest topics, lessons per day |
 | GET | /reports/students/:studentId | owner | One student: needs attention, accuracy by topic and chapter, weakest topics, badges, recent quizzes |
@@ -177,6 +182,7 @@ All in `shared/game.js`.
 - **Unlocking:** published chapters open in order. 1 star or more on a chapter's quiz opens the next one; a quiz opens once all its lessons are done.
 - **Badges (7):** First Step (finish a lesson), Chapter Champion (finish a chapter: every lesson, then pass the quiz), Star Student (3 stars on any quiz), Explorer (finish 3 chapters), On Fire (5 days in a row), Never Give Up (beat your best score on a retake), Sharp Mind (10 quiz answers right first time in a row).
 - **Leaderboard:** each class only, first names and points only.
+- **Languages:** student screens come in English, Hindi or Marathi. The choice made on the login page belongs to the phone; once a student logs in, their own saved language wins, so it follows them on a shared phone. Answers are checked in the language the quiz started in, and Devanagari digits (१२) count the same as 12. Teacher screens and reports stay in English. The starter chapters' Hindi and Marathi were machine-written by Claude and should be checked by a native speaker.
 
 ## Report rules
 

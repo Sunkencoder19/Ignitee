@@ -56,7 +56,7 @@ export async function requireTeacher(req, res, next) {
 export async function requireStudent(req, res, next) {
   const token = readToken(req)
   const student = token?.role === 'student' && mongoose.isValidObjectId(token.id) && (await Student.findById(token.id))
-  if (!student) return res.status(401).json({ error: 'Please log in.' })
+  if (!student) return res.status(401).json({ error: 'Please log in.', code: 'login-needed' })
   req.student = student
   next()
 }
@@ -75,6 +75,7 @@ async function studentSession(student) {
     firstName: student.name.split(' ')[0],
     classId: String(student.class),
     className: cls?.name ?? '',
+    language: student.language ?? 'en',
   }
 }
 
@@ -158,17 +159,22 @@ router.post('/teacher/login', async (req, res) => {
 // The class name and its students' names, so a child can pick their name from a list.
 router.get('/class/:code', async (req, res) => {
   const cls = await Class.findOne({ code: String(req.params.code).trim().toUpperCase() })
-  if (!cls) return res.status(404).json({ error: 'We couldn’t find a class with that code. Check it with your teacher.' })
+  if (!cls) {
+    return res.status(404).json({ error: 'We couldn’t find a class with that code. Check it with your teacher.', code: 'class-not-found' })
+  }
   const students = await Student.find({ class: cls.id }, 'name').sort({ name: 1 }).collation({ locale: 'en' })
   res.json({ className: cls.name, students: students.map((s) => ({ id: s.id, name: s.name })) })
 })
 
-// POST /api/auth/student/login  { classCode, studentId, pin }   anyone
+// POST /api/auth/student/login  { classCode, studentId, pin, language? }   anyone
+// `language` is what the login screen was showing. It is only saved if this
+// child has never chosen one, so on a shared phone one child's choice never
+// overwrites another's.
 router.post('/student/login', async (req, res) => {
   const classCode = String(req.body.classCode ?? '').trim().toUpperCase()
   const studentId = String(req.body.studentId ?? '')
   const pin = String(req.body.pin ?? '')
-  const wrong = () => res.status(401).json({ error: 'That PIN doesn’t match. Try again.' })
+  const wrong = () => res.status(401).json({ error: 'That PIN doesn’t match. Try again.', code: 'wrong-pin' })
 
   const cls = await Class.findOne({ code: classCode })
   if (!cls || !mongoose.isValidObjectId(studentId)) return wrong()
@@ -176,7 +182,7 @@ router.post('/student/login', async (req, res) => {
   if (!student) return wrong()
 
   if (isLocked(student.id)) {
-    return res.status(429).json({ error: 'Too many wrong PINs. Ask your teacher, or try again in 15 minutes.' })
+    return res.status(429).json({ error: 'Too many wrong PINs. Ask your teacher, or try again in 15 minutes.', code: 'locked-out' })
   }
   if (!/^\d{4}$/.test(pin) || !(await bcrypt.compare(pin, student.pinHash))) {
     recordWrongPin(student.id)
@@ -184,6 +190,10 @@ router.post('/student/login', async (req, res) => {
   }
 
   clearLockout(student.id)
+  if (!student.language && ['en', 'hi', 'mr'].includes(req.body.language)) {
+    student.language = req.body.language
+    await student.save()
+  }
   res.json({ token: makeToken('student', student.id), user: await studentSession(student) })
 })
 

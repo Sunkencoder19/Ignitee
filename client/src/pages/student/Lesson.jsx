@@ -9,10 +9,9 @@
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { checkLessonAnswer, getStudentChapters, getStudentLesson, useData } from '../../api'
+import { useT } from '../../i18n/t'
 import Question from '../../Question'
 import { useSession } from '../../session'
-
-const STEP_NAMES = { explain: 'Learn', example: 'Example', activity: 'Try it' }
 
 // key={lessonId}: going to the next lesson only changes the URL, so this
 // makes React start the page fresh (step 1, nothing answered).
@@ -24,6 +23,7 @@ export default function Lesson() {
 function LessonSteps() {
   const { chapterId, lessonId } = useParams()
   const { finishLesson } = useSession()
+  const t = useT()
   const { data: lesson, error } = useData(() => getStudentLesson(lessonId), [lessonId])
 
   const [stepIndex, setStepIndex] = useState(0)
@@ -37,12 +37,12 @@ function LessonSteps() {
       <div>
         <p className="text-lg font-semibold">{error}</p>
         <Link to={`/student/learn/${chapterId}`} className="btn btn-secondary mt-4">
-          Back to the chapter
+          {t('common.backToChapter')}
         </Link>
       </div>
     )
   }
-  if (!lesson) return <p className="text-muted">Loading...</p>
+  if (!lesson) return <p className="text-muted">{t('common.loading')}</p>
 
   if (finished) return <FinishScreen lesson={lesson} result={finished} />
 
@@ -70,17 +70,15 @@ function LessonSteps() {
     <div className="mx-auto max-w-2xl">
       <div className="flex items-center justify-between text-muted">
         <Link to={`/student/learn/${lesson.chapterId}`} className="inline-flex min-h-12 items-center font-semibold hover:text-ink">
-          Close lesson
+          {t('lesson.close')}
         </Link>
-        <span>
-          Step {stepIndex + 1} of {lesson.steps.length}
-        </span>
+        <span>{t('lesson.stepOf', { step: stepIndex + 1, total: lesson.steps.length })}</span>
       </div>
 
       <h1 className="mt-4 text-2xl font-semibold tracking-tight">{lesson.title}</h1>
 
       <section className="card mt-4 p-6 md:p-8">
-        <p className="font-semibold text-accent">{STEP_NAMES[step.type]}</p>
+        <p className="font-semibold text-accent">{t(`lesson.step.${step.type}`)}</p>
         <p className="mt-2 text-lg leading-relaxed">{step.text}</p>
 
         {step.question && (
@@ -97,7 +95,7 @@ function LessonSteps() {
 
       {saveError && (
         <p role="alert" className="mt-4 font-semibold text-warn">
-          {saveError} Press Finish lesson to try again.
+          {t('lesson.saveFailed', { error: saveError })}
         </p>
       )}
 
@@ -110,12 +108,12 @@ function LessonSteps() {
             }}
             className="btn btn-secondary"
           >
-            Back
+            {t('lesson.back')}
           </button>
         )}
         {!mustAnswer && (
           <button onClick={goNext} disabled={saving} className="btn btn-primary flex-1 text-lg">
-            {saving ? 'Saving...' : isLast ? 'Finish lesson' : 'Next'}
+            {saving ? t('lesson.saving') : isLast ? t('lesson.finish') : t('lesson.next')}
           </button>
         )}
       </div>
@@ -125,30 +123,33 @@ function LessonSteps() {
 
 // Points earned, any new badge, and one button to the next thing to do.
 function FinishScreen({ lesson, result }) {
+  const t = useT()
   const { data: chapters } = useData(() => getStudentChapters(), [])
   const chapter = chapters?.find((c) => c.id === lesson.chapterId)
   const index = chapter ? chapter.lessons.findIndex((l) => l.id === lesson.id) : -1
   const nextLesson = chapter?.lessons[index + 1]
 
-  let main = { to: `/student/learn/${lesson.chapterId}`, label: 'Back to the chapter' }
-  if (nextLesson) main = { to: `/student/learn/${chapter.id}/${nextLesson.id}`, label: 'Next lesson' }
-  else if (chapter?.quiz?.open) main = { to: `/student/quiz/${chapter.quiz.id}`, label: 'Take the chapter quiz' }
+  let main = { to: `/student/learn/${lesson.chapterId}`, label: t('common.backToChapter') }
+  if (nextLesson) main = { to: `/student/learn/${chapter.id}/${nextLesson.id}`, label: t('lesson.nextLesson') }
+  else if (chapter?.quiz?.open) main = { to: `/student/quiz/${chapter.quiz.id}`, label: t('lesson.takeQuiz') }
 
   return (
     <div className="card mx-auto max-w-xl p-8 text-center">
-      <h1 className="text-3xl font-semibold">You finished it!</h1>
+      <h1 className="text-3xl font-semibold">{t('lesson.finishedTitle')}</h1>
       <p className="mt-2 text-lg text-muted">{lesson.title}</p>
-      <p className="mt-6 text-4xl font-semibold text-accent">+{result.pointsEarned} points</p>
-      {!result.firstTime && <p className="mt-2 text-muted">You had already done this lesson, so no new points. Good practice!</p>}
+      <p className="mt-6 text-4xl font-semibold text-accent">{t('common.plusPoints', { count: result.pointsEarned })}</p>
+      {!result.firstTime && <p className="mt-2 text-muted">{t('lesson.alreadyDone')}</p>}
       {result.newBadges.length > 0 && (
-        <p className="mt-4 rounded-xl bg-good-soft p-3 font-semibold text-good">New badge: {result.newBadges.join(', ')}</p>
+        <p className="mt-4 rounded-xl bg-good-soft p-3 font-semibold text-good">
+          {t('common.newBadge', { names: result.newBadges.map((id) => t(`badges.${id}.name`)).join(', ') })}
+        </p>
       )}
       {chapters ? (
         <Link to={main.to} className="btn btn-primary mt-8 w-full text-lg">
           {main.label}
         </Link>
       ) : (
-        <p className="mt-8 text-muted">Loading...</p>
+        <p className="mt-8 text-muted">{t('common.loading')}</p>
       )}
     </div>
   )

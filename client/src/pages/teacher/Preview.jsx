@@ -8,8 +8,10 @@
 import { useMemo, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getChapterForEditing, useData } from '../../api'
-import { POINTS, answerPoints, scoreQuiz } from '../../game'
+import { POINTS, answerPoints, inLanguage, localizeQuestion, scoreQuiz } from '../../game'
+import { LanguageProvider } from '../../i18n/t'
 import Question from '../../Question'
+import { LanguageTabs } from '../../QuestionForm'
 
 const STEP_NAMES = { explain: 'Learn', example: 'Example', activity: 'Try it' }
 
@@ -27,6 +29,25 @@ function shuffled(items) {
 }
 
 // The answer box shows `options` for mcq and order questions.
+// The chapter as a student in `lang` would see it, using the same rules as the
+// server (shared/game.js): each field in that language, or English if missing.
+function inPreviewLanguage(chapter, lang) {
+  return {
+    ...chapter,
+    title: inLanguage(chapter, 'title', lang),
+    lessons: chapter.lessons.map((l) => ({
+      ...l,
+      title: inLanguage(l, 'title', lang),
+      steps: l.steps.map((s) => ({
+        ...s,
+        text: inLanguage(s, 'text', lang),
+        ...(s.question ? { question: localizeQuestion(s.question, lang) } : {}),
+      })),
+    })),
+    quiz: chapter.quiz ? { ...chapter.quiz, questions: chapter.quiz.questions.map((q) => localizeQuestion(q, lang)) } : null,
+  }
+}
+
 function forStudent(question) {
   return question.type === 'order' ? { ...question, options: shuffled(question.answer) } : question
 }
@@ -35,6 +56,14 @@ export default function Preview() {
   const { chapterId, lessonId } = useParams()
   const { data: chapter, error } = useData(() => getChapterForEditing(chapterId), [chapterId])
   const backTo = lessonId ? `/teacher/content/${chapterId}` : `/teacher/content/${chapterId}/quiz`
+  const [lang, setLang] = useState('en') // the language to preview in
+
+  const languageSwitch = (
+    <div className="mb-6">
+      <p className="mb-2 font-semibold">Preview in</p>
+      <LanguageTabs lang={lang} onChange={setLang} />
+    </div>
+  )
 
   const banner = (
     <div className="mb-8 flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-accent-soft px-4 py-2 ring-1 ring-accent">
@@ -48,22 +77,36 @@ export default function Preview() {
   if (error) return <div className="mx-auto max-w-2xl">{banner}<p className="text-warn">{error}</p></div>
   if (!chapter) return <p className="text-muted">Loading the preview...</p>
 
+  // Everything below is shown as a student in `lang` would see it. key={lang}
+  // starts the preview again when the language changes.
+  const shown = inPreviewLanguage(chapter, lang)
+
   if (lessonId) {
-    const lesson = chapter.lessons.find((l) => l.id === lessonId)
+    const lesson = shown.lessons.find((l) => l.id === lessonId)
     if (!lesson) return <div className="mx-auto max-w-2xl">{banner}<p className="text-lg font-semibold">That lesson no longer exists.</p></div>
     return (
       <div className="mx-auto max-w-2xl">
         {banner}
-        <LessonPreview key={lesson.id} lesson={lesson} />
+        {languageSwitch}
+        <LanguageProvider value={lang}>
+          <div lang={lang}>
+            <LessonPreview key={`${lesson.id}-${lang}`} lesson={lesson} />
+          </div>
+        </LanguageProvider>
       </div>
     )
   }
 
-  if (!chapter.quiz) return <div className="mx-auto max-w-2xl">{banner}<p className="text-lg font-semibold">This chapter has no quiz yet.</p></div>
+  if (!shown.quiz) return <div className="mx-auto max-w-2xl">{banner}<p className="text-lg font-semibold">This chapter has no quiz yet.</p></div>
   return (
     <div className="mx-auto max-w-2xl">
       {banner}
-      <QuizPreview chapter={chapter} />
+      {languageSwitch}
+      <LanguageProvider value={lang}>
+        <div lang={lang}>
+          <QuizPreview key={lang} chapter={shown} />
+        </div>
+      </LanguageProvider>
     </div>
   )
 }

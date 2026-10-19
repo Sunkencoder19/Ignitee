@@ -6,11 +6,14 @@
 import { useState } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { findClass } from '../api'
+import LanguagePicker from '../i18n/LanguagePicker'
+import { useT } from '../i18n/t'
 import { useSession } from '../session'
 import ThemeToggle from '../ThemeToggle'
 
 export default function Login() {
   const { user, checking } = useSession()
+  const t = useT()
   const location = useLocation()
   const [role, setRole] = useState(location.state?.role ?? 'student')
 
@@ -27,11 +30,15 @@ export default function Login() {
         IGNITE
       </Link>
 
+      <div className="mt-4">
+        <LanguagePicker />
+      </div>
+
       <div className="card relative mt-6 w-full max-w-md overflow-hidden p-6 shadow-float md:p-8">
         <span aria-hidden="true" className="gradient-band absolute inset-x-0 top-0 h-1.5" />
-        <h1 className="text-2xl font-semibold">Log in</h1>
+        <h1 className="text-2xl font-semibold">{t('login.title')}</h1>
 
-        <div className="mt-6 grid grid-cols-2 gap-2 rounded-full bg-bg p-1" role="radiogroup" aria-label="I am a">
+        <div className="mt-6 grid grid-cols-2 gap-2 rounded-full bg-bg p-1" role="radiogroup" aria-label={t('login.iAmA')}>
           {['student', 'teacher'].map((r) => (
             <button
               key={r}
@@ -41,7 +48,7 @@ export default function Login() {
               onClick={() => setRole(r)}
               className={`min-h-12 rounded-full font-semibold ${role === r ? 'bg-surface shadow-card' : 'text-muted'}`}
             >
-              {r === 'student' ? "I'm a student" : "I'm a teacher"}
+              {r === 'student' ? t('login.student') : t('login.teacher')}
             </button>
           ))}
         </div>
@@ -52,9 +59,9 @@ export default function Login() {
 
       {role === 'teacher' && (
         <p className="mt-6 text-muted">
-          New teacher?{' '}
+          {t('login.newTeacher')}{' '}
           <Link to="/signup" className="inline-flex min-h-12 items-center font-semibold text-accent underline">
-            Create an account
+            {t('login.createAccount')}
           </Link>
         </p>
       )}
@@ -64,6 +71,7 @@ export default function Login() {
 
 function StudentForm() {
   const { studentLogin } = useSession()
+  const t = useT()
   const navigate = useNavigate()
   const [code, setCode] = useState('')
   const [found, setFound] = useState(null) // { className, students } once the code is right
@@ -104,7 +112,7 @@ function StudentForm() {
     return (
       <form onSubmit={handleFind}>
         <label htmlFor="code" className="label mt-6">
-          Class code
+          {t('login.classCode')}
         </label>
         <input
           id="code"
@@ -117,7 +125,7 @@ function StudentForm() {
           className="field text-center text-xl tracking-[0.3em]"
         />
         <p id="code-help" className="mt-2 text-muted">
-          Your teacher gives you this code.
+          {t('login.classCodeHelp')}
         </p>
         {error && (
           <p role="alert" className="mt-2 font-semibold text-warn">
@@ -125,7 +133,7 @@ function StudentForm() {
           </p>
         )}
         <button type="submit" disabled={code.trim().length < 4 || busy} className="btn btn-primary mt-6 w-full text-lg">
-          {busy ? 'Looking...' : 'Find my class'}
+          {busy ? t('login.looking') : t('login.findClass')}
         </button>
       </form>
     )
@@ -135,7 +143,7 @@ function StudentForm() {
     <form onSubmit={handleLogin}>
       <div className="mt-6 flex items-center justify-between gap-4">
         <p>
-          Class <strong>{found.className}</strong>
+          {t('login.classLabel')} <strong>{found.className}</strong>
         </p>
         <button
           type="button"
@@ -147,20 +155,20 @@ function StudentForm() {
           }}
           className="inline-flex min-h-12 items-center px-2 font-semibold text-muted hover:text-ink"
         >
-          Change
+          {t('login.change')}
         </button>
       </div>
 
       {found.students.length === 0 ? (
-        <p className="mt-4 text-muted">There are no students in this class yet. Ask your teacher to add you.</p>
+        <p className="mt-4 text-muted">{t('login.noStudents')}</p>
       ) : (
         <>
           <label htmlFor="name" className="label mt-4">
-            Your name
+            {t('login.yourName')}
           </label>
           <select id="name" value={studentId} onChange={(e) => setStudentId(e.target.value)} className="field">
             <option value="" disabled>
-              Pick your name
+              {t('login.pickName')}
             </option>
             {found.students.map((s) => (
               <option key={s.id} value={s.id}>
@@ -170,7 +178,7 @@ function StudentForm() {
           </select>
 
           <label htmlFor="pin" className="label mt-5">
-            Your 4-digit PIN
+            {t('login.pin')}
           </label>
           <input
             id="pin"
@@ -191,7 +199,7 @@ function StudentForm() {
             disabled={!studentId || pin.length !== 4 || busy}
             className="btn btn-primary mt-6 w-full text-lg"
           >
-            {busy ? 'Logging in...' : 'Log in'}
+            {busy ? t('login.loggingIn') : t('login.logIn')}
           </button>
         </>
       )}
@@ -201,6 +209,7 @@ function StudentForm() {
 
 function TeacherForm() {
   const { teacherLogin } = useSession()
+  const t = useT()
   const navigate = useNavigate()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -223,7 +232,7 @@ function TeacherForm() {
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="email" className="label mt-6">
-        Email
+        {t('login.email')}
       </label>
       <input
         id="email"
@@ -234,7 +243,7 @@ function TeacherForm() {
         className="field"
       />
       <label htmlFor="password" className="label mt-5">
-        Password
+        {t('login.password')}
       </label>
       <input
         id="password"
@@ -250,7 +259,7 @@ function TeacherForm() {
         </p>
       )}
       <button type="submit" disabled={!email || !password || busy} className="btn btn-primary mt-6 w-full text-lg">
-        {busy ? 'Logging in...' : 'Log in'}
+        {busy ? t('login.loggingIn') : t('login.logIn')}
       </button>
     </form>
   )

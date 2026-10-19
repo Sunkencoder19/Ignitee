@@ -8,11 +8,13 @@
 // page draws (so there is no flash); this file keeps it up to date.
 
 import { useEffect, useState } from 'react'
+import { useT } from './i18n/t'
 
 const KEY = 'ignite:theme' // the same key the script in index.html reads
 const CHOICES = ['device', 'light', 'dark']
-const LABELS = { device: 'Auto', light: 'Light', dark: 'Dark' }
-const SPOKEN = { device: 'Auto, following this device', light: 'Light', dark: 'Dark' }
+// Words come from i18n/*.json (theme.*), so the switch speaks the student's language.
+const LABELS = { device: 'theme.auto', light: 'theme.light', dark: 'theme.dark' }
+const SPOKEN = { device: 'theme.autoSpoken', light: 'theme.light', dark: 'theme.dark' }
 const deviceQuery = () => window.matchMedia('(prefers-color-scheme: dark)')
 
 function savedChoice() {
@@ -31,6 +33,7 @@ function apply(choice) {
 
 export default function ThemeToggle() {
   const [choice, setChoice] = useState(savedChoice)
+  const t = useT()
 
   // Apply the choice, and while it is "Device setting", follow the device live.
   useEffect(() => {
@@ -56,10 +59,10 @@ export default function ThemeToggle() {
     <button
       type="button"
       onClick={next}
-      aria-label={`Colours: ${SPOKEN[choice]}. Tap to change.`}
+      aria-label={t('theme.spoken', { name: t(SPOKEN[choice]) })}
       className="inline-flex min-h-12 items-center whitespace-nowrap px-2 font-semibold text-muted hover:text-ink"
     >
-      Colours: {LABELS[choice]}
+      {t('theme.button', { name: t(LABELS[choice]) })}
     </button>
   )
 }

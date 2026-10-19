@@ -21,7 +21,10 @@ import {
   chapterStates,
   checkAnswer,
   currentStreak,
+  inLanguage,
+  LANGUAGES,
   lastActive,
+  localizeQuestion,
   quizOpen,
   scoreQuiz,
   today,
@@ -30,6 +33,12 @@ import {
 import { requireStudent } from './auth.js'
 import { Student } from './classes.js'
 import { Chapter, Lesson, Quiz } from './content.js'
+
+// A refusal the app can show in the student's language: `code` is looked up in
+// client/src/i18n/*.json (errors.<code>); `error` is the English fallback.
+function refuse(res, status, code, error) {
+  return res.status(status).json({ error, code })
+}
 
 const { Schema, model } = mongoose
 
@@ -45,6 +54,7 @@ const attemptSchema = new Schema(
     chapter: { type: Schema.Types.ObjectId, ref: 'Chapter', required: true, index: true },
     status: { type: String, enum: ['in-progress', 'finished'], default: 'in-progress' },
     questionIds: [Schema.Types.ObjectId], // the questions, in the order they are asked
+    language: { type: String, default: 'en' }, // the language it was played in; answers are checked in it
     // What happened on each question. prompt and topic are copied in, so
     // reports still make sense if the teacher later edits the quiz.
     answers: [
@@ -73,18 +83,19 @@ export const Attempt = model('Attempt', attemptSchema, 'attempts')
 // The published chapters for this student's class, in order, each with its
 // lesson ids (in order) and quiz id, in the shape the rules in game.js expect.
 async function visibleChapters(student) {
+  const lang = student.language ?? 'en'
   const chapters = await Chapter.find({ status: 'published', classes: student.class }).sort({ order: 1 })
   const ids = chapters.map((c) => c._id)
-  const lessons = await Lesson.find({ chapter: { $in: ids } }, 'title chapter order').sort({ order: 1 })
+  const lessons = await Lesson.find({ chapter: { $in: ids } }, 'title hi.title mr.title chapter order').sort({ order: 1 })
   const quizzes = await Quiz.find({ chapter: { $in: ids } }, 'chapter questions._id')
   return chapters.map((c) => {
     const quiz = quizzes.find((q) => String(q.chapter) === c.id)
     const own = lessons.filter((l) => String(l.chapter) === c.id)
     return {
       id: c.id,
-      title: c.title,
+      title: inLanguage(c, 'title', lang),
       lessonIds: own.map((l) => l.id),
-      lessonTitles: own.map((l) => l.title),
+      lessonTitles: own.map((l) => inLanguage(l, 'title', lang)),
       quizId: quiz ? quiz.id : null,
       questionCount: quiz ? quiz.questions.length : 0,
     }
@@ -129,8 +140,10 @@ async function openChapterFor(student, chapterId) {
   const chapters = await visibleChapters(student)
   const history = await historyOf(student)
   const entry = chapterStates(chapters, history).find((e) => e.chapter.id === String(chapterId))
-  if (!entry) return { error: 404, message: 'We couldn’t find that. Ask your teacher.' }
-  if (entry.state === 'locked') return { error: 403, message: 'This chapter isn’t open yet. Finish the one before it first.' }
+  if (!entry) return { error: 404, code: 'not-found', message: 'We couldn’t find that. Ask your teacher.' }
+  if (entry.state === 'locked') {
+    return { error: 403, code: 'chapter-locked', message: 'This chapter isn’t open yet. Finish the one before it first.' }
+  }
   return { chapter: entry.chapter, chapters, history }
 }
 
@@ -149,7 +162,14 @@ function shuffled(items) {
   return items
 }
 
+// A stored question (a Mongoose sub-document) in the student's language, with
+// its answer in that same language so their answer can be checked against it.
+function local(question, lang) {
+  return localizeQuestion(typeof question.toObject === 'function' ? question.toObject() : question, lang)
+}
+
 // Only what is needed to show the question. No answer, hint, explanation or topic.
+// `q` must already be in the student's language (see local()).
 function questionForStudent(q) {
   const out = { id: String(q._id), type: q.type, prompt: q.prompt }
   if (q.type === 'mcq') out.options = q.options
@@ -201,16 +221,21 @@ router.get('/student/progress', requireStudent, async (req, res) => {
 
 // GET /api/student/lessons/:lessonId   the lesson's steps, with activity questions but no answers
 router.get('/student/lessons/:lessonId', requireStudent, async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.lessonId)) return res.status(404).json({ error: 'Lesson not found.' })
+  if (!mongoose.isValidObjectId(req.params.lessonId)) return refuse(res, 404, 'not-found', 'Lesson not found.')
   const lesson = await Lesson.findById(req.params.lessonId)
-  if (!lesson) return res.status(404).json({ error: 'Lesson not found.' })
+  if (!lesson) return refuse(res, 404, 'not-found', 'Lesson not found.')
   const open = await openChapterFor(req.student, lesson.chapter)
-  if (open.error) return res.status(open.error).json({ error: open.message })
+  if (open.error) return refuse(res, open.error, open.code, open.message)
+  const lang = req.student.language ?? 'en'
   res.json({
     id: lesson.id,
-    title: lesson.title,
+    title: inLanguage(lesson, 'title', lang),
     chapterId: String(lesson.chapter),
-    steps: lesson.steps.map((s) => ({ type: s.type, text: s.text, ...(s.question ? { question: questionForStudent(s.question) } : {}) })),
+    steps: lesson.steps.map((s) => ({
+      type: s.type,
+      text: inLanguage(s, 'text', lang),
+      ...(s.question ? { question: questionForStudent(local(s.question, lang)) } : {}),
+    })),
   })
 })
 
@@ -218,25 +243,26 @@ router.get('/student/lessons/:lessonId', requireStudent, async (req, res) => {
 // Checks a lesson activity answer. Activities are practice (no points, nothing
 // recorded), so the app says which try this is.
 router.post('/student/lessons/:lessonId/check', requireStudent, async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.lessonId)) return res.status(404).json({ error: 'Lesson not found.' })
+  if (!mongoose.isValidObjectId(req.params.lessonId)) return refuse(res, 404, 'not-found', 'Lesson not found.')
   const lesson = await Lesson.findById(req.params.lessonId)
-  if (!lesson) return res.status(404).json({ error: 'Lesson not found.' })
+  if (!lesson) return refuse(res, 404, 'not-found', 'Lesson not found.')
   const open = await openChapterFor(req.student, lesson.chapter)
-  if (open.error) return res.status(open.error).json({ error: open.message })
+  if (open.error) return refuse(res, open.error, open.code, open.message)
   const question = lesson.steps.find((s) => s.question && String(s.question._id) === String(req.body?.questionId))?.question
-  if (!question) return res.status(404).json({ error: 'Question not found.' })
+  if (!question) return refuse(res, 404, 'not-found', 'Question not found.')
   const tries = req.body?.tries === 2 ? 2 : 1
-  const { outcome, ...reply } = judge(question, cleanGiven(question, req.body?.given), tries)
+  const shown = local(question, req.student.language ?? 'en') // checked in the language the student sees
+  const { outcome, ...reply } = judge(shown, cleanGiven(shown, req.body?.given), tries)
   res.json(reply)
 })
 
 // POST /api/student/lessons/:lessonId/finish   records the lesson as finished (only the first time counts)
 router.post('/student/lessons/:lessonId/finish', requireStudent, async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.lessonId)) return res.status(404).json({ error: 'Lesson not found.' })
+  if (!mongoose.isValidObjectId(req.params.lessonId)) return refuse(res, 404, 'not-found', 'Lesson not found.')
   const lesson = await Lesson.findById(req.params.lessonId)
-  if (!lesson) return res.status(404).json({ error: 'Lesson not found.' })
+  if (!lesson) return refuse(res, 404, 'not-found', 'Lesson not found.')
   const open = await openChapterFor(req.student, lesson.chapter)
-  if (open.error) return res.status(open.error).json({ error: open.message })
+  if (open.error) return refuse(res, open.error, open.code, open.message)
 
   const before = summary(open.history, open.chapters)
   const firstTime = !req.student.lessonsFinished.some((l) => String(l.lesson) === lesson.id)
@@ -252,20 +278,20 @@ router.post('/student/lessons/:lessonId/finish', requireStudent, async (req, res
   res.json({
     firstTime,
     pointsEarned: after.points - before.points,
-    newBadges: after.badges.filter((b, i) => b.earned && !before.badges[i].earned).map((b) => b.name),
+    newBadges: after.badges.filter((b, i) => b.earned && !before.badges[i].earned).map((b) => b.id),
     progress: after,
   })
 })
 
 // POST /api/student/quizzes/:quizId/attempts   start a quiz; returns the questions WITHOUT answers
 router.post('/student/quizzes/:quizId/attempts', requireStudent, async (req, res) => {
-  if (!mongoose.isValidObjectId(req.params.quizId)) return res.status(404).json({ error: 'Quiz not found.' })
+  if (!mongoose.isValidObjectId(req.params.quizId)) return refuse(res, 404, 'not-found', 'Quiz not found.')
   const quiz = await Quiz.findById(req.params.quizId)
-  if (!quiz) return res.status(404).json({ error: 'Quiz not found.' })
+  if (!quiz) return refuse(res, 404, 'not-found', 'Quiz not found.')
   const open = await openChapterFor(req.student, quiz.chapter)
-  if (open.error) return res.status(open.error).json({ error: open.message })
+  if (open.error) return refuse(res, open.error, open.code, open.message)
   if (!quizOpen(open.chapter, open.history)) {
-    return res.status(403).json({ error: 'Finish every lesson in this chapter first.' })
+    return refuse(res, 403, 'lessons-first', 'Finish every lesson in this chapter first.')
   }
 
   // Starting again throws away any unfinished go at this quiz.
@@ -277,11 +303,12 @@ router.post('/student/quizzes/:quizId/attempts', requireStudent, async (req, res
     quiz: quiz._id,
     chapter: quiz.chapter,
     questionIds: quiz.questions.map((q) => q._id),
+    language: req.student.language ?? 'en',
   })
   res.status(201).json({
     attemptId: attempt.id,
-    chapterTitle: open.chapter.title,
-    questions: quiz.questions.map(questionForStudent),
+    chapterTitle: open.chapter.title, // already in the student's language
+    questions: quiz.questions.map((q) => questionForStudent(local(q, attempt.language))),
   })
 })
 
@@ -297,23 +324,25 @@ async function inProgress(req) {
 // Checks ONE answer. Questions are answered in order, each at most twice.
 router.post('/student/attempts/:attemptId/answers', requireStudent, async (req, res) => {
   const { attempt, quiz } = await inProgress(req)
-  if (!attempt) return res.status(404).json({ error: 'Quiz attempt not found.' })
-  if (attempt.status !== 'in-progress') return res.status(409).json({ error: 'This quiz is already finished.' })
+  if (!attempt) return refuse(res, 404, 'not-found', 'Quiz attempt not found.')
+  if (attempt.status !== 'in-progress') return refuse(res, 409, 'already-finished', 'This quiz is already finished.')
 
   // The next question still waiting for an answer. Students can't skip ahead.
   const settled = new Set(attempt.answers.filter((a) => a.outcome).map((a) => String(a.question)))
   const nextId = attempt.questionIds.map(String).find((id) => !settled.has(id))
-  if (settled.has(String(req.body?.questionId))) return res.status(409).json({ error: 'You already answered that question.' })
-  if (!nextId) return res.status(409).json({ error: 'Every question is answered. Finish the quiz.' })
-  if (String(req.body?.questionId) !== nextId) return res.status(409).json({ error: 'Answer the questions in order.' })
+  if (settled.has(String(req.body?.questionId))) return refuse(res, 409, 'already-answered', 'You already answered that question.')
+  if (!nextId) return refuse(res, 409, 'all-answered', 'Every question is answered. Finish the quiz.')
+  if (String(req.body?.questionId) !== nextId) return refuse(res, 409, 'answer-in-order', 'Answer the questions in order.')
 
-  const question = quiz?.questions.id(nextId)
-  if (!question) return res.status(409).json({ error: 'This quiz was changed by your teacher. Start it again.' })
+  const stored = quiz?.questions.id(nextId)
+  if (!stored) return refuse(res, 409, 'quiz-changed', 'This quiz was changed by your teacher. Start it again.')
+  const question = local(stored, attempt.language) // checked in the language the quiz was started in
 
   const given = cleanGiven(question, req.body?.given)
   let entry = attempt.answers.find((a) => String(a.question) === nextId)
   if (!entry) {
-    attempt.answers.push({ question: question._id, prompt: question.prompt, topic: question.topic, tries: 0 })
+    // The English prompt and topic are kept for the teacher's reports.
+    attempt.answers.push({ question: stored._id, prompt: stored.prompt, topic: stored.topic, tries: 0 })
     entry = attempt.answers[attempt.answers.length - 1]
   }
   entry.tries += 1
@@ -327,10 +356,11 @@ router.post('/student/attempts/:attemptId/answers', requireStudent, async (req, 
 // The full review once a quiz is finished: each question with the right answer and explanation.
 function review(attempt, quiz) {
   return attempt.answers.map((a) => {
-    const q = quiz?.questions.id(a.question)
+    const stored = quiz?.questions.id(a.question)
+    const q = stored ? local(stored, attempt.language) : null
     return {
       questionId: String(a.question),
-      prompt: a.prompt,
+      prompt: q ? q.prompt : a.prompt,
       given: a.given,
       outcome: a.outcome,
       answer: q ? q.answer : null,
@@ -339,15 +369,15 @@ function review(attempt, quiz) {
   })
 }
 
-async function resultJson(attempt, quiz, history) {
-  const chapter = await Chapter.findById(attempt.chapter, 'title')
+async function resultJson(attempt, quiz, history, lang) {
+  const chapter = await Chapter.findById(attempt.chapter, 'title hi.title mr.title')
   const mine = attemptsWithPoints(history).filter((a) => a.quizId === String(attempt.quiz))
   const index = mine.findIndex((a) => a.id === attempt.id)
   return {
     attemptId: attempt.id,
     quizId: String(attempt.quiz),
     chapterId: String(attempt.chapter),
-    chapterTitle: chapter?.title ?? '',
+    chapterTitle: chapter ? inLanguage(chapter, 'title', lang) : '',
     score: attempt.score,
     stars: attempt.stars,
     quizPoints: mine[index]?.points ?? 0, // retakes only pay what beats the best earlier try
@@ -362,14 +392,14 @@ async function resultJson(attempt, quiz, history) {
 // POST /api/student/attempts/:attemptId/finish   (no body: the server scores it from its own records)
 router.post('/student/attempts/:attemptId/finish', requireStudent, async (req, res) => {
   if (req.body && Object.keys(req.body).length > 0) {
-    return res.status(400).json({ error: 'The server works out the score itself. Send nothing when finishing a quiz.' })
+    return refuse(res, 400, 'no-score', 'The server works out the score itself. Send nothing when finishing a quiz.')
   }
   const { attempt, quiz } = await inProgress(req)
-  if (!attempt) return res.status(404).json({ error: 'Quiz attempt not found.' })
-  if (attempt.status !== 'in-progress') return res.status(409).json({ error: 'This quiz is already finished.' })
+  if (!attempt) return refuse(res, 404, 'not-found', 'Quiz attempt not found.')
+  if (attempt.status !== 'in-progress') return refuse(res, 409, 'already-finished', 'This quiz is already finished.')
 
   const outcomes = attempt.questionIds.map((id) => attempt.answers.find((a) => String(a.question) === String(id))?.outcome)
-  if (outcomes.some((o) => !o)) return res.status(400).json({ error: 'Answer every question before finishing.' })
+  if (outcomes.some((o) => !o)) return refuse(res, 400, 'answer-everything', 'Answer every question before finishing.')
 
   const chapters = await visibleChapters(req.student)
   const before = summary(await historyOf(req.student), chapters)
@@ -385,9 +415,9 @@ router.post('/student/attempts/:attemptId/finish', requireStudent, async (req, r
   const opened = statesAfter.find((e, i) => e.state === 'open' && statesBefore[i].state === 'locked')
 
   res.json({
-    ...(await resultJson(attempt, quiz, history)),
+    ...(await resultJson(attempt, quiz, history, req.student.language ?? 'en')),
     pointsEarned: after.points - before.points, // quiz points plus the daily learning bonus
-    newBadges: after.badges.filter((b, i) => b.earned && !before.badges[i].earned).map((b) => b.name),
+    newBadges: after.badges.filter((b, i) => b.earned && !before.badges[i].earned).map((b) => b.id),
     openedChapter: opened ? opened.chapter.title : null,
     progress: after,
   })
@@ -396,8 +426,17 @@ router.post('/student/attempts/:attemptId/finish', requireStudent, async (req, r
 // GET /api/student/attempts/:attemptId   a finished attempt, for the result page
 router.get('/student/attempts/:attemptId', requireStudent, async (req, res) => {
   const { attempt, quiz } = await inProgress(req)
-  if (!attempt || attempt.status !== 'finished') return res.status(404).json({ error: 'Quiz result not found.' })
-  res.json(await resultJson(attempt, quiz, await historyOf(req.student)))
+  if (!attempt || attempt.status !== 'finished') return refuse(res, 404, 'not-found', 'Quiz result not found.')
+  res.json(await resultJson(attempt, quiz, await historyOf(req.student), req.student.language ?? 'en'))
+})
+
+// PATCH /api/student/language  { language: 'en' | 'hi' | 'mr' }
+// Saved on the student's account, so it follows them to any phone.
+router.patch('/student/language', requireStudent, async (req, res) => {
+  const language = req.body?.language
+  if (!LANGUAGES.includes(language)) return refuse(res, 400, 'bad-language', 'Choose English, Hindi or Marathi.')
+  await Student.updateOne({ _id: req.student._id }, { $set: { language } })
+  res.json({ language })
 })
 
 // GET /api/student/leaderboard   classmates' first names and points (nothing else)

@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { getChapterForEditing, getTopics, saveQuiz, useData } from '../../api'
 import { LIMITS, quizProblems } from '../../game'
-import QuestionForm, { blankQuestion } from '../../QuestionForm'
+import QuestionForm, { LanguageTabs, blankQuestion } from '../../QuestionForm'
 
 export default function QuizEditor() {
   const { chapterId } = useParams()
@@ -16,6 +16,7 @@ export default function QuizEditor() {
   const [checked, setChecked] = useState(false)
   const [status, setStatus] = useState(null) // { kind: 'saved' | 'error', message }
   const [busy, setBusy] = useState(false)
+  const [lang, setLang] = useState('en') // which language is being edited: English, or a translation
 
   // When the saved quiz arrives (or is reloaded after saving), start editing from it.
   const saved = data?.[0].quiz?.questions ?? []
@@ -82,6 +83,10 @@ export default function QuizEditor() {
         <p className="mt-1 text-muted">
           Students get two tries at each question: the hint after the first miss, the answer and explanation after the second.
         </p>
+        <div className="mt-4">
+          <LanguageTabs lang={lang} onChange={setLang} />
+          {lang !== 'en' && <p className="mt-2 text-muted">Optional. Anything left empty is shown to students in English.</p>}
+        </div>
       </div>
 
       <ol className="space-y-5">
@@ -107,7 +112,15 @@ export default function QuizEditor() {
                 Remove
               </button>
             </div>
-            <QuestionForm question={q} onChange={(next) => setQuestion(i, next)} idPrefix={`q${i}`} needsTopic topics={topics} showProblems={checked} />
+            <QuestionForm
+              question={q}
+              onChange={(next) => setQuestion(i, next)}
+              idPrefix={`q${i}`}
+              needsTopic
+              topics={topics}
+              showProblems={checked}
+              lang={lang}
+            />
           </li>
         ))}
       </ol>

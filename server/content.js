@@ -13,6 +13,22 @@ import { Class, Student } from './classes.js'
 const { Schema, model } = mongoose
 
 // ---------- models ----------
+// Hindi (hi) and Marathi (mr) versions sit next to the English, e.g.
+// chapter.hi.title, step.mr.text, question.hi.options. All are optional:
+// a missing translation falls back to English (see inLanguage in game.js).
+
+const titleTranslation = new Schema({ title: String }, { _id: false })
+const textTranslation = new Schema({ text: String }, { _id: false })
+const questionTranslation = new Schema(
+  {
+    prompt: String,
+    options: { type: [String], default: undefined }, // mcq: one for one with the English options
+    items: { type: [String], default: undefined }, // order: one for one with the English items
+    hint: String,
+    explanation: String,
+  },
+  { _id: false }
+)
 
 const chapterSchema = new Schema(
   {
@@ -21,6 +37,8 @@ const chapterSchema = new Schema(
     classes: [{ type: Schema.Types.ObjectId, ref: 'Class' }], // which classes see it
     status: { type: String, enum: ['draft', 'published'], default: 'draft' },
     order: { type: Number, required: true }, // 0, 1, 2... the order students see
+    hi: { type: titleTranslation, default: undefined },
+    mr: { type: titleTranslation, default: undefined },
   },
   { timestamps: true }
 )
@@ -36,6 +54,8 @@ const questionSchema = new Schema({
   hint: { type: String, required: true },
   explanation: { type: String, required: true },
   topic: { type: String, default: '' }, // needed on quiz questions; reports group by it
+  hi: { type: questionTranslation, default: undefined },
+  mr: { type: questionTranslation, default: undefined },
 })
 
 const lessonSchema = new Schema(
@@ -50,8 +70,12 @@ const lessonSchema = new Schema(
         type: { type: String, enum: ['explain', 'example', 'activity'], required: true },
         text: { type: String, required: true },
         question: { type: questionSchema, default: undefined }, // activity steps only, optional
+        hi: { type: textTranslation, default: undefined },
+        mr: { type: textTranslation, default: undefined },
       },
     ],
+    hi: { type: titleTranslation, default: undefined },
+    mr: { type: titleTranslation, default: undefined },
   },
   { timestamps: true }
 )
@@ -71,6 +95,25 @@ export const Quiz = model('Quiz', quizSchema, 'quizzes')
 
 const trim = (value) => String(value ?? '').trim()
 
+// The non-empty translated fields of `source[lang]` for 'hi' and 'mr', e.g.
+// translations(step, ['text']) -> { hi: { text: '...' } }. Lists (options,
+// items) are kept whole if any entry is filled; the checks in game.js make sure
+// they are complete.
+function translations(source, fields, lists = []) {
+  const out = {}
+  for (const lang of ['hi', 'mr']) {
+    const t = source?.[lang]
+    if (!t || typeof t !== 'object') continue
+    const kept = {}
+    for (const field of fields) if (trim(t[field])) kept[field] = trim(t[field])
+    for (const field of lists) {
+      if (Array.isArray(t[field]) && t[field].some((x) => trim(x))) kept[field] = t[field].map(trim)
+    }
+    if (Object.keys(kept).length) out[lang] = kept
+  }
+  return out
+}
+
 // Keeps only the fields a question should have, trimmed. If the editor sent the
 // id of a question that already exists (`keepIds`), the id is kept, so quiz
 // history that points at that question still finds it.
@@ -85,14 +128,17 @@ function cleanQuestion(q, keepIds) {
     out.answer = trim(q?.answer)
   }
   if (q?.id && keepIds.has(String(q.id))) out._id = q.id
+  const lists = q?.type === 'mcq' ? ['options'] : q?.type === 'order' ? ['items'] : []
+  Object.assign(out, translations(q, ['prompt', 'hint', 'explanation'], lists))
   return out
 }
 
 function cleanLesson(body, keepIds = new Set()) {
   return {
     title: trim(body?.title),
+    ...translations(body, ['title']),
     steps: (Array.isArray(body?.steps) ? body.steps : []).map((s) => {
-      const step = { type: s?.type, text: trim(s?.text) }
+      const step = { type: s?.type, text: trim(s?.text), ...translations(s, ['text']) }
       if (s?.question) step.question = cleanQuestion(s.question, keepIds)
       return step
     }),
@@ -102,16 +148,32 @@ function cleanLesson(body, keepIds = new Set()) {
 function questionJson(q) {
   const out = { id: String(q._id), type: q.type, prompt: q.prompt, answer: q.answer, hint: q.hint, explanation: q.explanation, topic: q.topic ?? '' }
   if (q.type === 'mcq') out.options = q.options
+  return withTranslations(out, q)
+}
+
+// A translation sub-document as a plain object (or undefined).
+function plain(value) {
+  return value && typeof value.toObject === 'function' ? value.toObject() : value
+}
+
+// Copies the hi/mr translations of a document onto `out`, if it has any.
+function withTranslations(out, doc) {
+  for (const lang of ['hi', 'mr']) if (doc?.[lang]) out[lang] = plain(doc[lang])
   return out
 }
 
 function lessonJson(l) {
-  return {
-    id: l.id,
-    title: l.title,
-    order: l.order,
-    steps: l.steps.map((s) => ({ type: s.type, text: s.text, ...(s.question ? { question: questionJson(s.question) } : {}) })),
-  }
+  return withTranslations(
+    {
+      id: l.id,
+      title: l.title,
+      order: l.order,
+      steps: l.steps.map((s) =>
+        withTranslations({ type: s.type, text: s.text, ...(s.question ? { question: questionJson(s.question) } : {}) }, s)
+      ),
+    },
+    l
+  )
 }
 
 function invalid(res, problems) {
@@ -194,7 +256,7 @@ router.post('/chapters/starter', requireTeacher, async (req, res) => {
     return res.status(409).json({ error: 'The starter chapters can only be added while you have no chapters.' })
   }
   for (const [order, item] of STARTER.entries()) {
-    const chapter = await Chapter.create({ title: item.title, teacher: req.teacher._id, order })
+    const chapter = await Chapter.create({ title: item.title, ...translations(item, ['title']), teacher: req.teacher._id, order })
     await Lesson.insertMany(
       item.lessons.map((l, i) => ({ ...cleanLesson(l), chapter: chapter._id, teacher: req.teacher._id, order: i }))
     )
@@ -230,6 +292,7 @@ router.get('/chapters/:chapterId', requireTeacher, async (req, res) => {
   const lessons = await Lesson.find({ chapter: chapter._id }).sort({ order: 1 })
   const quiz = await Quiz.findOne({ chapter: chapter._id })
   res.json({
+    ...withTranslations({}, chapter),
     id: chapter.id,
     title: chapter.title,
     status: chapter.status,
@@ -239,7 +302,7 @@ router.get('/chapters/:chapterId', requireTeacher, async (req, res) => {
   })
 })
 
-// PATCH /api/chapters/:chapterId  { title?, classIds?, status? }
+// PATCH /api/chapters/:chapterId  { title?, hi?: { title }, mr?: { title }, classIds?, status? }
 // Publishing checks the chapter is complete; a published chapter must stay complete.
 router.patch('/chapters/:chapterId', requireTeacher, async (req, res) => {
   const chapter = await ownedChapter(req.teacher, req.params.chapterId)
@@ -250,6 +313,13 @@ router.patch('/chapters/:chapterId', requireTeacher, async (req, res) => {
     const title = trim(body.title)
     if (!title || title.length > 80) return res.status(400).json({ error: 'Give the chapter a title (up to 80 characters).' })
     chapter.title = title
+  }
+  // { hi: { title }, mr: { title } }: an empty title removes that translation.
+  for (const lang of ['hi', 'mr']) {
+    if (body[lang]?.title === undefined) continue
+    const translated = trim(body[lang].title)
+    if (translated.length > 80) return res.status(400).json({ error: 'Keep the translated title under 80 characters.' })
+    chapter[lang] = translated ? { title: translated } : undefined
   }
   if (body.classIds !== undefined) {
     const ids = [...new Set((Array.isArray(body.classIds) ? body.classIds : []).map(String))]
@@ -315,6 +385,8 @@ router.patch('/lessons/:lessonId', requireTeacher, async (req, res) => {
   const problems = lessonProblems(next)
   if (problems.length) return invalid(res, problems)
   lesson.title = next.title
+  lesson.hi = next.hi // undefined (no Hindi title) removes it
+  lesson.mr = next.mr
   lesson.steps = next.steps
   await lesson.save()
   res.json(lessonJson(lesson))

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 
 /*
@@ -10,7 +10,8 @@
   - --gradient: the warm band used behind the landing hero and a few highlights
 */
 @theme {
-  --font-sans: 'Geist', system-ui, sans-serif;
+  /* Geist for Latin letters; Hindi and Marathi letters fall through to Noto Sans Devanagari. */
+  --font-sans: 'Geist', 'Noto Sans Devanagari', system-ui, sans-serif;
 
   --color-bg: #f6f9fc;
   --color-surface: #ffffff;
@@ -60,6 +61,24 @@
 
 body {
   @apply bg-bg font-sans text-ink antialiased;
+}
+
+/*
+  Hindi and Marathi (Devanagari). Its marks sit above and below the letters,
+  so tight headline spacing would cut them off, and letter-spacing breaks the
+  joined letters apart. session.jsx sets <html lang> to the language on screen.
+*/
+:root:lang(hi),
+:root:lang(mr) {
+  line-height: 1.7;
+}
+:lang(hi) :is(h1, h2, h3, p, li, span, button, a, label),
+:lang(mr) :is(h1, h2, h3, p, li, span, button, a, label) {
+  letter-spacing: normal;
+}
+:lang(hi) :is(h1, h2, h3),
+:lang(mr) :is(h1, h2, h3) {
+  line-height: 1.35;
 }
 
 /*

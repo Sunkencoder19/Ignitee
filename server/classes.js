@@ -29,6 +29,9 @@ const studentSchema = new Schema(
     class: { type: Schema.Types.ObjectId, ref: 'Class', required: true },
     teacher: { type: Schema.Types.ObjectId, ref: 'Teacher', required: true, index: true },
     pinHash: { type: String, required: true },
+    // 'en', 'hi' or 'mr'. Empty until the child first chooses; it follows them
+    // to any phone they log in on.
+    language: { type: String, enum: ['en', 'hi', 'mr', null], default: null },
     // The history of lessons finished: one entry per lesson, the first time.
     lessonsFinished: [
       {
