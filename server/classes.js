@@ -38,8 +38,54 @@ const studentSchema = new Schema(
         _id: false,
         lesson: { type: Schema.Types.ObjectId, ref: 'Lesson', required: true },
         date: { type: String, required: true }, // 'YYYY-MM-DD', server's local date
+        stars: { type: Number, default: 3 }, // the level's best stars, 1-3 (see levelStars in shared/game.js)
       },
     ],
+    // The answers to lesson activities ("level answers"): one entry per question.
+    // The SERVER counts the tries; `best` is the best outcome so far and is what reports use.
+    levels: [
+      {
+        _id: false,
+        lesson: { type: Schema.Types.ObjectId, required: true },
+        question: { type: Schema.Types.ObjectId, required: true },
+        chapter: { type: Schema.Types.ObjectId, required: true },
+        prompt: String, // copied in, so reports still read well if the teacher edits the lesson
+        topic: String,
+        tries: { type: Number, default: 0 }, // 0-2 in the current round
+        settled: { type: Boolean, default: false }, // the current round is over
+        best: { type: String, enum: ['first', 'hint', 'missed'] },
+        given: Schema.Types.Mixed,
+      },
+    ],
+    // The daily challenge, one entry per day the student opened it. Practice
+    // for fun: it pays points but is never counted in teacher reports.
+    dailies: [
+      {
+        _id: false,
+        date: { type: String, required: true },
+        questionIds: [Schema.Types.ObjectId],
+        language: { type: String, default: 'en' }, // answers are checked in the language it was shown in
+        answers: [
+          {
+            _id: false,
+            question: Schema.Types.ObjectId,
+            tries: Number,
+            outcome: { type: String, enum: ['first', 'hint', 'missed'] },
+          },
+        ],
+        points: { type: Number, default: 0 }, // set when all of the day's questions are done
+        finished: { type: Boolean, default: false },
+      },
+    ],
+    // Shop items bought with coins ('hat:cap'), and what the buddy is wearing.
+    purchases: [String],
+    mascot: {
+      buddy: { type: String, default: 'fox' },
+      hat: { type: String, default: null },
+      face: { type: String, default: null },
+      neck: { type: String, default: null },
+      background: { type: String, default: 'sky' },
+    },
   },
   { timestamps: { createdAt: true, updatedAt: false } }
 )

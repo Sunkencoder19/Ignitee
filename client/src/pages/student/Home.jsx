@@ -1,19 +1,22 @@
-// Student home: what to do next, and how you are doing.
-// Points, streak and badges come from the server (in `progress`); the
-// chapters list says which chapter is open and which lessons are done.
+// Student home: the buddy says hello, one big thing to do next, the daily
+// challenge, and how the week is going. Points, coins and the streak come from
+// the server (in `progress`); the worlds list says which world is open and which
+// levels are done.
 
 import { Link } from 'react-router-dom'
-import { getStudentChapters, useData } from '../../api'
+import { getDaily, getStudentChapters, useData } from '../../api'
+import Buddy from '../../Buddy'
 import { activeDays, addDays, today } from '../../game'
-import LanguagePicker from '../../i18n/LanguagePicker'
 import { useT } from '../../i18n/t'
+import { Flame, Stars } from '../../Rewards'
 import { useSession } from '../../session'
 
 export default function Home() {
   const { user, progress } = useSession()
   const t = useT()
-  // Refetched when the language changes, so chapter titles switch too.
+  // Refetched when the language changes, so titles switch too.
   const { data: chapters, error, reload } = useData(() => getStudentChapters(), [user.language])
+  const { data: daily } = useData(() => getDaily().catch(() => null), [user.language])
 
   if (error) {
     return (
@@ -27,94 +30,99 @@ export default function Home() {
   }
   if (!chapters) return <p className="text-muted">{t('common.loading')}</p>
 
+  const isNew = progress.lessons.length === 0
+  const hello = (
+    <div className="card flex items-center gap-4 p-4">
+      <Buddy mascot={progress.mascot} size={112} label={t('home.buddyLabel')} className="float shrink-0" />
+      <div className="min-w-0">
+        <h1 className="text-3xl leading-tight">{isNew ? t('home.helloNew', { name: user.firstName }) : t('home.hello', { name: user.firstName })}</h1>
+        <p className="mt-1 flex items-center gap-1.5 text-lg font-semibold text-muted">
+          <Flame size={22} />
+          {progress.streak > 0 ? t('home.streakLine', { count: progress.streak }) : t('home.streakStart')}
+        </p>
+      </div>
+    </div>
+  )
+
   if (chapters.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="text-3xl font-semibold tracking-tight">{t('home.hello', { name: user.firstName })}</h1>
-        <section className="card p-6 md:p-8">
-          <h2 className="text-2xl font-semibold">{t('home.noChaptersTitle')}</h2>
+        {hello}
+        <section className="card p-6">
+          <h2 className="text-2xl">{t('home.noChaptersTitle')}</h2>
           <p className="mt-2 text-lg text-muted">{t('home.noChaptersText', { className: user.className })}</p>
         </section>
-        <LanguageSection />
       </div>
     )
   }
 
-  const isNew = progress.lessons.length === 0
   const lessonsTotal = chapters.reduce((sum, c) => sum + c.lessons.length, 0)
   const lessonsDone = chapters.reduce((sum, c) => sum + c.lessons.filter((l) => l.done).length, 0)
-  const chaptersDone = chapters.filter((c) => c.state === 'done').length
+  const worldsDone = chapters.filter((c) => c.state === 'done').length
+  const starsEarned = chapters.reduce((sum, c) => sum + c.worldStars, 0)
+  const starsTotal = chapters.reduce((sum, c) => sum + c.worldMax, 0)
 
-  // The big card at the top: one clear thing to do next, in the open chapter.
+  // The big card: one clear thing to do next, in the open world.
   const open = chapters.find((c) => c.state === 'open')
   const nextLesson = open?.lessons.find((l) => !l.done)
-  let next = {
-    title: t('home.allDoneTitle'),
-    detail: t('home.allDoneText'),
-    to: '/student/learn',
-    button: t('home.seeAllChapters'),
-  }
+  let next = { title: t('home.allDoneTitle'), detail: t('home.allDoneText'), to: '/student/learn', button: t('home.seeAllChapters') }
   if (open && nextLesson) {
     next = {
       title: nextLesson.title,
-      detail: t('home.chapterLine', { number: open.number, title: open.title }),
+      detail: t('home.chapterLine', { subject: t(`subjects.${open.subject}`), number: open.number, title: open.title }),
       to: `/student/learn/${open.id}/${nextLesson.id}`,
       button: isNew ? t('home.startFirstLesson') : t('home.continue'),
     }
   } else if (open?.quiz) {
-    next = {
-      title: t('home.quizTitle', { title: open.title }),
-      detail: t('home.quizReady'),
-      to: `/student/quiz/${open.quiz.id}`,
-      button: t('home.startQuiz'),
-    }
+    next = { title: t('home.quizTitle', { title: open.title }), detail: t('home.quizReady'), to: `/student/quiz/${open.quiz.id}`, button: t('home.startQuiz') }
   }
 
   // The last 7 days, oldest first, and whether the student learned on each.
   const days = new Set(activeDays(progress))
   const week = Array.from({ length: 7 }, (_, i) => addDays(today(), i - 6))
-  const earnedCount = progress.badges.filter((b) => b.earned).length
 
-  const stats = [
-    { label: t('home.statPoints'), value: progress.points },
-    { label: t('home.statStreak'), value: progress.streak },
-    { label: t('home.statBestStreak'), value: progress.bestStreak },
-    { label: t('home.statLessons'), value: t('home.xOfY', { done: lessonsDone, total: lessonsTotal }) },
-    { label: t('home.statChapters'), value: t('home.xOfY', { done: chaptersDone, total: chapters.length }) },
+  const tiles = [
+    { label: t('home.statLessons'), value: t('home.xOfY', { done: lessonsDone, total: lessonsTotal }), colour: '#2f6fed' },
+    { label: t('home.statChapters'), value: t('home.xOfY', { done: worldsDone, total: chapters.length }), colour: '#0f7a4d' },
+    { label: t('home.statBestStreak'), value: progress.bestStreak, colour: '#b45400' },
+    { label: t('home.statStars'), value: t('home.xOfY', { done: starsEarned, total: starsTotal }), colour: '#7b3fe0' },
   ]
 
   return (
-    <div className="space-y-8">
-      <h1 className="text-3xl font-semibold tracking-tight">
-        {isNew ? t('home.helloNew', { name: user.firstName }) : t('home.hello', { name: user.firstName })}
-      </h1>
+    <div className="space-y-6">
+      {hello}
 
-      <section className="card relative overflow-hidden p-6 shadow-float md:p-8">
-        <span aria-hidden="true" className="gradient-band absolute inset-x-0 top-0 h-1.5" />
-        <p className="font-semibold text-accent">{t('home.upNext')}</p>
-        <h2 className="mt-1 text-2xl font-semibold md:text-3xl">{next.title}</h2>
-        <p className="mt-2 text-lg text-muted">{next.detail}</p>
-        <Link to={next.to} className="btn btn-primary mt-6 w-full text-lg sm:w-auto">
+      <section className="card relative overflow-hidden p-6">
+        <span aria-hidden="true" className="absolute inset-x-0 top-0 h-2 bg-gradient-to-r from-[#6c3df0] via-[#ec4899] to-[#ff8a00]" />
+        <p className="font-bold text-accent">{t('home.upNext')}</p>
+        <h2 className="mt-1 text-2xl leading-snug md:text-3xl">{next.title}</h2>
+        <p className="mt-1 text-lg text-muted">{next.detail}</p>
+        <Link to={next.to} className="btn btn-primary mt-5 w-full text-xl">
           {next.button}
         </Link>
       </section>
 
-      <section>
-        <h2 className="text-lg font-semibold">{t('home.progressTitle')}</h2>
-        <dl className="mt-3 grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-3 lg:grid-cols-5">
-          {stats.map((s) => (
-            <div key={s.label}>
-              <dt className="text-muted">{s.label}</dt>
-              <dd className="text-2xl font-semibold">{s.value}</dd>
-            </div>
-          ))}
-        </dl>
-      </section>
+      <Link
+        to="/student/daily"
+        className="flex items-center gap-4 rounded-3xl bg-gradient-to-br from-[#ffd84d] to-[#ff9f1a] p-5 text-[#1d2358] shadow-[0_5px_0_#d97a00] active:translate-y-0.5"
+      >
+        <span aria-hidden="true" className="hidden size-16 shrink-0 place-items-center rounded-2xl bg-white/70 min-[430px]:grid">
+          <Stars earned={3} size={18} className="flex-wrap justify-center" />
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block font-display text-2xl leading-tight">{t('daily.title')}</span>
+          <span className="block text-lg font-semibold">
+            {!daily || !daily.available ? t('daily.noneYet') : daily.done ? t('daily.doneLine', { points: daily.points }) : t('daily.readyLine')}
+          </span>
+        </span>
+        {daily?.available && !daily.done && (
+          <span className="shrink-0 rounded-full bg-[#1d2358] px-4 py-2 text-lg font-bold text-white">{t('daily.play')}</span>
+        )}
+      </Link>
 
       <section>
-        <h2 className="text-lg font-semibold">{t('home.weekTitle')}</h2>
-        <p className="text-muted">{t('home.weekHelp')}</p>
-        <ol className="mt-3 grid max-w-md grid-cols-7 gap-2 text-center">
+        <h2 className="text-xl">{t('home.weekTitle')}</h2>
+        <ol className="mt-3 grid grid-cols-7 gap-2 text-center">
           {week.map((date) => {
             const [y, m, d] = date.split('-').map(Number)
             const name = t(`weekdays.${new Date(y, m - 1, d).getDay()}`)
@@ -122,10 +130,12 @@ export default function Home() {
             return (
               <li key={date}>
                 <span
-                  className={`block h-10 rounded-xl ${learned ? 'bg-accent' : 'border border-line bg-surface'}`}
+                  className={`grid h-12 place-items-center rounded-2xl ${learned ? 'bg-accent-soft ring-2 ring-accent' : 'bg-surface ring-1 ring-line'}`}
                   aria-label={t(learned ? 'home.dayLearned' : 'home.dayNotLearned', { day: name })}
-                />
-                <span className={`mt-1 block ${date === today() ? 'font-semibold text-accent' : 'text-muted'}`}>
+                >
+                  {learned && <Flame size={26} />}
+                </span>
+                <span className={`mt-1 block ${date === today() ? 'font-bold text-accent' : 'text-muted'}`}>
                   {name}
                   {date === today() && <span className="sr-only"> {t('home.today')}</span>}
                 </span>
@@ -136,38 +146,16 @@ export default function Home() {
       </section>
 
       <section>
-        <h2 className="text-lg font-semibold">{t('home.badgesTitle')}</h2>
-        <p className="text-muted">{t('home.badgesCount', { earned: earnedCount, total: progress.badges.length })}</p>
-        <ul className="mt-3 overflow-hidden rounded-2xl bg-surface shadow-card ring-1 ring-line">
-          {progress.badges.map((b) => (
-            <li key={b.id} className="flex items-center gap-4 px-4 py-3 not-last:border-b not-last:border-line">
-              <span className="min-w-0 flex-1">
-                <span className={`block font-semibold ${b.earned ? '' : 'text-muted'}`}>{t(`badges.${b.id}.name`)}</span>
-                <span className="block text-muted">{t(`badges.${b.id}.howTo`)}</span>
-              </span>
-              <span className={`font-semibold ${b.earned ? 'text-good' : 'text-muted'}`}>
-                {b.earned ? t('home.earned') : t('home.notYet')}
-              </span>
-            </li>
+        <h2 className="text-xl">{t('home.progressTitle')}</h2>
+        <dl className="mt-3 grid grid-cols-2 gap-3">
+          {tiles.map((tile) => (
+            <div key={tile.label} className="rounded-2xl p-4 text-white shadow-[0_4px_0_rgb(0_0_0/0.25)]" style={{ background: tile.colour }}>
+              <dt className="font-semibold">{tile.label}</dt>
+              <dd className="font-display text-3xl">{tile.value}</dd>
+            </div>
           ))}
-        </ul>
+        </dl>
       </section>
-
-      <LanguageSection />
     </div>
-  )
-}
-
-// The language picker, at the bottom of Home. The choice is saved on the
-// student's account, so it follows them to any phone they log in on.
-function LanguageSection() {
-  const t = useT()
-  return (
-    <section>
-      <h2 className="text-lg font-semibold">{t('home.languageTitle')}</h2>
-      <div className="mt-3">
-        <LanguagePicker />
-      </div>
-    </section>
   )
 }

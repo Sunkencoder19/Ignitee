@@ -19,6 +19,9 @@ import Lesson from './pages/student/Lesson'
 import Quiz from './pages/student/Quiz'
 import Result from './pages/student/Result'
 import Leaderboard from './pages/student/Leaderboard'
+import Daily from './pages/student/Daily'
+import Shop from './pages/student/Shop'
+import StudentProfile from './pages/student/Profile'
 
 import Classes from './pages/teacher/Classes'
 import Class from './pages/teacher/Class'
@@ -28,6 +31,7 @@ import QuizEditor from './pages/teacher/QuizEditor'
 import Preview from './pages/teacher/Preview'
 import Reports from './pages/teacher/Reports'
 import Student from './pages/teacher/Student'
+import TeacherProfile from './pages/teacher/Profile'
 
 // If any page throws an error, show this instead of a blank screen.
 // (React only lets a class component catch errors.)
@@ -75,6 +79,9 @@ createRoot(document.getElementById('root')).render(
             <Route path="quiz/:quizId" element={<Quiz />} />
             <Route path="results/:attemptId" element={<Result />} />
             <Route path="leaderboard" element={<Leaderboard />} />
+            <Route path="daily" element={<Daily />} />
+            <Route path="shop" element={<Shop />} />
+            <Route path="me" element={<StudentProfile />} />
           </Route>
 
           <Route path="/teacher" element={<TeacherLayout />}>
@@ -88,6 +95,7 @@ createRoot(document.getElementById('root')).render(
             <Route path="reports" element={<Reports />} />
             <Route path="reports/:classId" element={<Reports />} />
             <Route path="students/:studentId" element={<Student />} />
+            <Route path="profile" element={<TeacherProfile />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />

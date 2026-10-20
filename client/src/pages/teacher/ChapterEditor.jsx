@@ -18,7 +18,7 @@ import {
   updateLesson,
   useData,
 } from '../../api'
-import { LIMITS, lessonProblems } from '../../game'
+import { LIMITS, SUBJECTS, lessonProblems } from '../../game'
 import QuestionForm, { LanguageTabs, blankQuestion } from '../../QuestionForm'
 
 const STEP_TYPES = [
@@ -292,7 +292,7 @@ function TitleEditor({ chapter, onSave }) {
   const [error, setError] = useState(null)
 
   function start() {
-    setValues({ title: chapter.title, hi: chapter.hi?.title ?? '', mr: chapter.mr?.title ?? '' })
+    setValues({ title: chapter.title, subject: chapter.subject, hi: chapter.hi?.title ?? '', mr: chapter.mr?.title ?? '' })
     setError(null)
     setEditing(true)
   }
@@ -308,6 +308,7 @@ function TitleEditor({ chapter, onSave }) {
           </button>
         </div>
         <p className="text-sm text-muted">
+          {SUBJECTS.find((s) => s.id === chapter.subject)?.name ?? chapter.subject}.{' '}
           {translated.length ? `Title also in ${translated.join(' and ')}.` : 'No Hindi or Marathi title yet (students see the English).'}
         </p>
       </div>
@@ -318,7 +319,8 @@ function TitleEditor({ chapter, onSave }) {
     e.preventDefault()
     try {
       // An empty translated title removes it, so students see the English.
-      await onSave({ title: values.title, hi: { title: values.hi }, mr: { title: values.mr } })
+      // (the `auto` stamps go back unchanged, so the server can tell which translations it wrote itself)
+      await onSave({ title: values.title, subject: values.subject, hi: { title: values.hi, auto: chapter.hi?.auto }, mr: { title: values.mr, auto: chapter.mr?.auto } })
       setEditing(false)
     } catch (err) {
       setError(err.message)
@@ -343,9 +345,22 @@ function TitleEditor({ chapter, onSave }) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-2 max-w-xl space-y-4">
+      <div>
+        <label htmlFor="chapter-subject-edit" className="label">
+          Subject
+        </label>
+        <select id="chapter-subject-edit" value={values.subject} onChange={(e) => setValues({ ...values, subject: e.target.value })} className="field sm:max-w-xs">
+          {SUBJECTS.map((s) => (
+            <option key={s.id} value={s.id}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+      </div>
       {field('title', 'Chapter title', 'en')}
-      {field('hi', 'Title in Hindi (optional)', 'hi')}
-      {field('mr', 'Title in Marathi (optional)', 'mr')}
+      <p className="text-sm text-muted">Hindi and Marathi titles are filled in automatically. Fix them here if you like; yours are never overwritten.</p>
+      {field('hi', 'Title in Hindi', 'hi')}
+      {field('mr', 'Title in Marathi', 'mr')}
       <div className="flex gap-3">
         <button type="submit" disabled={!values.title.trim()} className="btn btn-primary">
           Save
@@ -509,7 +524,7 @@ function LessonForm({ initial, onSave, onCancel }) {
           title={title}
           steps={steps}
           titleTranslation={titles[lang]?.title ?? ''}
-          onTitle={(value) => setTitles({ ...titles, [lang]: { title: value } })}
+          onTitle={(value) => setTitles({ ...titles, [lang]: { ...titles[lang], title: value } })}
           setStep={setStep}
           checked={checked}
         />
@@ -546,7 +561,9 @@ function TranslatedLesson({ lang, title, steps, titleTranslation, onTitle, setSt
   const word = lang === 'hi' ? 'Hindi' : 'Marathi'
   return (
     <div className="space-y-5">
-      <p className="text-muted">Optional. Anything left empty is shown to students in English.</p>
+      <p className="text-muted">
+        {word} is filled in automatically when you save the English. Check it here and fix anything you like; what you write is never overwritten.
+      </p>
       <div>
         <label htmlFor={`lesson-title-${lang}`} className="label">
           Lesson title in {word}
@@ -565,7 +582,7 @@ function TranslatedLesson({ lang, title, steps, titleTranslation, onTitle, setSt
               id={`step-${i}-${lang}`}
               lang={lang}
               value={step[lang]?.text ?? ''}
-              onChange={(e) => setStep(i, { [lang]: { text: e.target.value } })}
+              onChange={(e) => setStep(i, { [lang]: { ...step[lang], text: e.target.value } })}
               maxLength={LIMITS.stepText}
               rows={3}
               className="field py-3"

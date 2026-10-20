@@ -5,7 +5,8 @@ import { useT } from '../i18n/t'
 import { useSession } from '../session'
 
 export default function NotFound() {
-  const { user } = useSession()
+  const { studentUser, teacherUser } = useSession()
+  const user = studentUser ?? teacherUser
   const t = useT()
 
   return (

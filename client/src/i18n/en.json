@@ -4,11 +4,12 @@
     "loadingProgress": "Loading your progress...",
     "tryAgain": "Try again",
     "goBack": "Go back",
-    "backToChapters": "Back to chapters",
-    "backToChapter": "Back to the chapter",
+    "backToChapters": "Back to worlds",
+    "backToChapter": "Back to the map",
     "logOut": "Log out",
     "plusPoints": "+{count} points",
-    "newBadge": "New badge: {names}"
+    "newBadge": "New badge: {names}",
+    "plusCoins": "+{count} coins"
   },
   "language": {
     "label": "Language"
@@ -19,17 +20,24 @@
     "auto": "Auto",
     "autoSpoken": "Auto, following this device",
     "light": "Light",
-    "dark": "Dark"
+    "dark": "Dark",
+    "toDark": "Switch to dark mode",
+    "toLight": "Switch to light mode"
   },
   "nav": {
     "main": "Main",
     "home": "Home",
-    "learn": "Learn",
-    "leaderboard": "Leaderboard"
+    "learn": "Worlds",
+    "leaderboard": "Ranks",
+    "shop": "Shop",
+    "profile": "Me"
   },
   "header": {
     "points": "points",
-    "streak": "day streak"
+    "streak": "day streak",
+    "coinsLabel": "{count} coins",
+    "pointsLabel": "{count} points",
+    "streakLabel": "{count} day streak"
   },
   "weekdays": [
     "Sun",
@@ -46,10 +54,10 @@
     "noChaptersTitle": "No chapters yet",
     "noChaptersText": "Your teacher hasn’t shared any chapters with {className} yet. Check again soon.",
     "upNext": "Up next",
-    "allDoneTitle": "You have finished every chapter",
+    "allDoneTitle": "You finished every world",
     "allDoneText": "New chapters will appear when your teacher adds them. You can retake any quiz to get more stars.",
-    "seeAllChapters": "See all chapters",
-    "chapterLine": "Chapter {number}: {title}",
+    "seeAllChapters": "See all worlds",
+    "chapterLine": "{subject}, World {number}: {title}",
     "startFirstLesson": "Start your first lesson",
     "continue": "Continue",
     "quizTitle": "{title} quiz",
@@ -60,7 +68,7 @@
     "statStreak": "Day streak",
     "statBestStreak": "Best streak",
     "statLessons": "Lessons done",
-    "statChapters": "Chapters done",
+    "statChapters": "Worlds done",
     "xOfY": "{done} of {total}",
     "weekTitle": "This week",
     "weekHelp": "A filled day means you learned something that day.",
@@ -71,15 +79,21 @@
     "badgesCount": "You have {earned} of {total}.",
     "earned": "Earned",
     "notYet": "Not yet",
-    "languageTitle": "Language"
+    "languageTitle": "Language",
+    "buddyLabel": "Your buddy",
+    "streakLine": "{count} day streak. Keep it going!",
+    "streakStart": "Learn something today to start a streak!",
+    "statStars": "Stars"
   },
   "learn": {
-    "title": "Chapters",
+    "title": "Worlds",
     "empty": "Your teacher hasn’t shared any chapters yet. Check again soon.",
-    "help": "Pass a chapter quiz to open the next chapter.",
+    "help": "Finish a world's quiz to open the next world.",
     "done": "Done, {stars} of 3 stars",
     "open": "Open now",
-    "locked": "Finish Chapter {number} first"
+    "locked": "Finish World {number} first",
+    "levelsOf": "{done} of {total} levels",
+    "starsOf": "{earned} of {total} stars"
   },
   "chapter": {
     "notFound": "We couldn’t find that chapter.",
@@ -101,7 +115,13 @@
     "finishLessonsFirst": {
       "one": "Finish the lesson above to open the quiz.",
       "other": "Finish all {count} lessons above to open the quiz."
-    }
+    },
+    "world": "World {number}",
+    "nodeDone": "{title}. Done with {stars} of 3 stars. Tap to play again.",
+    "nodeNext": "{title}. Play this level next.",
+    "nodeOpen": "{title}. Tap to play.",
+    "nodeLocked": "{title}. Locked until every level is done.",
+    "quizLocked": "Finish every level first."
   },
   "lesson": {
     "step": {
@@ -116,9 +136,9 @@
     "finish": "Finish lesson",
     "saving": "Saving...",
     "saveFailed": "{error} Press Finish lesson to try again.",
-    "finishedTitle": "You finished it!",
-    "alreadyDone": "You had already done this lesson, so no new points. Good practice!",
-    "nextLesson": "Next lesson",
+    "finishedTitle": "Level complete!",
+    "alreadyDone": "You had already done this level, so no new points. Good practice!",
+    "nextLesson": "Next level",
     "takeQuiz": "Take the chapter quiz"
   },
   "quiz": {
@@ -157,13 +177,15 @@
     "perfect": "Every answer was right first time. Nothing to review!",
     "secondTry": "You got it on the second try.",
     "youSaid": "You said: {answer}",
-    "answer": "Answer:"
+    "answer": "Answer:",
+    "notQuite": "Not quite right."
   },
   "leaderboard": {
     "title": "{className} leaderboard",
     "noPoints": "Finish a lesson to get your first points.",
     "rank": "You are number {rank} of {total}.",
-    "you": "(you)"
+    "you": "(you)",
+    "podium": "Top three"
   },
   "question": {
     "correct": "Correct, well done!",
@@ -218,6 +240,65 @@
       "choose": "{tile}. Choose this tile.",
       "gapEmpty": "Empty space {number}",
       "gapFilled": "Space {number} has {tile}. Tap to take it out."
+    },
+    "match": {
+      "pictures": "Pictures",
+      "names": "Names",
+      "help": "Tap a picture, then tap its name.",
+      "tile": "{name}. Tap to pick it.",
+      "word": "{name}. Tap to match it.",
+      "paired": "{name}, pair {number}. Tap to undo."
+    },
+    "numberline": {
+      "start": "Start: {n}",
+      "stepForward": "Jump: +{n}",
+      "stepBack": "Jump: -{n}",
+      "jumps": "Jumps: {count}",
+      "jumpsOf": "Jumps: {count} of {total}",
+      "goal": "Goal: {n}",
+      "jump": "Jump",
+      "undo": "Undo",
+      "frogOn": "The frog is on {n}",
+      "tapJump": "Tap Jump to make the frog hop.",
+      "line": "Number line from {min} to {max}"
+    },
+    "place": {
+      "thousands": "Thousands",
+      "hundreds": "Hundreds",
+      "tens": "Tens",
+      "ones": "Ones",
+      "target": "Build this number:",
+      "look": "Look at the blocks:",
+      "yourNumber": "Your number",
+      "plus": "One more {place}",
+      "minus": "One fewer {place}",
+      "count": "{place}: {count}"
+    },
+    "truefalse": {
+      "true": "True",
+      "false": "False"
+    },
+    "unscramble": {
+      "yourWord": "Your word",
+      "help": "Tap the letters in the right order.",
+      "clear": "Clear",
+      "letter": "Letter {letter}",
+      "takeBack": "{letter}. Tap to take it back."
+    },
+    "pairs": {
+      "pick": "{name}. Tap to pick it.",
+      "match": "{name}. Tap to match it.",
+      "paired": "{name}, pair {number}. Tap to undo.",
+      "help": "Tap one word, then tap the word that goes with it."
+    },
+    "sort": {
+      "help": "Tap an item, then tap the group it belongs to.",
+      "pool": "Items to sort",
+      "allSorted": "All sorted!",
+      "putHere": "Put it here",
+      "pick": "{item}. Tap to pick it.",
+      "putIn": "Put {item} in {group}",
+      "remove": "{item} is in {group}. Tap to take it out."
     }
   },
   "login": {
@@ -246,56 +327,53 @@
     "forTeachers": "For teachers",
     "logIn": "Log in",
     "myHome": "My home",
-    "headline1": "Class 4 maths,",
-    "headline2": "a few minutes a day.",
-    "subtext": "Short lessons and friendly quizzes from the NCERT Maths Mela book. Made for any phone.",
+    "headline1": "Learn, play",
+    "headline2": "and grow every day.",
+    "subtext": "Short lessons, fun games and quizzes for little learners. Maths, English, Science and more, in English, Hindi and Marathi.",
     "startLearning": "Start learning",
-    "tryOne": "Try one now",
+    "imTeacher": "I am a teacher",
+    "tryOne": "Try one!",
+    "tried": "Nice! There is lots more waiting for you.",
+    "startFirst": "Start learning",
     "sample": {
-      "prompt": "A slice of pizza looks most like which shape?",
-      "circle": "Circle",
-      "square": "Square",
-      "triangle": "Triangle",
-      "rectangle": "Rectangle",
-      "hint": "Count its pointy corners.",
-      "explanation": "A pizza slice has 3 corners and 3 sides, like a triangle."
+      "prompt": "Which animal gives us milk?",
+      "cow": "Cow",
+      "dog": "Dog",
+      "lion": "Lion",
+      "fish": "Fish",
+      "hint": "It says moo.",
+      "explanation": "A cow gives us milk. Cows say moo!"
     },
-    "tried": "That is how every lesson works.",
-    "startFirst": "Start the first one",
-    "exampleTitle": "Example: how chapters open",
-    "exampleChapter": "Chapter {number}",
-    "exampleDone": "Done",
-    "exampleOpen": "Open now",
-    "exampleLocked": "Opens after Chapter 2",
-    "lessonTitle": "Every lesson works the same way.",
-    "readWord": "Read",
-    "readText": "A short idea in simple words, with an example from everyday life.",
-    "tryWord": "Try",
-    "tryText": "Answer a question. A wrong answer shows a hint, then you try again.",
-    "quizWord": "Quiz",
-    "quizText": "Pass the chapter quiz to earn stars and open the next chapter.",
-    "rewardsTitle": "Points, badges and a class leaderboard.",
-    "pointsTitle": "How points add up",
-    "pointsLesson": "for each lesson, the first time",
-    "pointsFirstTry": "for a quiz answer right first time",
-    "pointsHint": "for a quiz answer right after the hint",
-    "pointsDay": "for each day you learn something",
-    "pointsRetake": "Retaking a quiz only earns points for beating your best score.",
-    "badgesTitle": "Seven badges to collect",
-    "leaderboardTitle": "A leaderboard for each class",
-    "leaderboardText": "Children see only their own class, with first names and points. Nothing else about anyone is shown.",
-    "teachersTitle": "See who needs help before the next class.",
-    "teachersText": "Every answer is checked by the server, so the reports show what children really know.",
-    "teacherView": "Open the teacher view",
-    "reportAccuracy": "Accuracy by topic and chapter",
-    "reportAccuracyText": "From each student’s latest try at each quiz.",
-    "reportStruggling": "Who is struggling",
-    "reportStrugglingText": "Below 60% on a topic or chapter, once there are 3 answers to go on.",
-    "reportAttention": "Who needs attention",
-    "reportAttentionText": "A low quiz score, or no learning for 3 days or more.",
-    "reportContent": "Your own content",
-    "reportContentText": "Write chapters, lessons and quizzes, preview them, then publish.",
-    "footer": "Maths practice for CBSE Class 4, based on NCERT Maths Mela."
+    "subjectsTitle": "Learn anything",
+    "subjectsText": "Maths, English, Science and more. Every subject is a set of worlds to explore.",
+    "howTitle": "How it works",
+    "learnWord": "Learn",
+    "learnText": "Short, simple lessons. Tap Listen and the lesson is read out to you.",
+    "playWord": "Play",
+    "playText": "Fun games and questions. Two tries, and a hint if you need one.",
+    "winWord": "Win",
+    "winText": "Earn stars on every level and finish a world to open the next one.",
+    "rewardsTitle": "Stars, coins and friends",
+    "starsTitle": "Stars",
+    "starsText": "Up to 3 stars on every level.",
+    "coinsTitle": "Coins",
+    "coinsText": "You get a coin for every point. Spend them in the shop.",
+    "buddyTitle": "Your buddy",
+    "buddyText": "Pick an animal friend and dress it up with hats and glasses.",
+    "dailyTitle": "Daily challenge",
+    "dailyText": "Three new questions every day, just for fun.",
+    "teachersTitle": "Made for teachers too",
+    "teachersText": "Build lessons, games and quizzes in any subject. Hindi and Marathi are filled in for you, and reports show who needs help.",
+    "teacherView": "Teacher login",
+    "featureSubjects": "Any subject",
+    "featureSubjectsText": "Make lessons for maths, languages, science, environment and general knowledge.",
+    "featureActivities": "Fun activities",
+    "featureActivitiesText": "True or false, match words, sort into groups, unscramble words and maths games.",
+    "featureLanguages": "Three languages",
+    "featureLanguagesText": "Write in English. Hindi and Marathi are filled in for you.",
+    "featureReports": "Clear reports",
+    "featureReportsText": "See who needs help, subject by subject.",
+    "footer": "IGNITE. Learning made fun for little learners."
   },
   "notFound": {
     "title": "We can’t find that page",
@@ -349,6 +427,113 @@
     "answer-everything": "Answer every question before finishing.",
     "already-finished": "This quiz is already finished.",
     "no-score": "The server works out the score itself. Send nothing when finishing a quiz.",
-    "bad-language": "Choose English, Hindi or Marathi."
+    "bad-language": "Choose English, Hindi or Marathi.",
+    "unknown-item": "We couldn't find that item.",
+    "milestone-item": "That one is a free gift. Keep earning points to unlock it.",
+    "free-item": "That one is already yours.",
+    "already-owned": "You already have that.",
+    "not-enough-coins": "You need more coins for that.",
+    "bad-outfit": "Choose a friend and a scene.",
+    "not-owned": "You don't have that item yet.",
+    "try-again": "That took too long. Please try again."
+  },
+  "stars": {
+    "label": "{count} of {total} stars"
+  },
+  "profile": {
+    "class": "Class {name}",
+    "coins": "coins",
+    "dress": "Dress up my buddy",
+    "language": "Language",
+    "languageHelp": "Pick the language for lessons, quizzes and games.",
+    "theme": "Colours",
+    "themeHelp": "Auto follows your phone: dark at night if your phone does. The sun and moon button at the top switches between light and dark.",
+    "credits": "Animal pictures: Noto Emoji by Google (Apache License 2.0)."
+  },
+  "shop": {
+    "title": "Buddy shop",
+    "coinsHelp": "You earn 1 coin for every point.",
+    "tabsLabel": "Shelves",
+    "tabs": {
+      "buddy": "Friends",
+      "hat": "Hats",
+      "face": "Glasses",
+      "neck": "Neck",
+      "background": "Scenes"
+    },
+    "none": {
+      "hat": "No hat",
+      "face": "No glasses",
+      "neck": "Nothing"
+    },
+    "wear": "Wear",
+    "wearing": "Wearing",
+    "buyLabel": "Buy {name} for {price} coins",
+    "needMore": "{count} more coins",
+    "milestone": "Free gift at {points} points",
+    "bought": "You got the {name}!",
+    "item": {
+      "buddy": {
+        "fox": "Fox",
+        "panda": "Panda",
+        "monkey": "Monkey",
+        "bear": "Bear",
+        "owl": "Owl",
+        "lion": "Lion"
+      },
+      "hat": {
+        "party": "Party hat",
+        "cap": "Cap",
+        "chef": "Chef hat",
+        "wizard": "Wizard hat",
+        "crown": "Golden crown"
+      },
+      "face": {
+        "round": "Round glasses",
+        "shades": "Sunglasses",
+        "stars": "Star glasses"
+      },
+      "neck": {
+        "bow": "Bow tie",
+        "scarf": "Scarf",
+        "cape": "Hero cape"
+      },
+      "background": {
+        "sky": "Sunny sky",
+        "sunset": "Sunset",
+        "forest": "Forest",
+        "space": "Space",
+        "rainbow": "Rainbow"
+      }
+    }
+  },
+  "daily": {
+    "title": "Daily challenge",
+    "readyLine": "3 quick questions. Win bonus points!",
+    "doneLine": "Done! You earned {points} points today.",
+    "noneYet": "Finish a lesson to unlock your daily challenge.",
+    "play": "Play",
+    "intro": "{count} quick questions, new every day. Win bonus points and coins!",
+    "reportsNote": "It is just for fun, so your teacher's reports don't count it.",
+    "start": "Let's go!",
+    "leave": "Leave the challenge",
+    "finish": "See my prize",
+    "doneTitle": "Challenge complete!",
+    "comeBack": "Come back tomorrow for a new one.",
+    "backHome": "Back home"
+  },
+  "speak": {
+    "listen": "Listen",
+    "stop": "Stop"
+  },
+  "subjects": {
+    "maths": "Maths",
+    "english": "English",
+    "hindi": "Hindi",
+    "marathi": "Marathi",
+    "science": "Science",
+    "evs": "Environment",
+    "social": "Social studies",
+    "gk": "General knowledge"
   }
 }

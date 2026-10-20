@@ -1,8 +1,8 @@
 # IGNITE
 
-A maths practice app for CBSE Class 4, built around the NCERT book *Maths Mela*.
+A learning app for small children, for any subject: maths, languages, science, environment and general knowledge. The sample content is the NCERT book *Maths Mela* for Class 4, plus English, Environment and General knowledge chapters.
 
-- **Teachers** sign up, create classes, add students (each gets a 4-digit PIN), write chapters with lessons and quizzes (or start from 4 ready-made chapters), publish them to their classes, and see reports on who is struggling with what.
+- **Teachers** sign up, create classes, add students (each gets a 4-digit PIN), write chapters with lessons, activities and quizzes in any subject (or start from ready-made sample chapters), publish them to their classes, and see reports on who is struggling with what.
 - **Students** log in with their class code, name and PIN, work through short lessons, take a quiz at the end of each chapter (two tries per question, a hint after the first miss), and earn points, stars and badges. Each class has its own leaderboard.
 
 It runs on your computer in development mode: a React app (`client/`), a Node server (`server/`) and a local MongoDB database. There is no build or deploy step yet.
@@ -76,6 +76,7 @@ IGNITE/
 │   ├── content.js       Chapter, Lesson and Quiz models; the content builder
 │   ├── progress.js      Attempt model; everything a student does (lessons, quizzes, leaderboard)
 │   ├── reports.js       class and student reports (no models of its own)
+│   ├── translate.js     automatic Hindi and Marathi for what teachers write (MyMemory, cached)
 │   ├── starter-content.json   the 4 ready-made Maths Mela chapters
 │   └── .env.example     settings template (copy to .env)
 └── client/              React app (Vite, Tailwind)
@@ -92,13 +93,15 @@ IGNITE/
         ├── Games.jsx      the play boards of the games (count, pattern): React, CSS/SVG, pointer events
         ├── GameArt.jsx    the games' pictures, drawn as inline SVG (mangoes, birds, tiles, blocks, shapes)
         ├── GameForm.jsx   the teacher's setup forms for each game
-        ├── ThemeToggle.jsx   the Colours: Auto / Light / Dark switch in every header
+        ├── ThemeToggle.jsx   the sun/moon switch in every header, and the Auto/Light/Dark choice for Profile pages
+        ├── Buddy.jsx      the buddy: ready-made animal art (assets/buddies, Noto Emoji, Apache 2.0) plus hats, glasses, scarves, capes and scenes drawn here
+        ├── Rewards.jsx    stars, confetti, coin, streak and points icons
         ├── i18n/          English, Hindi and Marathi: en.json hi.json mr.json (every word on the
         │                  student screens), t.js (the t() helper), LanguagePicker.jsx
         └── pages/         one file per page
             ├── Landing, Login, Signup, NotFound
-            ├── student/   Home, Learn, Chapter, Lesson, Quiz, Result, Leaderboard
-            └── teacher/   Classes, Class, Content, ChapterEditor, QuizEditor, Preview, Reports, Student
+            ├── student/   Home, Learn (worlds), Chapter (level map), Lesson, Quiz, Result, Leaderboard, Daily, Shop, Profile
+            └── teacher/   Classes, Class, Content, ChapterEditor, QuizEditor, Preview, Reports, Student, Profile
 ```
 
 ## Collections in MongoDB
@@ -107,8 +110,9 @@ IGNITE/
 |---|---|
 | `teachers` | name, email, passwordHash, createdAt |
 | `classes` | name, code (6 characters, unique), teacher |
-| `students` | name (unique within the class), class, teacher, pinHash, language (en, hi, mr, or null until chosen), lessonsFinished: [{ lesson, date }] |
-| `chapters` | title, teacher, classes (which classes see it), status (draft or published), order |
+| `students` | name (unique within the class), class, teacher, pinHash, language (en, hi, mr, or null until chosen), lessonsFinished: [{ lesson, date, stars }], levels (lesson activity answers: tries, best outcome), dailies (the daily challenge by day), purchases (shop items), mascot (what the buddy wears) |
+| `translations` | key (language and English text), text: the automatic translation cache |
+| `chapters` | title, subject, teacher, classes (which classes see it), status (draft or published), order |
 | `lessons` | title, chapter, teacher, order, steps: [{ type, text, question? }] |
 | `quizzes` | chapter (one each), teacher, questions: [{ type, prompt, options, config, answer, hint, explanation, topic }] |
 | `attempts` | student, class, chapter, quiz, language (the quiz is checked in it), status (in-progress or finished), answers: [{ question, prompt, topic, given, tries, outcome }], score, stars, answerPoints, date |
@@ -143,7 +147,7 @@ Every route is under `/api`. **Who** means: *anyone*; a logged-in *teacher*; a l
 | **Content** | | | |
 | GET | /chapters | teacher | Their chapters in order, with lesson and question counts |
 | POST | /chapters | teacher | New draft chapter `{ title }` |
-| POST | /chapters/starter | teacher | Add the 4 starter chapters as drafts (only when they have none) |
+| POST | /chapters/starter | teacher | Add the sample chapters the teacher does not have yet, as drafts (matched by title, never twice) |
 | PUT | /chapters/order | teacher | Save a new order `{ chapterIds }` (all of theirs, each once) |
 | GET | /topics | teacher | Every topic they have used, for suggestions |
 | GET | /chapters/:chapterId | owner | The whole chapter, with lessons and quiz, including answers |
@@ -166,6 +170,11 @@ Every route is under `/api`. **Who** means: *anyone*; a logged-in *teacher*; a l
 | POST | /student/attempts/:attemptId/finish | student | Finish; **no body**. The server scores it from its own records |
 | GET | /student/attempts/:attemptId | student | A finished attempt, with the right answers and explanations |
 | GET | /student/leaderboard | student | First names and points for their own class |
+| GET | /student/daily | student | Today's challenge: three questions **without** answers (or that it is done, or not available yet) |
+| POST | /student/daily/answers | student | Answer one challenge question `{ questionId, given }`, in order; two tries, judged by the server |
+| GET | /student/shop | student | Points, coins, the buddy's outfit and every shop item with whether it is owned |
+| POST | /student/shop/buy | student | Buy an item `{ item: 'hat:cap' }` with coins. Safe against double taps: it can never spend the same coins twice |
+| PATCH | /student/mascot | student | Dress the buddy `{ buddy, hat, face, neck, background }` (only things the student owns) |
 | PATCH | /student/language | student | Save the student's language `{ language: 'en' \| 'hi' \| 'mr' }`; their content then comes in it |
 | **Reports** | | | |
 | GET | /reports/classes/:classId | owner | Summary, needs attention, accuracy by chapter and topic, struggling students, each student's weakest topics, lessons per day |
@@ -182,10 +191,17 @@ All in `shared/game.js`.
 - **Quiz score:** right first time counts 1, after the hint ½, missed 0. 90% or more is 3 stars, 75% is 2, 50% is 1.
 - **Retakes:** only pay the answer points above the student's best earlier attempt on that quiz, so retaking an easy quiz earns nothing.
 - **Learning days:** 5 points for each day with any learning. The streak is the number of days in a row.
-- **Unlocking:** published chapters open in order. 1 star or more on a chapter's quiz opens the next one; a quiz opens once all its lessons are done.
+- **Unlocking:** published chapters open in order within their subject. 1 star or more on a chapter's quiz opens the next one; a quiz opens once all its lessons are done.
 - **Badges (7):** First Step (finish a lesson), Chapter Champion (finish a chapter: every lesson, then pass the quiz), Star Student (3 stars on any quiz), Explorer (finish 3 chapters), On Fire (5 days in a row), Never Give Up (beat your best score on a retake), Sharp Mind (10 quiz answers right first time in a row).
 - **Leaderboard:** each class only, first names and points only.
 - **Games:** besides multiple choice, typing and ordering, a question can be a game. *Count objects*: several kinds of object (mango, bird, tile, block) sit on a board and students count one kind (tap each to keep track, then set the number). *Pattern puzzle*: a row of shape-and-colour tiles with one or two hidden; students drag the right tiles in (or tap them), with optional wrong tiles mixed in. Games work in lessons and quizzes, have the same two tries, hint and explanation, and score the same. The teacher sets the board, never the answer: it is worked out from the board. Students are sent the board only. All their words come from the language files, and the question, hint and explanation have Hindi and Marathi fields like any other.
+- **Any subject:** every chapter has a subject (Maths, English, Hindi, Marathi, Science, Environment, Social studies, General knowledge). Students see their worlds grouped by subject, numbered within it, and each subject opens in order on its own. Activities that work for any subject: *True or false*, *Unscramble the word* (spelling), *Match pairs of words* and *Sort into groups*, besides multiple choice, typing and ordering. A **Listen** button reads questions and lessons aloud with the device's own voice, for children who cannot read yet. The landing page is written for small children and is not about one subject or class. The sample chapters now include English, Environment and General knowledge; teachers can add the ready-made ones at any time and ones they have are not added twice.
+- **More games:** *Match* (pair pictures with their names in the student's language), *Number line jump* (a frog hops along a line: where does it land, or how many jumps reach the flag) and *Place value blocks* (build a number from ones, tens, hundreds and thousands, or read the blocks shown).
+- **Worlds and levels:** a chapter is a world, shown as a map. Each lesson is a level; its activity answers are recorded (the server counts the tries) and the level earns 1 to 3 stars: all first try 3, mostly with a hint 2, otherwise 1 (a level with no question is 3). Replaying can raise the stars, never lower them. The chapter quiz is the trophy at the end of the map. Level answers count in teacher reports.
+- **Daily challenge:** three questions a day from worlds the student has already opened (new each day, the same all day). Bonus points like quiz answers, but just for fun: never counted in teacher reports.
+- **Coins, the buddy and the shop:** a student earns 1 coin for every point and spends coins in the shop on friends, hats, glasses, neckwear and scenes for their buddy. Points never go down and the leaderboard uses points only. Four gifts are free at point milestones: star glasses at 50, the panda at 100, the golden crown at 200 and the lion at 400. Buying is safe against double taps. The animal pictures are Noto Emoji by Google (Apache License 2.0; the license is kept in `client/src/assets/buddies/`); the clothes are drawn in the app.
+- **Auto-translate:** when a teacher saves English text, any empty Hindi or Marathi is filled in automatically (MyMemory, a free service; only question and lesson text is sent). A translation a teacher writes or edits is never overwritten; an automatic one is refreshed when the English changes. Only sentences are translated: lists of single words (options, pairs, sort groups and items) are left for the teacher, because machine translation often gets short words wrong. If the service is down or over its daily limit, saving still works and students see English. Settings in `server/.env`: `TRANSLATE=off`, and `TRANSLATE_EMAIL` to raise MyMemory's daily limit. Machine translation should be checked by someone who reads Hindi and Marathi.
+- **Settings:** language and colours (Auto, Light, Dark) are on the Profile pages; the header has only a sun/moon switch. A teacher and a student can be logged in at the same time in two tabs.
 - **Languages:** student screens come in English, Hindi or Marathi. The choice made on the login page belongs to the phone; once a student logs in, their own saved language wins, so it follows them on a shared phone. Answers are checked in the language the quiz started in, and Devanagari digits (१२) count the same as 12. Teacher screens and reports stay in English. The starter chapters' Hindi and Marathi were machine-written by Claude and should be checked by a native speaker.
 
 ## Report rules

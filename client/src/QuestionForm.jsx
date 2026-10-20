@@ -12,8 +12,8 @@
 // each with the English beside it. Translations are optional; anything left
 // empty falls back to English for students.
 
-import { CountForm, PatternForm, blankGame } from './GameForm'
-import { LIMITS, isGame, questionProblems } from './game'
+import { CountForm, MatchForm, NumberLineForm, PairsForm, PatternForm, PlaceValueForm, SortForm, TrueFalseForm, UnscrambleForm, blankGame } from './GameForm'
+import { LIMITS, isGame, questionProblems, translatableLists } from './game'
 
 const LANGUAGE_TABS = [
   { code: 'en', label: 'English' },
@@ -43,12 +43,35 @@ export function LanguageTabs({ lang, onChange }) {
 
 const LANGUAGE_WORD = { hi: 'Hindi', mr: 'Marathi' }
 
-const TYPES = [
-  { value: 'mcq', label: 'Multiple choice' },
-  { value: 'input', label: 'Type the answer' },
-  { value: 'order', label: 'Put in order' },
-  { value: 'count', label: 'Game: count objects' },
-  { value: 'pattern', label: 'Game: pattern puzzle' },
+// The kinds of question, in groups for the picker.
+const TYPE_GROUPS = [
+  {
+    label: 'Questions',
+    types: [
+      { value: 'mcq', label: 'Multiple choice' },
+      { value: 'input', label: 'Type the answer' },
+      { value: 'order', label: 'Put in order' },
+    ],
+  },
+  {
+    label: 'Activities for any subject',
+    types: [
+      { value: 'truefalse', label: 'True or false' },
+      { value: 'unscramble', label: 'Unscramble the word' },
+      { value: 'pairs', label: 'Match pairs of words' },
+      { value: 'sort', label: 'Sort into groups' },
+    ],
+  },
+  {
+    label: 'Maths activities',
+    types: [
+      { value: 'count', label: 'Count objects' },
+      { value: 'pattern', label: 'Pattern puzzle' },
+      { value: 'match', label: 'Match shapes and names' },
+      { value: 'numberline', label: 'Number line jump' },
+      { value: 'placevalue', label: 'Place value blocks' },
+    ],
+  },
 ]
 
 // A blank question of each type.
@@ -72,7 +95,10 @@ export default function QuestionForm({ question, onChange, idPrefix, needsTopic 
   // Translated options or items no longer line up, so only the text translations stay.
   function changeType(type) {
     const fresh = blankQuestion(type)
-    const keepText = (t) => (t ? { prompt: t.prompt, hint: t.hint, explanation: t.explanation } : undefined)
+    // (the `auto` stamps for these three fields stay, so the server still knows which ones it translated itself)
+    const TEXT = ['prompt', 'hint', 'explanation']
+    const keepText = (t) =>
+      t ? { prompt: t.prompt, hint: t.hint, explanation: t.explanation, auto: t.auto && Object.fromEntries(Object.entries(t.auto).filter(([k]) => TEXT.includes(k))) } : undefined
     onChange({ ...fresh, id: q.id, prompt: q.prompt, hint: q.hint, explanation: q.explanation, topic: q.topic, hi: keepText(q.hi), mr: keepText(q.mr) })
   }
 
@@ -84,10 +110,14 @@ export default function QuestionForm({ question, onChange, idPrefix, needsTopic 
             Question type
           </label>
           <select id={id('type')} value={q.type} onChange={(e) => changeType(e.target.value)} className="field">
-            {TYPES.map((t) => (
-              <option key={t.value} value={t.value}>
-                {t.label}
-              </option>
+            {TYPE_GROUPS.map((group) => (
+              <optgroup key={group.label} label={group.label}>
+                {group.types.map((t) => (
+                  <option key={t.value} value={t.value}>
+                    {t.label}
+                  </option>
+                ))}
+              </optgroup>
             ))}
           </select>
         </div>
@@ -125,6 +155,13 @@ export default function QuestionForm({ question, onChange, idPrefix, needsTopic 
       {q.type === 'order' && <OrderItems q={q} set={set} id={id} />}
       {q.type === 'count' && <CountForm q={q} onChange={onChange} id={id} />}
       {q.type === 'pattern' && <PatternForm q={q} onChange={onChange} />}
+      {q.type === 'match' && <MatchForm q={q} onChange={onChange} />}
+      {q.type === 'numberline' && <NumberLineForm q={q} onChange={onChange} />}
+      {q.type === 'placevalue' && <PlaceValueForm q={q} onChange={onChange} />}
+      {q.type === 'truefalse' && <TrueFalseForm q={q} onChange={onChange} />}
+      {q.type === 'unscramble' && <UnscrambleForm q={q} onChange={onChange} />}
+      {q.type === 'pairs' && <PairsForm q={q} onChange={onChange} />}
+      {q.type === 'sort' && <SortForm q={q} onChange={onChange} />}
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div>
@@ -307,9 +344,7 @@ function TranslationFields({ q, onChange, lang, id, problems }) {
   const t = q[lang] ?? {}
   const word = LANGUAGE_WORD[lang]
   const set = (changes) => onChange({ ...q, [lang]: { ...t, ...changes } })
-  const list = q.type === 'mcq' ? q.options : q.type === 'order' ? q.answer : []
-  const listField = q.type === 'mcq' ? 'options' : 'items'
-  const translatedList = Array.isArray(t[listField]) ? t[listField] : []
+  const lists = translatableLists(q)
 
   function Field({ field, label, english, max, rows }) {
     const props = {
@@ -335,35 +370,40 @@ function TranslationFields({ q, onChange, lang, id, problems }) {
     <div className="space-y-4">
       {Field({ field: 'prompt', label: 'Question', english: q.prompt, max: LIMITS.prompt, rows: 2 })}
 
-      {list.length > 0 && (
-        <fieldset>
-          <legend className="label">
-            {q.type === 'mcq' ? 'Options' : 'Items, in the right order'} in {word}
-          </legend>
-          <p className="-mt-1 mb-2 text-sm text-muted">Translate all of them, or leave all empty to use the English.</p>
-          <ol className="space-y-2">
-            {list.map((english, i) => (
-              <li key={i} className="grid gap-1 sm:grid-cols-[12rem_1fr] sm:items-center sm:gap-3">
-                <span className="text-sm text-muted">
-                  {i + 1}. {english || '(empty)'}
-                  {q.type === 'mcq' && english && english === q.answer && ' (right answer)'}
-                </span>
-                <input
-                  lang={lang}
-                  value={translatedList[i] ?? ''}
-                  onChange={(e) => {
-                    const next = list.map((_, j) => (j === i ? e.target.value : translatedList[j] ?? ''))
-                    set({ [listField]: next })
-                  }}
-                  maxLength={LIMITS.option}
-                  aria-label={`${word} for ${q.type === 'mcq' ? 'option' : 'item'} ${i + 1}`}
-                  className="field"
-                />
-              </li>
-            ))}
-          </ol>
-        </fieldset>
-      )}
+      {lists.map(({ field, label, word: what, english: list }) => {
+        const translatedList = Array.isArray(t[field]) ? t[field] : []
+        return (
+          <fieldset key={field}>
+            <legend className="label">
+              {label} in {word}
+            </legend>
+            <p className="-mt-1 mb-2 text-sm text-muted">
+              Translate all of them, or leave all empty to use the English. Single words are not translated automatically (machine translation often gets them wrong), so type them here.
+            </p>
+            <ol className="space-y-2">
+              {list.map((english, i) => (
+                <li key={i} className="grid gap-1 sm:grid-cols-[12rem_1fr] sm:items-center sm:gap-3">
+                  <span className="text-sm text-muted">
+                    {i + 1}. {english || '(empty)'}
+                    {q.type === 'mcq' && english && english === q.answer && ' (right answer)'}
+                  </span>
+                  <input
+                    lang={lang}
+                    value={translatedList[i] ?? ''}
+                    onChange={(e) => {
+                      const next = list.map((_, j) => (j === i ? e.target.value : translatedList[j] ?? ''))
+                      set({ [field]: next })
+                    }}
+                    maxLength={LIMITS.option}
+                    aria-label={`${word} for ${what} ${i + 1}`}
+                    className="field"
+                  />
+                </li>
+              ))}
+            </ol>
+          </fieldset>
+        )
+      })}
       {q.type === 'input' && <p className="text-muted">The right answer stays the same in every language: {q.answer || '(empty)'}.</p>}
 
       <div className="grid gap-4 sm:grid-cols-2">

@@ -12,14 +12,15 @@ import { useSession } from '../session'
 import ThemeToggle from '../ThemeToggle'
 
 export default function Login() {
-  const { user, checking } = useSession()
+  const { teacherUser, studentUser, checking } = useSession()
   const t = useT()
   const location = useLocation()
   const [role, setRole] = useState(location.state?.role ?? 'student')
 
-  // Already logged in: go straight home.
+  // Already logged in as this role: go straight home. (A teacher and a student can both be logged in.)
   if (checking) return null
-  if (user) return <Navigate to={`/${user.role}`} replace />
+  if (role === 'student' && studentUser) return <Navigate to="/student" replace />
+  if (role === 'teacher' && teacherUser) return <Navigate to="/teacher" replace />
 
   return (
     <div className="relative flex min-h-dvh flex-col items-center px-4 py-10">

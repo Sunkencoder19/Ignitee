@@ -1,5 +1,6 @@
 // Everything a student does: reading published lessons and quizzes, answering
-// questions, finishing lessons, and the class leaderboard.
+// questions, finishing lessons, the daily challenge, the buddy shop, and the
+// class leaderboard.
 //
 // The server is the judge:
 //   - Students never receive answers, hints or explanations up front.
@@ -9,24 +10,37 @@
 //     Finishing takes no input at all, so a client can't send its own score.
 //   - The hint comes back only after a first miss; the right answer and the
 //     explanation only after a second miss, or once the quiz is finished.
+//   - Lesson activities ("levels") and the daily challenge are judged the same
+//     way: the server counts the tries. Buying in the shop is guarded so that
+//     two quick taps can never spend the same coins twice.
 
 import { randomInt } from 'node:crypto'
 import express from 'express'
 import mongoose from 'mongoose'
 import {
+  CATALOG,
+  DEFAULT_MASCOT,
   answerPoints,
   attemptsWithPoints,
   badges,
   bestStreak,
+  betterOutcome,
+  buyProblem,
   chapterStates,
   checkAnswer,
+  coinBalance,
   currentStreak,
+  dailyPick,
   gameView,
+  displayAnswer,
   inLanguage,
   isGame,
   LANGUAGES,
   lastActive,
+  levelStars,
   localizeQuestion,
+  mascotProblem,
+  ownedItems,
   quizOpen,
   scoreQuiz,
   today,
@@ -95,6 +109,7 @@ async function visibleChapters(student) {
     const own = lessons.filter((l) => String(l.chapter) === c.id)
     return {
       id: c.id,
+      subject: c.subject ?? 'maths',
       title: inLanguage(c, 'title', lang),
       lessonIds: own.map((l) => l.id),
       lessonTitles: own.map((l) => inLanguage(l, 'title', lang)),
@@ -104,12 +119,22 @@ async function visibleChapters(student) {
   })
 }
 
-// The student's history in the shape game.js expects:
-//   { lessons: [{ lessonId, date }], attempts: [{ quizId, score, stars, answerPoints, answers, date }] }
-async function historyOf(student) {
-  const attempts = await Attempt.find({ student: student._id, status: 'finished' }).sort({ finishedAt: 1 })
+// A student's history in the shape game.js expects:
+//   { lessons: [{ lessonId, date, stars }], attempts: [{ quizId, score, stars, answerPoints, answers, date }],
+//     dailies: [{ date, points }], purchases: ['hat:cap'], mascot }
+// `attempts` are the student's finished quiz attempts.
+export function historyFrom(student, attempts) {
   return {
-    lessons: student.lessonsFinished.map((l) => ({ lessonId: String(l.lesson), date: l.date })),
+    lessons: student.lessonsFinished.map((l) => ({ lessonId: String(l.lesson), date: l.date, stars: l.stars ?? 3 })),
+    dailies: student.dailies.filter((d) => d.finished).map((d) => ({ date: d.date, points: d.points })),
+    purchases: [...student.purchases],
+    mascot: {
+      buddy: student.mascot?.buddy ?? DEFAULT_MASCOT.buddy,
+      hat: student.mascot?.hat ?? null,
+      face: student.mascot?.face ?? null,
+      neck: student.mascot?.neck ?? null,
+      background: student.mascot?.background ?? DEFAULT_MASCOT.background,
+    },
     attempts: attempts.map((a) => ({
       id: a.id,
       quizId: String(a.quiz),
@@ -123,12 +148,19 @@ async function historyOf(student) {
   }
 }
 
+async function historyOf(student) {
+  return historyFrom(student, await Attempt.find({ student: student._id, status: 'finished' }).sort({ finishedAt: 1 }))
+}
+
 // Everything the app shows about a student's progress, worked out from the history.
 function summary(history, chapters) {
+  const points = totalPoints(history)
   return {
     lessons: history.lessons,
     attempts: attemptsWithPoints(history).map(({ answers, ...a }) => a), // with the points each one earned
-    points: totalPoints(history),
+    points,
+    coins: coinBalance(points, history.purchases), // points earned minus coins spent in the shop
+    mascot: history.mascot,
     streak: currentStreak(history, today()),
     bestStreak: bestStreak(history),
     lastActive: lastActive(history),
@@ -196,6 +228,9 @@ function cleanGiven(question, given) {
   if (question.type === 'order') {
     return Array.isArray(given) ? given.slice(0, 20).map((x) => String(x).slice(0, 100)) : []
   }
+  if (question.type === 'match' || question.type === 'pairs' || question.type === 'sort') {
+    return Array.isArray(given) ? given.slice(0, 12).map((x) => String(x).slice(0, 80)) : []
+  }
   if (question.type === 'pattern') {
     return Array.isArray(given) ? given.slice(0, 4).map((x) => (typeof x === 'string' ? x.slice(0, 40) : null)) : []
   }
@@ -206,7 +241,7 @@ function cleanGiven(question, given) {
 function judge(question, given, tries) {
   if (checkAnswer(question, given)) return { result: 'correct', outcome: tries === 1 ? 'first' : 'hint' }
   if (tries === 1) return { result: 'retry', hint: question.hint }
-  return { result: 'revealed', outcome: 'missed', answer: question.answer, explanation: question.explanation }
+  return { result: 'revealed', outcome: 'missed', answer: displayAnswer(question), explanation: question.explanation }
 }
 
 // ---------- routes (all for students; requireStudent on each) ----------
@@ -217,17 +252,27 @@ export const router = express.Router()
 router.get('/student/chapters', requireStudent, async (req, res) => {
   const chapters = await visibleChapters(req.student)
   const history = await historyOf(req.student)
-  const done = new Set(history.lessons.map((l) => l.lessonId))
+  const starsOf = new Map(history.lessons.map((l) => [l.lessonId, l.stars]))
+  const countInSubject = new Map() // worlds are numbered within their subject
   res.json(
-    chapterStates(chapters, history).map(({ chapter, state, stars }, i) => ({
-      id: chapter.id,
-      number: i + 1,
-      title: chapter.title,
-      state, // 'done' | 'open' | 'locked'
-      stars, // best so far, 0-3
-      lessons: chapter.lessonIds.map((id, j) => ({ id, title: chapter.lessonTitles[j], done: done.has(id) })),
-      quiz: chapter.quizId ? { id: chapter.quizId, questionCount: chapter.questionCount, open: quizOpen(chapter, history) } : null,
-    }))
+    chapterStates(chapters, history).map(({ chapter, state, stars }) => {
+      const number = (countInSubject.get(chapter.subject) ?? 0) + 1
+      countInSubject.set(chapter.subject, number)
+      const levelStarsEarned = chapter.lessonIds.reduce((sum, id) => sum + (starsOf.get(id) ?? 0), 0)
+      return {
+        id: chapter.id,
+        number,
+        subject: chapter.subject,
+        title: chapter.title,
+        state, // 'done' | 'open' | 'locked'
+        stars, // the quiz's best so far, 0-3
+        // The world's stars: every level's plus the quiz's, out of 3 for each.
+        worldStars: levelStarsEarned + stars,
+        worldMax: (chapter.lessonIds.length + (chapter.quizId ? 1 : 0)) * 3,
+        lessons: chapter.lessonIds.map((id, j) => ({ id, title: chapter.lessonTitles[j], done: starsOf.has(id), stars: starsOf.get(id) ?? 0 })),
+        quiz: chapter.quizId ? { id: chapter.quizId, questionCount: chapter.questionCount, open: quizOpen(chapter, history) } : null,
+      }
+    })
   )
 })
 
@@ -256,9 +301,11 @@ router.get('/student/lessons/:lessonId', requireStudent, async (req, res) => {
   })
 })
 
-// POST /api/student/lessons/:lessonId/check  { questionId, given, tries }
-// Checks a lesson activity answer. Activities are practice (no points, nothing
-// recorded), so the app says which try this is.
+// POST /api/student/lessons/:lessonId/check  { questionId, given }
+// Checks a lesson activity answer. The server counts the tries (the app sends
+// none) and records the best outcome for the level's stars and the reports.
+// Playing a lesson again starts a fresh round; only a better outcome replaces
+// the old one, so replaying can raise a level's stars but never lower them.
 router.post('/student/lessons/:lessonId/check', requireStudent, async (req, res) => {
   if (!mongoose.isValidObjectId(req.params.lessonId)) return refuse(res, 404, 'not-found', 'Lesson not found.')
   const lesson = await Lesson.findById(req.params.lessonId)
@@ -267,10 +314,33 @@ router.post('/student/lessons/:lessonId/check', requireStudent, async (req, res)
   if (open.error) return refuse(res, open.error, open.code, open.message)
   const question = lesson.steps.find((s) => s.question && String(s.question._id) === String(req.body?.questionId))?.question
   if (!question) return refuse(res, 404, 'not-found', 'Question not found.')
-  const tries = req.body?.tries === 2 ? 2 : 1
+
   const shown = local(question, req.student.language ?? 'en') // checked in the language the student sees
-  const { outcome, ...reply } = judge(shown, cleanGiven(shown, req.body?.given), tries)
-  res.json(reply)
+  const given = cleanGiven(shown, req.body?.given)
+  let entry = req.student.levels.find((l) => String(l.question) === String(question._id))
+  if (!entry) {
+    req.student.levels.push({ lesson: lesson._id, question: question._id, chapter: lesson.chapter, prompt: question.prompt, topic: question.topic ?? '' })
+    entry = req.student.levels[req.student.levels.length - 1]
+  }
+  if (entry.settled) {
+    entry.tries = 0 // a replay: a new round
+    entry.settled = false
+  }
+  entry.tries += 1
+  const { outcome, ...reply } = judge(shown, given, entry.tries)
+  entry.given = given
+  entry.prompt = question.prompt
+  entry.topic = question.topic ?? ''
+  if (outcome) {
+    entry.settled = true
+    entry.best = entry.best ? betterOutcome(entry.best, outcome) : outcome
+  }
+  try {
+    await req.student.save()
+  } catch {
+    return refuse(res, 409, 'try-again', 'That took too long. Try again.')
+  }
+  res.json({ ...reply, settled: Boolean(outcome) })
 })
 
 // POST /api/student/lessons/:lessonId/finish   records the lesson as finished (only the first time counts)
@@ -283,18 +353,29 @@ router.post('/student/lessons/:lessonId/finish', requireStudent, async (req, res
 
   const before = summary(open.history, open.chapters)
   const firstTime = !req.student.lessonsFinished.some((l) => String(l.lesson) === lesson.id)
+  // The level's stars come from the best outcome on each of its questions
+  // (a question never answered counts as missed).
+  const outcomes = lesson.steps
+    .filter((s) => s.question)
+    .map((s) => req.student.levels.find((l) => String(l.question) === String(s.question._id))?.best ?? 'missed')
+  const stars = levelStars(outcomes)
   if (firstTime) {
     // $push with a filter, so two quick clicks can't record it twice.
     await Student.updateOne(
       { _id: req.student._id, 'lessonsFinished.lesson': { $ne: lesson._id } },
-      { $push: { lessonsFinished: { lesson: lesson._id, date: today() } } }
+      { $push: { lessonsFinished: { lesson: lesson._id, date: today(), stars } } }
     )
+  } else {
+    await Student.updateOne({ _id: req.student._id, 'lessonsFinished.lesson': lesson._id }, { $max: { 'lessonsFinished.$.stars': stars } })
   }
   const student = await Student.findById(req.student._id)
   const after = summary(await historyOf(student), open.chapters)
+  const best = after.lessons.find((l) => l.lessonId === lesson.id)?.stars ?? stars
   res.json({
     firstTime,
+    stars: best, // the level's best stars so far
     pointsEarned: after.points - before.points,
+    coinsEarned: after.points - before.points, // coins come 1 for 1 with points
     newBadges: after.badges.filter((b, i) => b.earned && !before.badges[i].earned).map((b) => b.id),
     progress: after,
   })
@@ -381,7 +462,7 @@ function review(attempt, quiz) {
       prompt: q ? q.prompt : a.prompt,
       given: a.given,
       outcome: a.outcome,
-      answer: q ? q.answer : null,
+      answer: q ? displayAnswer(q) : null,
       explanation: q ? q.explanation : null,
     }
   })
@@ -457,17 +538,152 @@ router.patch('/student/language', requireStudent, async (req, res) => {
   res.json({ language })
 })
 
+// ---------- the daily challenge ----------
+// Three questions a day from chapters the student has already opened. They are
+// picked from the date and the student (same all day, new tomorrow), saved the
+// first time the student looks, and answered like a quiz: in order, two tries
+// each, judged here. It pays points like quiz answers but is practice for fun,
+// so it never appears in teacher reports.
+
+async function dailyPool(student) {
+  const chapters = await visibleChapters(student)
+  const history = await historyOf(student)
+  const playable = chapterStates(chapters, history).filter((e) => e.state === 'open' || e.state === 'done')
+  const quizzes = await Quiz.find({ chapter: { $in: playable.map((e) => e.chapter.id) } })
+  return quizzes.flatMap((quiz) => quiz.questions)
+}
+
+// The day's questions that still exist (a teacher may have deleted one), in order.
+async function dayQuestions(day) {
+  const quizzes = await Quiz.find({ 'questions._id': { $in: day.questionIds } })
+  const all = quizzes.flatMap((quiz) => quiz.questions)
+  return day.questionIds.map((id) => all.find((q) => String(q._id) === String(id))).filter(Boolean)
+}
+
+const outcomeOnDay = (day, question) => day.answers.find((a) => String(a.question) === String(question._id))?.outcome ?? null
+
+// GET /api/student/daily   today's challenge: the questions without answers, and what is done
+router.get('/student/daily', requireStudent, async (req, res) => {
+  const date = today()
+  let student = req.student
+  if (!student.dailies.some((d) => d.date === date)) {
+    const pool = await dailyPool(student)
+    if (pool.length === 0) return res.json({ available: false })
+    const ids = dailyPick(pool.map((q) => String(q._id)), student.id, date)
+    // The filter makes opening it twice at once save only one.
+    await Student.updateOne(
+      { _id: student._id, 'dailies.date': { $ne: date } },
+      { $push: { dailies: { date, questionIds: ids, language: student.language ?? 'en', answers: [], points: 0, finished: false } } }
+    )
+    student = await Student.findById(student._id)
+  }
+  const day = student.dailies.find((d) => d.date === date)
+  if (day.finished) return res.json({ available: true, date, done: true, points: day.points })
+  const questions = await dayQuestions(day)
+  res.json({
+    available: true,
+    date,
+    done: false,
+    questions: questions.map((q) => questionForStudent(local(q, day.language))),
+    outcomes: questions.map((q) => outcomeOnDay(day, q)), // null until settled (the app only needs to know it is settled)
+  })
+})
+
+// POST /api/student/daily/answers  { questionId, given }   checks ONE answer, in order
+router.post('/student/daily/answers', requireStudent, async (req, res) => {
+  const day = req.student.dailies.find((d) => d.date === today())
+  if (!day) return refuse(res, 404, 'not-found', 'Open today’s challenge first.')
+  if (day.finished) return refuse(res, 409, 'already-finished', 'You finished today’s challenge. Come back tomorrow!')
+  const questions = await dayQuestions(day)
+  const next = questions.find((q) => !outcomeOnDay(day, q))
+  if (!next) return refuse(res, 409, 'already-finished', 'You finished today’s challenge. Come back tomorrow!')
+  if (String(req.body?.questionId) !== String(next._id)) return refuse(res, 409, 'answer-in-order', 'Answer the questions in order.')
+
+  let entry = day.answers.find((a) => String(a.question) === String(next._id))
+  if (!entry) {
+    day.answers.push({ question: next._id, tries: 0 })
+    entry = day.answers[day.answers.length - 1]
+  }
+  entry.tries += 1
+  const question = local(next, day.language)
+  const { outcome, ...reply } = judge(question, cleanGiven(question, req.body?.given), entry.tries)
+  if (outcome) entry.outcome = outcome
+
+  const allDone = questions.every((q) => outcomeOnDay(day, q))
+  if (allDone) {
+    day.finished = true
+    day.points = answerPoints(questions.map((q) => outcomeOnDay(day, q)))
+  }
+  try {
+    await req.student.save()
+  } catch {
+    return refuse(res, 409, 'try-again', 'That took too long. Try again.')
+  }
+  res.json({ ...reply, settled: Boolean(outcome), ...(allDone ? { done: true, points: day.points } : {}) })
+})
+
+// ---------- the buddy shop ----------
+
+// What the shop page needs: the balance, the buddy's outfit, and every item with who has it.
+async function shopJson(student) {
+  const history = await historyOf(student)
+  const points = totalPoints(history)
+  const owned = ownedItems(points, history.purchases)
+  return {
+    points,
+    coins: coinBalance(points, history.purchases),
+    mascot: history.mascot,
+    items: CATALOG.map((item) => ({ key: item.key, slot: item.slot, id: item.id, price: item.price ?? null, milestone: item.milestone ?? null, owned: owned.has(item.key) })),
+  }
+}
+
+// GET /api/student/shop
+router.get('/student/shop', requireStudent, async (req, res) => {
+  res.json(await shopJson(req.student))
+})
+
+// POST /api/student/shop/buy  { item: 'hat:cap' }
+// Safe against double taps. The purchase is only written if the student's list of
+// purchases is still exactly what was read a moment ago (and still lacks the item).
+// If another request got in first, it is read again and the balance checked again,
+// so the same coins can never be spent twice.
+router.post('/student/shop/buy', requireStudent, async (req, res) => {
+  const key = String(req.body?.item ?? '')
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const student = await Student.findById(req.student._id)
+    const history = await historyOf(student)
+    const problem = buyProblem(totalPoints(history), history.purchases, key)
+    if (problem) return refuse(res, problem === 'not-enough-coins' || problem === 'already-owned' ? 409 : 400, problem, 'You can’t buy that.')
+    const done = await Student.updateOne(
+      { _id: student._id, $and: [{ purchases: { $size: student.purchases.length } }, { purchases: { $ne: key } }] },
+      { $push: { purchases: key } }
+    )
+    if (done.modifiedCount === 1) return res.status(201).json(await shopJson(await Student.findById(student._id)))
+  }
+  return refuse(res, 409, 'try-again', 'That took too long. Try again.')
+})
+
+// PATCH /api/student/mascot  { buddy, hat, face, neck, background }   what the buddy wears (owned items only)
+router.patch('/student/mascot', requireStudent, async (req, res) => {
+  const history = await historyOf(req.student)
+  const owned = ownedItems(totalPoints(history), history.purchases)
+  const mascot = {}
+  for (const slot of ['buddy', 'hat', 'face', 'neck', 'background']) {
+    const value = req.body?.[slot]
+    mascot[slot] = value === null || value === undefined ? null : String(value)
+  }
+  const problem = mascotProblem(mascot, owned)
+  if (problem) return refuse(res, 400, problem, 'You don’t have that item yet.')
+  await Student.updateOne({ _id: req.student._id }, { $set: { mascot } })
+  res.json(await shopJson(await Student.findById(req.student._id)))
+})
+
 // GET /api/student/leaderboard   classmates' first names and points (nothing else)
 router.get('/student/leaderboard', requireStudent, async (req, res) => {
   const classmates = await Student.find({ class: req.student.class })
   const attempts = await Attempt.find({ class: req.student.class, status: 'finished' }).sort({ finishedAt: 1 })
   const rows = classmates.map((s) => {
-    const history = {
-      lessons: s.lessonsFinished.map((l) => ({ lessonId: String(l.lesson), date: l.date })),
-      attempts: attempts
-        .filter((a) => String(a.student) === s.id)
-        .map((a) => ({ quizId: String(a.quiz), score: a.score, stars: a.stars, answerPoints: a.answerPoints, date: a.date })),
-    }
+    const history = historyFrom(s, attempts.filter((a) => String(a.student) === s.id))
     return { id: s.id, firstName: s.name.split(' ')[0], points: totalPoints(history), isMe: s.id === req.student.id }
   })
   rows.sort((a, b) => b.points - a.points || a.firstName.localeCompare(b.firstName))

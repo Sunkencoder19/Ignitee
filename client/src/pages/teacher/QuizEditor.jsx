@@ -85,7 +85,11 @@ export default function QuizEditor() {
         </p>
         <div className="mt-4">
           <LanguageTabs lang={lang} onChange={setLang} />
-          {lang !== 'en' && <p className="mt-2 text-muted">Optional. Anything left empty is shown to students in English.</p>}
+          <p className="mt-2 text-muted">
+            {lang === 'en'
+              ? 'Hindi and Marathi sentences are filled in automatically when you save. Lists of single words (options, pairs, groups) are left for you to translate.'
+              : 'Filled in automatically when you save the English. Check it here and fix anything you like; what you write is never overwritten.'}
+          </p>
         </div>
       </div>
 

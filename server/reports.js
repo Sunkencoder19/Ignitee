@@ -4,7 +4,8 @@
 // Two kinds of numbers:
 //   - Needs attention (as before): best quiz score below 50%, or no learning for 3+ days.
 //   - Accuracy, by chapter and by topic, from each student's LATEST finished
-//     attempt on each quiz (first try 1, after the hint 0.5, missed 0).
+//     attempt on each quiz plus their lesson activity answers (best outcome on
+//     each; first try 1, after the hint 0.5, missed 0). The daily challenge is not counted.
 //     Below 60% with at least 3 answers counts as "struggling".
 // All the maths is in shared/game.js; this file gathers the data.
 
@@ -57,7 +58,13 @@ async function chaptersFor(teacherId, classId, attempts) {
 // topic and chapter kept for the accuracy numbers.
 function historyFor(student, attempts) {
   return {
-    lessons: student.lessonsFinished.map((l) => ({ lessonId: String(l.lesson), date: l.date })),
+    lessons: student.lessonsFinished.map((l) => ({ lessonId: String(l.lesson), date: l.date, stars: l.stars ?? 3 })),
+    // Daily challenge points count towards a student's points, but its answers are never in reports.
+    dailies: student.dailies.filter((d) => d.finished).map((d) => ({ date: d.date, points: d.points })),
+    // Lesson activity answers ("level answers") count towards accuracy, with the best outcome per question.
+    levelAnswers: student.levels
+      .filter((l) => l.best)
+      .map((l) => ({ outcome: l.best, topic: l.topic || 'No topic', chapterId: String(l.chapter), prompt: l.prompt })),
     attempts: attempts
       .filter((a) => String(a.student) === student.id)
       .map((a) => ({
@@ -73,9 +80,10 @@ function historyFor(student, attempts) {
   }
 }
 
-// Every answer from the student's latest finished attempt on each quiz.
+// Every answer from the student's latest finished attempt on each quiz, plus
+// their lesson activity answers (best outcome on each).
 function latestAnswers(history) {
-  return latestAttempts(history.attempts).flatMap((a) => a.answers)
+  return [...latestAttempts(history.attempts).flatMap((a) => a.answers), ...history.levelAnswers]
 }
 
 const chapterKey = (answer) => answer.chapterId

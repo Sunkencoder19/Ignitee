@@ -8,6 +8,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { answerQuizQuestion, getStudentChapters, startQuiz, useData } from '../../api'
+import Buddy from '../../Buddy'
 import { useT } from '../../i18n/t'
 import Question from '../../Question'
 import { useSession } from '../../session'
@@ -15,7 +16,7 @@ import { useSession } from '../../session'
 export default function Quiz() {
   const { quizId } = useParams()
   const navigate = useNavigate()
-  const { finishQuiz } = useSession()
+  const { finishQuiz, progress } = useSession()
   const t = useT()
   const { data: chapters, error } = useData(() => getStudentChapters(), [quizId])
 
@@ -46,9 +47,10 @@ export default function Quiz() {
   // ---- before starting ----
   if (!attempt) {
     return (
-      <div className="card mx-auto max-w-xl p-8">
-        <p className="text-muted">{t('quiz.chapterNumber', { number: chapter.number })}</p>
-        <h1 className="mt-1 text-3xl font-semibold tracking-tight">{t('quiz.title', { title: chapter.title })}</h1>
+      <div className="card mx-auto max-w-xl p-6 text-center">
+        <Buddy mascot={progress.mascot} size={130} label={t('home.buddyLabel')} className="float mx-auto" />
+        <p className="mt-2 text-lg font-bold text-muted">{t('quiz.chapterNumber', { number: chapter.number })}</p>
+        <h1 className="mt-1 text-3xl leading-tight">{t('quiz.title', { title: chapter.title })}</h1>
         <p className="mt-4 text-lg">{t('quiz.intro', { count: chapter.quiz.questionCount })}</p>
         <p className="mt-2 text-lg text-muted">{t('quiz.passToOpen')}</p>
         {actionError && (
@@ -95,14 +97,31 @@ export default function Quiz() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex items-center justify-between text-muted">
-        <Link to={`/student/learn/${chapter.id}`} onClick={leave} className="inline-flex min-h-12 items-center font-semibold hover:text-ink">
-          {t('quiz.leave')}
+      <div className="flex items-center gap-3">
+        <Link
+          to={`/student/learn/${chapter.id}`}
+          onClick={leave}
+          aria-label={t('quiz.leave')}
+          className="grid size-12 shrink-0 place-items-center rounded-full bg-surface text-2xl font-bold text-muted shadow-[0_3px_0_var(--color-line)]"
+        >
+          <span aria-hidden="true">&times;</span>
         </Link>
-        <span>{t('quiz.questionOf', { number: index + 1, total: attempt.questions.length })}</span>
+        <div
+          className="h-4 flex-1 overflow-hidden rounded-full bg-surface ring-1 ring-line"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={attempt.questions.length}
+          aria-valuenow={index + 1}
+          aria-label={t('quiz.questionOf', { number: index + 1, total: attempt.questions.length })}
+        >
+          <div className="h-full rounded-full bg-accent transition-[width] duration-500" style={{ width: `${((index + 1) / attempt.questions.length) * 100}%` }} />
+        </div>
+        <span className="text-lg font-bold text-muted">
+          {index + 1}/{attempt.questions.length}
+        </span>
       </div>
 
-      <h1 className="mt-4 text-2xl font-semibold tracking-tight">{t('quiz.title', { title: attempt.chapterTitle })}</h1>
+      <h1 className="mt-4 text-2xl leading-tight">{t('quiz.title', { title: attempt.chapterTitle })}</h1>
 
       <section className="card mt-4 p-6 md:p-8">
         <Question
@@ -120,7 +139,7 @@ export default function Quiz() {
       )}
 
       {answered && (
-        <button onClick={goNext} disabled={busy} className="btn btn-primary mt-6 w-full text-lg">
+        <button onClick={goNext} disabled={busy} className="btn btn-primary mt-6 w-full text-xl">
           {busy ? t('quiz.scoring') : isLast ? t('quiz.seeScore') : t('quiz.nextQuestion')}
         </button>
       )}

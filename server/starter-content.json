@@ -69,6 +69,41 @@
             "mr": {
               "text": "तुमच्या खोलीत आजूबाजूला बघा. वर्तुळासारखी एक वस्तू आणि चौरसासारखी एक वस्तू शोधा."
             }
+          },
+          {
+            "type": "activity",
+            "text": "Pair each shape with its name.",
+            "hi": {
+              "text": "हर आकृति को उसके नाम से जोड़ो।"
+            },
+            "mr": {
+              "text": "प्रत्येक आकाराला त्याचे नाव जोडा."
+            },
+            "question": {
+              "type": "match",
+              "prompt": "Match each picture with its name.",
+              "hint": "Look at the shape and the colour.",
+              "explanation": "Each name tells the colour and the shape.",
+              "topic": "Flat shapes",
+              "config": {
+                "tiles": [
+                  "circle:red",
+                  "square:blue",
+                  "triangle:green",
+                  "star:yellow"
+                ]
+              },
+              "hi": {
+                "prompt": "हर तस्वीर को उसके नाम से मिलाओ।",
+                "hint": "आकृति और रंग देखो।",
+                "explanation": "हर नाम में रंग और आकृति बताई गई है।"
+              },
+              "mr": {
+                "prompt": "प्रत्येक चित्राला त्याच्या नावाशी जोडा.",
+                "hint": "आकार आणि रंग पाहा.",
+                "explanation": "प्रत्येक नावात रंग आणि आकार सांगितलेला असतो."
+              }
+            }
           }
         ],
         "hi": {
@@ -144,6 +179,48 @@
             },
             "mr": {
               "text": "घरी एक खोका शोधा. तो घन आहे की इष्टिकाचिती? त्याच्या सर्व बाजू सारख्याच आकाराच्या आहेत का ते तपासा."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Count the blocks.",
+            "hi": {
+              "text": "ब्लॉक गिनो।"
+            },
+            "mr": {
+              "text": "ठोकळे मोजा."
+            },
+            "question": {
+              "type": "count",
+              "prompt": "How many blocks are there?",
+              "hint": "Count only the blocks, not the tiles.",
+              "explanation": "There are 7 blocks.",
+              "topic": "Solid shapes",
+              "config": {
+                "groups": [
+                  {
+                    "object": "block",
+                    "colour": "blue",
+                    "count": 7
+                  },
+                  {
+                    "object": "tile",
+                    "colour": "red",
+                    "count": 3
+                  }
+                ],
+                "target": 0
+              },
+              "hi": {
+                "prompt": "कितने ब्लॉक हैं?",
+                "hint": "सिर्फ़ ब्लॉक गिनो, टाइल नहीं।",
+                "explanation": "यहाँ 7 ब्लॉक हैं।"
+              },
+              "mr": {
+                "prompt": "किती ठोकळे आहेत?",
+                "hint": "फक्त ठोकळे मोजा, टाइल्स नाही.",
+                "explanation": "येथे 7 ठोकळे आहेत."
+              }
             }
           }
         ],
@@ -506,6 +583,30 @@
             "hint": "रिकाम्या जागेच्या आधीचे आणि नंतरचे आकार पाहा.",
             "explanation": "नमुना वर्तुळ, चौरस असा पुन्हा येतो, म्हणून येथे वर्तुळ येते."
           }
+        },
+        {
+          "type": "match",
+          "prompt": "Match each picture with its name.",
+          "hint": "Look at the shape and the colour.",
+          "explanation": "Each name tells the colour and the shape.",
+          "topic": "Flat shapes",
+          "config": {
+            "tiles": [
+              "triangle:red",
+              "triangle:blue",
+              "square:green"
+            ]
+          },
+          "hi": {
+            "prompt": "हर तस्वीर को उसके नाम से मिलाओ।",
+            "hint": "आकृति और रंग देखो।",
+            "explanation": "हर नाम में रंग और आकृति बताई गई है।"
+          },
+          "mr": {
+            "prompt": "प्रत्येक चित्राला त्याच्या नावाशी जोडा.",
+            "hint": "आकार आणि रंग पाहा.",
+            "explanation": "प्रत्येक नावात रंग आणि आकार सांगितलेला असतो."
+          }
         }
       ]
     },
@@ -514,7 +615,8 @@
     },
     "mr": {
       "title": "आपल्या आजूबाजूचे आकार"
-    }
+    },
+    "subject": "maths"
   },
   {
     "title": "Hide and Seek",
@@ -573,6 +675,41 @@
             "mr": {
               "text": "तुमच्या हाताची आणि पायाची बोटे 5-5 ने मोजा. मोजताना संख्या मोठ्याने म्हणा."
             }
+          },
+          {
+            "type": "activity",
+            "text": "Help the frog skip count by 2.",
+            "hi": {
+              "text": "मेंढक को 2-2 की छलाँग लगाने में मदद करो।"
+            },
+            "mr": {
+              "text": "बेडकाला 2-2 ने उड्या मारायला मदत करा."
+            },
+            "question": {
+              "type": "numberline",
+              "prompt": "The frog starts at 0 and jumps 2 each time. Where does it land after 5 jumps?",
+              "hint": "Count 2, 4, 6... one jump at a time.",
+              "explanation": "5 jumps of 2 make 10.",
+              "topic": "Skip counting",
+              "config": {
+                "ask": "land",
+                "min": 0,
+                "max": 20,
+                "start": 0,
+                "step": 2,
+                "jumps": 5
+              },
+              "hi": {
+                "prompt": "मेंढक 0 से शुरू करता है और हर बार 2 की छलाँग लगाता है। 5 छलाँगों के बाद वह कहाँ पहुँचता है?",
+                "hint": "एक-एक छलाँग के साथ गिनो: 2, 4, 6...",
+                "explanation": "2 की 5 छलाँगें मिलकर 10 बनती हैं।"
+              },
+              "mr": {
+                "prompt": "बेडूक 0 पासून सुरू करतो आणि प्रत्येक वेळी 2 ची उडी मारतो. 5 उड्यांनंतर तो कुठे पोहोचतो?",
+                "hint": "एकेका उडीसोबत मोजा: 2, 4, 6...",
+                "explanation": "2 च्या 5 उड्या मिळून 10 होतात."
+              }
+            }
           }
         ],
         "hi": {
@@ -628,6 +765,49 @@
             },
             "mr": {
               "text": "प्रत्येक वेळी 3 मिळवणारा तुमचा स्वतःचा आकृतिबंध लिहा. 1 पासून सुरुवात करा."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Find the missing tile.",
+            "hi": {
+              "text": "गायब टाइल ढूँढो।"
+            },
+            "mr": {
+              "text": "गायब टाइल शोधा."
+            },
+            "question": {
+              "type": "pattern",
+              "prompt": "Which tile is missing from the pattern?",
+              "hint": "The pattern goes star, heart, star, heart.",
+              "explanation": "A star and a heart take turns, so a heart fits here.",
+              "topic": "Number patterns",
+              "config": {
+                "sequence": [
+                  "star:yellow",
+                  "heart:red",
+                  "star:yellow",
+                  "heart:red",
+                  "star:yellow",
+                  "heart:red"
+                ],
+                "gaps": [
+                  3
+                ],
+                "extras": [
+                  "circle:blue"
+                ]
+              },
+              "hi": {
+                "prompt": "पैटर्न में कौन-सी टाइल गायब है?",
+                "hint": "पैटर्न है: तारा, दिल, तारा, दिल।",
+                "explanation": "तारा और दिल बारी-बारी से आते हैं, इसलिए यहाँ दिल आता है।"
+              },
+              "mr": {
+                "prompt": "नमुन्यात कोणती टाइल गायब आहे?",
+                "hint": "नमुना असा आहे: तारा, हृदय, तारा, हृदय.",
+                "explanation": "तारा आणि हृदय आलटून पालटून येतात, म्हणून येथे हृदय येते."
+              }
             }
           }
         ],
@@ -932,6 +1112,31 @@
             "hint": "नमुना असा आहे: एक हृदय, मग दोन तारे.",
             "explanation": "एक हृदय आणि दोन तारे पुन्हा पुन्हा येतात, म्हणून येथे लाल हृदय येते."
           }
+        },
+        {
+          "type": "numberline",
+          "prompt": "The frog jumps 5 each time. How many jumps does it need to reach 25?",
+          "hint": "Jump until you reach the flag, then count the jumps.",
+          "explanation": "5, 10, 15, 20, 25. That is 5 jumps.",
+          "topic": "Skip counting",
+          "config": {
+            "ask": "count",
+            "min": 0,
+            "max": 30,
+            "start": 0,
+            "step": 5,
+            "target": 25
+          },
+          "hi": {
+            "prompt": "मेंढक हर बार 5 की छलाँग लगाता है। 25 तक पहुँचने के लिए उसे कितनी छलाँगें चाहिए?",
+            "hint": "झंडे तक पहुँचने तक छलाँग लगाओ, फिर छलाँगें गिनो।",
+            "explanation": "5, 10, 15, 20, 25। यानी 5 छलाँगें।"
+          },
+          "mr": {
+            "prompt": "बेडूक प्रत्येक वेळी 5 ची उडी मारतो. 25 पर पोहोचायला त्याला किती उड्या लागतील?",
+            "hint": "झेंड्यापर्यंत उड्या मारा, मग उड्या मोजा.",
+            "explanation": "5, 10, 15, 20, 25. म्हणजे 5 उड्या."
+          }
         }
       ]
     },
@@ -940,7 +1145,8 @@
     },
     "mr": {
       "title": "लपाछपी"
-    }
+    },
+    "subject": "maths"
   },
   {
     "title": "Pattern Around Us",
@@ -1011,6 +1217,50 @@
             "mr": {
               "text": "दोन रंगांचे मणी, ठोकळे किंवा चित्रे वापरून एक आकृतिबंध तयार करा."
             }
+          },
+          {
+            "type": "activity",
+            "text": "Fill in the two missing tiles.",
+            "hi": {
+              "text": "दो गायब टाइलें भरो।"
+            },
+            "mr": {
+              "text": "दोन गायब टाइल भरा."
+            },
+            "question": {
+              "type": "pattern",
+              "prompt": "Which two tiles are missing from the pattern?",
+              "hint": "The pattern repeats triangle, circle.",
+              "explanation": "Triangle and circle take turns, so the gaps are a triangle and a circle.",
+              "topic": "Repeating patterns",
+              "config": {
+                "sequence": [
+                  "triangle:red",
+                  "circle:blue",
+                  "triangle:red",
+                  "circle:blue",
+                  "triangle:red",
+                  "circle:blue"
+                ],
+                "gaps": [
+                  2,
+                  5
+                ],
+                "extras": [
+                  "square:green"
+                ]
+              },
+              "hi": {
+                "prompt": "पैटर्न में कौन-सी दो टाइलें गायब हैं?",
+                "hint": "पैटर्न त्रिभुज, वृत्त दोहराता है।",
+                "explanation": "त्रिभुज और वृत्त बारी-बारी से आते हैं, इसलिए खाली जगहों में त्रिभुज और वृत्त आते हैं।"
+              },
+              "mr": {
+                "prompt": "नमुन्यात कोणत्या दोन टाइल गायब आहेत?",
+                "hint": "नमुना त्रिकोण, वर्तुळ असा पुन्हा येतो.",
+                "explanation": "त्रिकोण आणि वर्तुळ आलटून पालटून येतात, म्हणून रिकाम्या जागांमध्ये त्रिकोण आणि वर्तुळ येतात."
+              }
+            }
           }
         ],
         "hi": {
@@ -1068,6 +1318,47 @@
             },
             "mr": {
               "text": "प्रत्येक पायरीसाठी ठिपके काढा. पुढच्या पायरीत किती येतील?"
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Count the birds.",
+            "hi": {
+              "text": "चिड़िया गिनो।"
+            },
+            "mr": {
+              "text": "पक्षी मोजा."
+            },
+            "question": {
+              "type": "count",
+              "prompt": "How many birds are there?",
+              "hint": "Count only the birds.",
+              "explanation": "There are 6 birds.",
+              "topic": "Growing patterns",
+              "config": {
+                "groups": [
+                  {
+                    "object": "bird",
+                    "count": 6
+                  },
+                  {
+                    "object": "tile",
+                    "colour": "yellow",
+                    "count": 3
+                  }
+                ],
+                "target": 0
+              },
+              "hi": {
+                "prompt": "कितनी चिड़िया हैं?",
+                "hint": "सिर्फ़ चिड़िया गिनो।",
+                "explanation": "यहाँ 6 चिड़िया हैं।"
+              },
+              "mr": {
+                "prompt": "किती पक्षी आहेत?",
+                "hint": "फक्त पक्षी मोजा.",
+                "explanation": "येथे 6 पक्षी आहेत."
+              }
             }
           }
         ],
@@ -1477,6 +1768,30 @@
             "hint": "प्रत्येक गटात एक त्रिकोण, एक वर्तुळ आणि एक चौरस आहे.",
             "explanation": "नमुना त्रिकोण, वर्तुळ, चौरस असा पुन्हा येतो, म्हणून शेवटी चौरस येतो."
           }
+        },
+        {
+          "type": "match",
+          "prompt": "Match each circle with its colour name.",
+          "hint": "All three are circles. Look at the colours.",
+          "explanation": "The names tell the colours: red, blue and green.",
+          "topic": "Repeating patterns",
+          "config": {
+            "tiles": [
+              "circle:red",
+              "circle:blue",
+              "circle:green"
+            ]
+          },
+          "hi": {
+            "prompt": "हर वृत्त को उसके रंग के नाम से मिलाओ।",
+            "hint": "तीनों वृत्त हैं। रंग देखो।",
+            "explanation": "नाम रंग बताते हैं: लाल, नीला और हरा।"
+          },
+          "mr": {
+            "prompt": "प्रत्येक वर्तुळाला त्याच्या रंगाच्या नावाशी जोडा.",
+            "hint": "तिन्ही वर्तुळे आहेत. रंग पाहा.",
+            "explanation": "नावे रंग सांगतात: लाल, निळा आणि हिरवा."
+          }
         }
       ]
     },
@@ -1485,7 +1800,8 @@
     },
     "mr": {
       "title": "आपल्या आजूबाजूचे आकृतिबंध"
-    }
+    },
+    "subject": "maths"
   },
   {
     "title": "Thousands Around Us",
@@ -1543,6 +1859,38 @@
             "mr": {
               "text": "4 अंकी एखादी संख्या निवडा. प्रत्येक अंक कोणत्या स्थानी आहे ते मोठ्याने सांगा."
             }
+          },
+          {
+            "type": "activity",
+            "text": "Build the number.",
+            "hi": {
+              "text": "संख्या बनाओ।"
+            },
+            "mr": {
+              "text": "संख्या तयार करा."
+            },
+            "question": {
+              "type": "placevalue",
+              "prompt": "Build the number shown using place value blocks.",
+              "hint": "Start with the hundreds, then tens, then ones.",
+              "explanation": "3 hundreds, 4 tens and 5 ones make 345.",
+              "topic": "Place value",
+              "config": {
+                "ask": "build",
+                "places": 3,
+                "target": 345
+              },
+              "hi": {
+                "prompt": "दी गई संख्या को स्थानीय मान के ब्लॉक से बनाओ।",
+                "hint": "पहले सैकड़े, फिर दहाई, फिर इकाई रखो।",
+                "explanation": "3 सैकड़े, 4 दहाई और 5 इकाई मिलकर 345 बनाते हैं।"
+              },
+              "mr": {
+                "prompt": "दिलेली संख्या स्थानमूल्याच्या ठोकळ्यांनी तयार करा.",
+                "hint": "आधी शतक, मग दशक, मग एकक लावा.",
+                "explanation": "3 शतक, 4 दशक आणि 5 एकक मिळून 345 होतात."
+              }
+            }
           }
         ],
         "hi": {
@@ -1599,6 +1947,38 @@
             "mr": {
               "text": "तुमच्या घराचा क्रमांक किंवा एखाद्या बसचा क्रमांक विस्तारित रूपात लिहा."
             }
+          },
+          {
+            "type": "activity",
+            "text": "Read the blocks.",
+            "hi": {
+              "text": "ब्लॉक पढ़ो।"
+            },
+            "mr": {
+              "text": "ठोकळे वाचा."
+            },
+            "question": {
+              "type": "placevalue",
+              "prompt": "What number do the blocks show?",
+              "hint": "Read each column: thousands, hundreds, tens, ones.",
+              "explanation": "2 thousands, 1 hundred, 4 tens and 8 ones make 2148.",
+              "topic": "Expanded form",
+              "config": {
+                "ask": "read",
+                "places": 4,
+                "target": 2148
+              },
+              "hi": {
+                "prompt": "ब्लॉक कौन-सी संख्या दिखाते हैं?",
+                "hint": "हर कॉलम पढ़ो: हज़ार, सैकड़ा, दहाई, इकाई।",
+                "explanation": "2 हज़ार, 1 सैकड़ा, 4 दहाई और 8 इकाई मिलकर 2148 बनाते हैं।"
+              },
+              "mr": {
+                "prompt": "ठोकळे कोणती संख्या दाखवतात?",
+                "hint": "प्रत्येक स्तंभ वाचा: हजार, शतक, दशक, एकक.",
+                "explanation": "2 हजार, 1 शतक, 4 दशक आणि 8 एकक मिळून 2148 होतात."
+              }
+            }
           }
         ],
         "hi": {
@@ -1652,6 +2032,41 @@
             },
             "mr": {
               "text": "तुम्हाला माहीत असलेल्या दोन वस्तूंच्या किमती मिळवा, जसे 1,200 आणि 1,500."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Help the frog jump back.",
+            "hi": {
+              "text": "मेंढक को पीछे कूदने में मदद करो।"
+            },
+            "mr": {
+              "text": "बेडकाला मागे उडी मारायला मदत करा."
+            },
+            "question": {
+              "type": "numberline",
+              "prompt": "The frog starts at 25 and jumps back 5 each time. Where does it land after 3 jumps?",
+              "hint": "Each jump takes away 5.",
+              "explanation": "25 - 5 - 5 - 5 = 10.",
+              "topic": "Adding and subtracting",
+              "config": {
+                "ask": "land",
+                "min": 0,
+                "max": 30,
+                "start": 25,
+                "step": -5,
+                "jumps": 3
+              },
+              "hi": {
+                "prompt": "मेंढक 25 से शुरू करता है और हर बार 5 पीछे छलाँग लगाता है। 3 छलाँगों के बाद वह कहाँ पहुँचता है?",
+                "hint": "हर छलाँग में 5 घटता है।",
+                "explanation": "25 - 5 - 5 - 5 = 10।"
+              },
+              "mr": {
+                "prompt": "बेडूक 25 पासून सुरू करतो आणि प्रत्येक वेळी 5 ने मागे उडी मारतो. 3 उड्यांनंतर तो कुठे पोहोचतो?",
+                "hint": "प्रत्येक उडीत 5 कमी होतात.",
+                "explanation": "25 - 5 - 5 - 5 = 10."
+              }
             }
           }
         ],
@@ -1903,6 +2318,53 @@
             "hint": "नमुना असा आहे: एक तारा, मग एक हृदय.",
             "explanation": "तारा आणि हृदय पुन्हा पुन्हा येतात, म्हणून रिकाम्या जागांमध्ये तारा आणि हृदय येतात."
           }
+        },
+        {
+          "type": "placevalue",
+          "prompt": "Build the number shown using place value blocks.",
+          "hint": "Start with the hundreds, then tens, then ones.",
+          "explanation": "5 hundreds, 0 tens and 7 ones make 507.",
+          "topic": "Place value",
+          "config": {
+            "ask": "build",
+            "places": 3,
+            "target": 507
+          },
+          "hi": {
+            "prompt": "दी गई संख्या को स्थानीय मान के ब्लॉक से बनाओ।",
+            "hint": "पहले सैकड़े, फिर दहाई, फिर इकाई रखो।",
+            "explanation": "5 सैकड़े, 0 दहाई और 7 इकाई मिलकर 507 बनाते हैं।"
+          },
+          "mr": {
+            "prompt": "दिलेली संख्या स्थानमूल्याच्या ठोकळ्यांनी तयार करा.",
+            "hint": "आधी शतक, मग दशक, मग एकक लावा.",
+            "explanation": "5 शतक, 0 दशक आणि 7 एकक मिळून 507 होतात."
+          }
+        },
+        {
+          "type": "numberline",
+          "prompt": "The frog starts at 30 and jumps back 5 each time. How many jumps to reach 15?",
+          "hint": "Each jump goes back 5. Count them until you reach the flag.",
+          "explanation": "30, 25, 20, 15. That is 3 jumps.",
+          "topic": "Adding and subtracting",
+          "config": {
+            "ask": "count",
+            "min": 0,
+            "max": 30,
+            "start": 30,
+            "step": -5,
+            "target": 15
+          },
+          "hi": {
+            "prompt": "मेंढक 30 से शुरू करता है और हर बार 5 पीछे जाता है। 15 तक पहुँचने के लिए कितनी छलाँगें?",
+            "hint": "हर छलाँग 5 पीछे ले जाती है। झंडे तक पहुँचने तक गिनो।",
+            "explanation": "30, 25, 20, 15। यानी 3 छलाँगें।"
+          },
+          "mr": {
+            "prompt": "बेडूक 30 पासून सुरू करतो आणि प्रत्येक वेळी 5 ने मागे जातो. 15 पर पोहोचायला किती उड्या?",
+            "hint": "प्रत्येक उडी 5 ने मागे नेते. झेंड्यापर्यंत मोजा.",
+            "explanation": "30, 25, 20, 15. म्हणजे 3 उड्या."
+          }
         }
       ]
     },
@@ -1911,6 +2373,1597 @@
     },
     "mr": {
       "title": "आपल्या आजूबाजूचे हजार"
+    },
+    "subject": "maths"
+  },
+  {
+    "title": "Words and Sounds",
+    "subject": "english",
+    "hi": {
+      "title": "शब्द और आवाज़ें"
+    },
+    "mr": {
+      "title": "शब्द आणि आवाज"
+    },
+    "lessons": [
+      {
+        "title": "Animal sounds",
+        "hi": {
+          "title": "जानवरों की आवाज़ें"
+        },
+        "mr": {
+          "title": "प्राण्यांचे आवाज"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "Every animal makes its own sound. A cow says moo and a cat says meow.",
+            "hi": {
+              "text": "हर जानवर की अपनी आवाज़ होती है। गाय म्हूँ कहती है और बिल्ली म्याऊँ।"
+            },
+            "mr": {
+              "text": "प्रत्येक प्राण्याचा स्वतःचा आवाज असतो. गाय हंबरते आणि मांजर म्यांव म्यांव करते."
+            }
+          },
+          {
+            "type": "example",
+            "text": "A dog says woof and a duck says quack. Try making each sound yourself!",
+            "hi": {
+              "text": "कुत्ता भौं-भौं करता है और बत्तख क्वैक-क्वैक। हर आवाज़ खुद निकालकर देखो!"
+            },
+            "mr": {
+              "text": "कुत्रा भुंकतो आणि बदक क्वॅक क्वॅक करते. प्रत्येक आवाज स्वतः काढून पाहा!"
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Match the animals with their sounds.",
+            "hi": {
+              "text": "जानवरों को उनकी आवाज़ों से मिलाओ।"
+            },
+            "mr": {
+              "text": "प्राण्यांना त्यांच्या आवाजांशी जोडा."
+            },
+            "question": {
+              "type": "pairs",
+              "prompt": "Match each animal with its sound.",
+              "hint": "Think about the sound you hear.",
+              "explanation": "A cow says moo, a cat says meow, a dog says woof and a duck says quack.",
+              "topic": "Animal sounds",
+              "config": {
+                "pairs": [
+                  {
+                    "a": "Cow",
+                    "b": "Moo"
+                  },
+                  {
+                    "a": "Cat",
+                    "b": "Meow"
+                  },
+                  {
+                    "a": "Dog",
+                    "b": "Woof"
+                  },
+                  {
+                    "a": "Duck",
+                    "b": "Quack"
+                  }
+                ]
+              },
+              "hi": {
+                "prompt": "हर जानवर को उसकी आवाज़ से मिलाओ।",
+                "hint": "सोचो, तुम कौन-सी आवाज़ सुनते हो।",
+                "explanation": "गाय म्हूँ, बिल्ली म्याऊँ, कुत्ता भौं और बत्तख क्वैक कहती है।"
+              },
+              "mr": {
+                "prompt": "प्रत्येक प्राण्याला त्याच्या आवाजाशी जोडा.",
+                "hint": "तुम्ही कोणता आवाज ऐकता त्याचा विचार करा.",
+                "explanation": "गाय हंबरते, मांजर म्यांव म्यांव करते, कुत्रा भुंकतो आणि बदक क्वॅक क्वॅक करते."
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "Spell it right",
+        "hi": {
+          "title": "सही स्पेलिंग"
+        },
+        "mr": {
+          "title": "बरोबर स्पेलिंग"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "Letters join together to make words. The word CAT has three letters: C, A and T.",
+            "hi": {
+              "text": "अक्षर मिलकर शब्द बनाते हैं। शब्द CAT में तीन अक्षर हैं: C, A और T।"
+            },
+            "mr": {
+              "text": "अक्षरे एकत्र येऊन शब्द बनतो. CAT या शब्दात तीन अक्षरे आहेत: C, A आणि T."
+            }
+          },
+          {
+            "type": "example",
+            "text": "Say each letter slowly, then say the whole word: C, A, T, cat!",
+            "hi": {
+              "text": "हर अक्षर धीरे-धीरे बोलो, फिर पूरा शब्द: C, A, T, cat!"
+            },
+            "mr": {
+              "text": "प्रत्येक अक्षर हळू बोला, मग पूर्ण शब्द: C, A, T, cat!"
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Spell the word by tapping the letters.",
+            "hi": {
+              "text": "अक्षरों को छूकर शब्द बनाओ।"
+            },
+            "mr": {
+              "text": "अक्षरे टॅप करून शब्द तयार करा."
+            },
+            "question": {
+              "type": "unscramble",
+              "prompt": "Put the letters in order to spell the word.",
+              "hint": "It is a red or green fruit.",
+              "explanation": "The word is apple.",
+              "topic": "Spelling",
+              "config": {
+                "word": "apple"
+              },
+              "hi": {
+                "prompt": "अक्षरों को सही क्रम में लगाकर शब्द बनाओ।",
+                "hint": "यह एक लाल या हरा फल है।",
+                "explanation": "शब्द apple है।"
+              },
+              "mr": {
+                "prompt": "अक्षरे योग्य क्रमाने लावून शब्द तयार करा.",
+                "hint": "हे लाल किंवा हिरवे फळ आहे.",
+                "explanation": "शब्द apple आहे."
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "True or false",
+        "hi": {
+          "title": "सही या गलत"
+        },
+        "mr": {
+          "title": "बरोबर की चूक"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "A sentence can be true or false. 'A cat has four legs' is true. 'A fish can walk' is false.",
+            "hi": {
+              "text": "एक वाक्य सही या गलत हो सकता है। 'बिल्ली के चार पैर होते हैं' सही है। 'मछली चल सकती है' गलत है।"
+            },
+            "mr": {
+              "text": "वाक्य बरोबर किंवा चूक असू शकते. 'मांजराला चार पाय असतात' हे बरोबर आहे. 'मासा चालू शकतो' हे चूक आहे."
+            }
+          },
+          {
+            "type": "example",
+            "text": "Think about each sentence before you choose. Ask yourself: is that really so?",
+            "hi": {
+              "text": "चुनने से पहले हर वाक्य के बारे में सोचो। खुद से पूछो: क्या सच में ऐसा है?"
+            },
+            "mr": {
+              "text": "निवडण्यापूर्वी प्रत्येक वाक्याचा विचार करा. स्वतःला विचारा: खरंच असं आहे का?"
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Is this sentence true or false?",
+            "hi": {
+              "text": "क्या यह वाक्य सही है या गलत?"
+            },
+            "mr": {
+              "text": "हे वाक्य बरोबर आहे की चूक?"
+            },
+            "question": {
+              "type": "truefalse",
+              "prompt": "A cat can fly.",
+              "hint": "Does a cat have wings?",
+              "explanation": "Cats cannot fly. They have no wings.",
+              "topic": "True or false",
+              "config": {
+                "truth": false
+              },
+              "hi": {
+                "prompt": "बिल्ली उड़ सकती है।",
+                "hint": "क्या बिल्ली के पंख होते हैं?",
+                "explanation": "बिल्लियाँ उड़ नहीं सकतीं। उनके पंख नहीं होते।"
+              },
+              "mr": {
+                "prompt": "मांजर उडू शकते.",
+                "hint": "मांजराला पंख असतात का?",
+                "explanation": "मांजरी उडू शकत नाहीत. त्यांना पंख नसतात."
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "quiz": {
+      "questions": [
+        {
+          "type": "mcq",
+          "prompt": "Which word starts with the letter B?",
+          "hint": "Say each word. Which one starts with the 'buh' sound?",
+          "explanation": "Ball starts with B.",
+          "topic": "Letters",
+          "options": [
+            "Ball",
+            "Cat",
+            "Dog",
+            "Egg"
+          ],
+          "answer": "Ball",
+          "hi": {
+            "prompt": "कौन-सा शब्द B अक्षर से शुरू होता है?",
+            "hint": "हर शब्द बोलो। किसकी शुरुआत 'ब' की आवाज़ से होती है?",
+            "explanation": "Ball की शुरुआत B से होती है।"
+          },
+          "mr": {
+            "prompt": "कोणता शब्द B अक्षराने सुरू होतो?",
+            "hint": "प्रत्येक शब्द बोला. कोणाची सुरुवात 'ब' च्या आवाजाने होते?",
+            "explanation": "Ball ची सुरुवात B ने होते."
+          }
+        },
+        {
+          "type": "mcq",
+          "prompt": "What is the opposite of hot?",
+          "hint": "Think of ice cream.",
+          "explanation": "Cold is the opposite of hot.",
+          "topic": "Opposites",
+          "options": [
+            "Cold",
+            "Warm",
+            "Sunny",
+            "Big"
+          ],
+          "answer": "Cold",
+          "hi": {
+            "prompt": "गर्म का उल्टा क्या है?",
+            "hint": "आइसक्रीम के बारे में सोचो।",
+            "explanation": "ठंडा गर्म का उल्टा है।"
+          },
+          "mr": {
+            "prompt": "गरम चे विरुद्ध काय आहे?",
+            "hint": "आईस्क्रीमचा विचार करा.",
+            "explanation": "थंड हे गरम चे विरुद्ध आहे."
+          }
+        },
+        {
+          "type": "mcq",
+          "prompt": "Which of these is an animal?",
+          "hint": "It has stripes.",
+          "explanation": "A tiger is an animal.",
+          "topic": "Words",
+          "options": [
+            "Table",
+            "Tiger",
+            "Chair",
+            "Pencil"
+          ],
+          "answer": "Tiger",
+          "hi": {
+            "prompt": "इनमें से कौन-सा एक जानवर है?",
+            "hint": "इसकी धारियाँ होती हैं।",
+            "explanation": "बाघ एक जानवर है।"
+          },
+          "mr": {
+            "prompt": "यापैकी कोणता प्राणी आहे?",
+            "hint": "त्याला पट्टे असतात.",
+            "explanation": "वाघ हा प्राणी आहे."
+          }
+        },
+        {
+          "type": "truefalse",
+          "prompt": "The sun rises in the evening.",
+          "hint": "When do you see the sun come up?",
+          "explanation": "The sun rises in the morning.",
+          "topic": "True or false",
+          "config": {
+            "truth": false
+          },
+          "hi": {
+            "prompt": "सूरज शाम को उगता है।",
+            "hint": "सूरज कब निकलता है?",
+            "explanation": "सूरज सुबह उगता है।"
+          },
+          "mr": {
+            "prompt": "सूर्य संध्याकाळी उगवतो.",
+            "hint": "सूर्य कधी उगवतो?",
+            "explanation": "सूर्य सकाळी उगवतो."
+          }
+        },
+        {
+          "type": "truefalse",
+          "prompt": "A bird has two wings.",
+          "hint": "Look at a bird flying.",
+          "explanation": "Birds have two wings.",
+          "topic": "True or false",
+          "config": {
+            "truth": true
+          },
+          "hi": {
+            "prompt": "पक्षी के दो पंख होते हैं।",
+            "hint": "उड़ते हुए पक्षी को देखो।",
+            "explanation": "पक्षियों के दो पंख होते हैं।"
+          },
+          "mr": {
+            "prompt": "पक्ष्याला दोन पंख असतात.",
+            "hint": "उडणाऱ्या पक्ष्याकडे पाहा.",
+            "explanation": "पक्ष्यांना दोन पंख असतात."
+          }
+        },
+        {
+          "type": "unscramble",
+          "prompt": "Spell the animal's name.",
+          "hint": "It is a big cat with stripes.",
+          "explanation": "The word is tiger.",
+          "topic": "Spelling",
+          "config": {
+            "word": "tiger"
+          },
+          "hi": {
+            "prompt": "जानवर का नाम सही क्रम में लगाओ।",
+            "hint": "यह धारियों वाली एक बड़ी बिल्ली है।",
+            "explanation": "शब्द tiger है।"
+          },
+          "mr": {
+            "prompt": "प्राण्याचे नाव योग्य क्रमाने लावा.",
+            "hint": "ही पट्ट्यांची मोठी मांजर आहे.",
+            "explanation": "शब्द tiger आहे."
+          }
+        },
+        {
+          "type": "unscramble",
+          "prompt": "Spell the word that means glad.",
+          "hint": "It is how you feel when you laugh.",
+          "explanation": "The word is happy.",
+          "topic": "Spelling",
+          "config": {
+            "word": "happy"
+          },
+          "hi": {
+            "prompt": "खुश का मतलब बताने वाला अंग्रेज़ी शब्द बनाओ।",
+            "hint": "जब तुम हँसते हो तब तुम ऐसा महसूस करते हो।",
+            "explanation": "शब्द happy है।"
+          },
+          "mr": {
+            "prompt": "आनंदी या अर्थाचा इंग्रजी शब्द तयार करा.",
+            "hint": "तुम्ही हसता तेव्हा तुम्हाला असे वाटते.",
+            "explanation": "शब्द happy आहे."
+          }
+        },
+        {
+          "type": "pairs",
+          "prompt": "Match each word with its opposite.",
+          "hint": "Think of the word that means the other way round.",
+          "explanation": "Hot and cold, big and small, up and down, day and night are opposites.",
+          "topic": "Opposites",
+          "config": {
+            "pairs": [
+              {
+                "a": "Hot",
+                "b": "Cold"
+              },
+              {
+                "a": "Big",
+                "b": "Small"
+              },
+              {
+                "a": "Up",
+                "b": "Down"
+              },
+              {
+                "a": "Day",
+                "b": "Night"
+              }
+            ]
+          },
+          "hi": {
+            "prompt": "हर शब्द को उसके उल्टे से मिलाओ।",
+            "hint": "वह शब्द सोचो जिसका मतलब उल्टा हो।",
+            "explanation": "गर्म और ठंडा, बड़ा और छोटा, ऊपर और नीचे, दिन और रात एक-दूसरे के उल्टे हैं।"
+          },
+          "mr": {
+            "prompt": "प्रत्येक शब्दाला त्याच्या विरुद्धार्थी शब्दाशी जोडा.",
+            "hint": "उलट अर्थाचा शब्द आठवा.",
+            "explanation": "गरम आणि थंड, मोठा आणि लहान, वर आणि खाली, दिवस आणि रात्र हे एकमेकांचे विरुद्ध आहेत."
+          }
+        },
+        {
+          "type": "order",
+          "prompt": "Put the words in order to make a sentence.",
+          "hint": "Start with the word I.",
+          "explanation": "The sentence is: I like to read.",
+          "topic": "Sentences",
+          "answer": [
+            "I",
+            "like",
+            "to",
+            "read"
+          ],
+          "hi": {
+            "prompt": "शब्दों को सही क्रम में लगाकर वाक्य बनाओ।",
+            "hint": "शब्द I से शुरू करो।",
+            "explanation": "वाक्य है: I like to read।"
+          },
+          "mr": {
+            "prompt": "शब्द योग्य क्रमाने लावून वाक्य तयार करा.",
+            "hint": "I या शब्दापासून सुरुवात करा.",
+            "explanation": "वाक्य आहे: I like to read."
+          }
+        }
+      ]
+    }
+  },
+  {
+    "title": "Living and Non-living",
+    "subject": "evs",
+    "hi": {
+      "title": "जीवित और निर्जीव"
+    },
+    "mr": {
+      "title": "सजीव आणि निर्जीव"
+    },
+    "lessons": [
+      {
+        "title": "What is alive?",
+        "hi": {
+          "title": "जीवित क्या है?"
+        },
+        "mr": {
+          "title": "सजीव म्हणजे काय?"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "Living things grow, eat, breathe and have babies. Plants and animals are living things.",
+            "hi": {
+              "text": "जीवित चीज़ें बढ़ती हैं, खाती हैं, साँस लेती हैं और उनके बच्चे होते हैं। पौधे और जानवर जीवित चीज़ें हैं।"
+            },
+            "mr": {
+              "text": "सजीव गोष्टी वाढतात, खातात, श्वास घेतात आणि त्यांना पिल्ले होतात. झाडे आणि प्राणी सजीव आहेत."
+            }
+          },
+          {
+            "type": "example",
+            "text": "A dog and a tree are living. A stone and a chair are not living.",
+            "hi": {
+              "text": "कुत्ता और पेड़ जीवित हैं। पत्थर और कुर्सी जीवित नहीं हैं।"
+            },
+            "mr": {
+              "text": "कुत्रा आणि झाड सजीव आहेत. दगड आणि खुर्ची सजीव नाहीत."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Sort the things into two groups.",
+            "hi": {
+              "text": "चीज़ों को दो समूहों में छाँटो।"
+            },
+            "mr": {
+              "text": "वस्तूंना दोन गटांत लावा."
+            },
+            "question": {
+              "type": "sort",
+              "prompt": "Sort the things into living and non-living.",
+              "hint": "Ask: does it grow and eat?",
+              "explanation": "Dog, tree and bird are living. Stone, chair and pencil are not.",
+              "topic": "Living things",
+              "config": {
+                "groups": [
+                  {
+                    "name": "Living",
+                    "items": [
+                      "Dog",
+                      "Tree",
+                      "Bird"
+                    ]
+                  },
+                  {
+                    "name": "Non-living",
+                    "items": [
+                      "Stone",
+                      "Chair",
+                      "Pencil"
+                    ]
+                  }
+                ]
+              },
+              "hi": {
+                "prompt": "चीज़ों को जीवित और निर्जीव में छाँटो।",
+                "hint": "पूछो: क्या यह बढ़ता और खाता है?",
+                "explanation": "कुत्ता, पेड़ और चिड़िया जीवित हैं। पत्थर, कुर्सी और पेंसिल जीवित नहीं हैं।",
+                "groups": [
+                  "जीवित",
+                  "निर्जीव"
+                ],
+                "items": [
+                  "कुत्ता",
+                  "पेड़",
+                  "चिड़िया",
+                  "पत्थर",
+                  "कुर्सी",
+                  "पेंसिल"
+                ]
+              },
+              "mr": {
+                "prompt": "वस्तूंना सजीव आणि निर्जीव मध्ये लावा.",
+                "hint": "विचारा: ते वाढते आणि खाते का?",
+                "explanation": "कुत्रा, झाड आणि पक्षी सजीव आहेत. दगड, खुर्ची आणि पेन्सिल सजीव नाहीत.",
+                "groups": [
+                  "सजीव",
+                  "निर्जीव"
+                ],
+                "items": [
+                  "कुत्रा",
+                  "झाड",
+                  "पक्षी",
+                  "दगड",
+                  "खुर्ची",
+                  "पेन्सिल"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "Plants and animals",
+        "hi": {
+          "title": "पौधे और जानवर"
+        },
+        "mr": {
+          "title": "झाडे आणि प्राणी"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "Plants make their own food using sunlight. Animals eat plants or other animals.",
+            "hi": {
+              "text": "पौधे धूप से अपना खाना खुद बनाते हैं। जानवर पौधे या दूसरे जानवर खाते हैं।"
+            },
+            "mr": {
+              "text": "झाडे सूर्यप्रकाशातून स्वतःचे अन्न स्वतः बनवतात. प्राणी झाडे किंवा इतर प्राणी खातात."
+            }
+          },
+          {
+            "type": "example",
+            "text": "A cow eats grass. A lion eats other animals.",
+            "hi": {
+              "text": "गाय घास खाती है। शेर दूसरे जानवर खाता है।"
+            },
+            "mr": {
+              "text": "गाय गवत खाते. सिंह इतर प्राणी खातो."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Pick the plant.",
+            "hi": {
+              "text": "पौधा चुनो।"
+            },
+            "mr": {
+              "text": "झाड निवडा."
+            },
+            "question": {
+              "type": "mcq",
+              "prompt": "Which of these is a plant?",
+              "hint": "Plants stay in one place and have roots.",
+              "explanation": "A rose is a plant.",
+              "topic": "Plants",
+              "options": [
+                "Rose",
+                "Cat",
+                "Fish",
+                "Bird"
+              ],
+              "answer": "Rose",
+              "hi": {
+                "prompt": "इनमें से कौन-सा एक पौधा है?",
+                "hint": "पौधे एक जगह रहते हैं और उनकी जड़ें होती हैं।",
+                "explanation": "गुलाब एक पौधा है।",
+                "options": [
+                  "गुलाब",
+                  "बिल्ली",
+                  "मछली",
+                  "चिड़िया"
+                ]
+              },
+              "mr": {
+                "prompt": "यापैकी कोणते झाड आहे?",
+                "hint": "झाडे एकाच जागी राहतात आणि त्यांना मुळे असतात.",
+                "explanation": "गुलाब हे झाड आहे.",
+                "options": [
+                  "गुलाब",
+                  "मांजर",
+                  "मासा",
+                  "पक्षी"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "Our five senses",
+        "hi": {
+          "title": "हमारी पाँच इंद्रियाँ"
+        },
+        "mr": {
+          "title": "आपली पाच इंद्रिये"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "We have five senses: seeing, hearing, smelling, tasting and touching.",
+            "hi": {
+              "text": "हमारी पाँच इंद्रियाँ हैं: देखना, सुनना, सूँघना, चखना और छूना।"
+            },
+            "mr": {
+              "text": "आपल्याला पाच इंद्रिये आहेत: पाहणे, ऐकणे, वास घेणे, चव घेणे आणि स्पर्श करणे."
+            }
+          },
+          {
+            "type": "example",
+            "text": "Your eyes help you see. Your ears help you hear.",
+            "hi": {
+              "text": "आँखें तुम्हें देखने में मदद करती हैं। कान तुम्हें सुनने में मदद करते हैं।"
+            },
+            "mr": {
+              "text": "डोळे तुम्हाला पाहायला मदत करतात. कान तुम्हाला ऐकायला मदत करतात."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Match each body part with its job.",
+            "hi": {
+              "text": "हर अंग को उसके काम से मिलाओ।"
+            },
+            "mr": {
+              "text": "प्रत्येक अवयवाला त्याच्या कामाशी जोडा."
+            },
+            "question": {
+              "type": "pairs",
+              "prompt": "Match each body part with what it does.",
+              "hint": "Think about what you do with it.",
+              "explanation": "Eyes see, ears hear, the nose smells and the tongue tastes.",
+              "topic": "Senses",
+              "config": {
+                "pairs": [
+                  {
+                    "a": "Eyes",
+                    "b": "See"
+                  },
+                  {
+                    "a": "Ears",
+                    "b": "Hear"
+                  },
+                  {
+                    "a": "Nose",
+                    "b": "Smell"
+                  },
+                  {
+                    "a": "Tongue",
+                    "b": "Taste"
+                  }
+                ]
+              },
+              "hi": {
+                "prompt": "हर अंग को उसके काम से मिलाओ।",
+                "hint": "सोचो, तुम इससे क्या करते हो।",
+                "explanation": "आँखें देखती हैं, कान सुनते हैं, नाक सूँघती है और जीभ चखती है।",
+                "lefts": [
+                  "आँखें",
+                  "कान",
+                  "नाक",
+                  "जीभ"
+                ],
+                "rights": [
+                  "देखना",
+                  "सुनना",
+                  "सूँघना",
+                  "चखना"
+                ]
+              },
+              "mr": {
+                "prompt": "प्रत्येक अवयवाला त्याच्या कामाशी जोडा.",
+                "hint": "तुम्ही त्याने काय करता ते आठवा.",
+                "explanation": "डोळे पाहतात, कान ऐकतात, नाक वास घेते आणि जीभ चव घेते.",
+                "lefts": [
+                  "डोळे",
+                  "कान",
+                  "नाक",
+                  "जीभ"
+                ],
+                "rights": [
+                  "पाहणे",
+                  "ऐकणे",
+                  "वास घेणे",
+                  "चव घेणे"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "quiz": {
+      "questions": [
+        {
+          "type": "truefalse",
+          "prompt": "A stone can grow.",
+          "hint": "Does a stone eat or drink?",
+          "explanation": "A stone is not living, so it cannot grow.",
+          "topic": "Living things",
+          "config": {
+            "truth": false
+          },
+          "hi": {
+            "prompt": "पत्थर बढ़ सकता है।",
+            "hint": "क्या पत्थर खाता या पीता है?",
+            "explanation": "पत्थर जीवित नहीं है, इसलिए वह बढ़ नहीं सकता।"
+          },
+          "mr": {
+            "prompt": "दगड वाढू शकतो.",
+            "hint": "दगड खातो किंवा पितो का?",
+            "explanation": "दगड सजीव नाही, म्हणून तो वाढू शकत नाही."
+          }
+        },
+        {
+          "type": "truefalse",
+          "prompt": "Plants need sunlight and water.",
+          "hint": "Think of a plant on a window sill.",
+          "explanation": "Plants need sunlight and water to grow.",
+          "topic": "Plants",
+          "config": {
+            "truth": true
+          },
+          "hi": {
+            "prompt": "पौधों को धूप और पानी चाहिए।",
+            "hint": "खिड़की पर रखे पौधे के बारे में सोचो।",
+            "explanation": "पौधों को बढ़ने के लिए धूप और पानी चाहिए।"
+          },
+          "mr": {
+            "prompt": "झाडांना सूर्यप्रकाश आणि पाणी लागते.",
+            "hint": "खिडकीवरच्या रोपाचा विचार करा.",
+            "explanation": "झाडांना वाढण्यासाठी सूर्यप्रकाश आणि पाणी लागते."
+          }
+        },
+        {
+          "type": "truefalse",
+          "prompt": "Fish live in water.",
+          "hint": "Where do you see fish?",
+          "explanation": "Fish live in water.",
+          "topic": "Animals",
+          "config": {
+            "truth": true
+          },
+          "hi": {
+            "prompt": "मछलियाँ पानी में रहती हैं।",
+            "hint": "मछलियाँ कहाँ दिखती हैं?",
+            "explanation": "मछलियाँ पानी में रहती हैं।"
+          },
+          "mr": {
+            "prompt": "मासे पाण्यात राहतात.",
+            "hint": "मासे कुठे दिसतात?",
+            "explanation": "मासे पाण्यात राहतात."
+          }
+        },
+        {
+          "type": "mcq",
+          "prompt": "Which sense do we use to hear a song?",
+          "hint": "Which part of the body listens?",
+          "explanation": "We use our ears to hear.",
+          "topic": "Senses",
+          "options": [
+            "Seeing",
+            "Hearing",
+            "Smelling",
+            "Touching"
+          ],
+          "answer": "Hearing",
+          "hi": {
+            "prompt": "गाना सुनने के लिए हम कौन-सी इंद्रिय इस्तेमाल करते हैं?",
+            "hint": "शरीर का कौन-सा अंग सुनता है?",
+            "explanation": "हम सुनने के लिए कान इस्तेमाल करते हैं।",
+            "options": [
+              "देखना",
+              "सुनना",
+              "सूँघना",
+              "छूना"
+            ]
+          },
+          "mr": {
+            "prompt": "गाणे ऐकण्यासाठी आपण कोणते इंद्रिय वापरतो?",
+            "hint": "शरीराचा कोणता भाग ऐकतो?",
+            "explanation": "ऐकण्यासाठी आपण कान वापरतो.",
+            "options": [
+              "पाहणे",
+              "ऐकणे",
+              "वास घेणे",
+              "स्पर्श करणे"
+            ]
+          }
+        },
+        {
+          "type": "mcq",
+          "prompt": "What do plants need to make food?",
+          "hint": "It comes from the sky in the day.",
+          "explanation": "Plants use sunlight to make their food.",
+          "topic": "Plants",
+          "options": [
+            "Sunlight",
+            "Toys",
+            "Plastic",
+            "Sand"
+          ],
+          "answer": "Sunlight",
+          "hi": {
+            "prompt": "पौधों को खाना बनाने के लिए क्या चाहिए?",
+            "hint": "यह दिन में आसमान से आती है।",
+            "explanation": "पौधे खाना बनाने के लिए धूप इस्तेमाल करते हैं।",
+            "options": [
+              "धूप",
+              "खिलौने",
+              "प्लास्टिक",
+              "रेत"
+            ]
+          },
+          "mr": {
+            "prompt": "झाडांना अन्न बनवण्यासाठी काय लागते?",
+            "hint": "ते दिवसा आकाशातून येते.",
+            "explanation": "झाडे अन्न बनवण्यासाठी सूर्यप्रकाश वापरतात.",
+            "options": [
+              "सूर्यप्रकाश",
+              "खेळणी",
+              "प्लास्टिक",
+              "वाळू"
+            ]
+          }
+        },
+        {
+          "type": "mcq",
+          "prompt": "Which animal gives us wool?",
+          "hint": "Warm sweaters are made from it.",
+          "explanation": "Sheep give us wool.",
+          "topic": "Animals",
+          "options": [
+            "Sheep",
+            "Dog",
+            "Fish",
+            "Crow"
+          ],
+          "answer": "Sheep",
+          "hi": {
+            "prompt": "कौन-सा जानवर हमें ऊन देता है?",
+            "hint": "इससे गर्म स्वेटर बनते हैं।",
+            "explanation": "भेड़ हमें ऊन देती है।",
+            "options": [
+              "भेड़",
+              "कुत्ता",
+              "मछली",
+              "कौआ"
+            ]
+          },
+          "mr": {
+            "prompt": "कोणता प्राणी आपल्याला लोकर देतो?",
+            "hint": "त्यापासून उबदार स्वेटर बनतात.",
+            "explanation": "मेंढी आपल्याला लोकर देते.",
+            "options": [
+              "मेंढी",
+              "कुत्रा",
+              "मासा",
+              "कावळा"
+            ]
+          }
+        },
+        {
+          "type": "sort",
+          "prompt": "Sort these into plants and animals.",
+          "hint": "Plants have roots. Animals can move.",
+          "explanation": "Mango tree and rose are plants. Cow, eagle and frog are animals.",
+          "topic": "Plants and animals",
+          "config": {
+            "groups": [
+              {
+                "name": "Plants",
+                "items": [
+                  "Mango tree",
+                  "Rose"
+                ]
+              },
+              {
+                "name": "Animals",
+                "items": [
+                  "Cow",
+                  "Eagle",
+                  "Frog"
+                ]
+              }
+            ]
+          },
+          "hi": {
+            "prompt": "इन्हें पौधों और जानवरों में छाँटो।",
+            "hint": "पौधों की जड़ें होती हैं। जानवर चल सकते हैं।",
+            "explanation": "आम का पेड़ और गुलाब पौधे हैं। गाय, चील और मेंढक जानवर हैं।",
+            "groups": [
+              "पौधे",
+              "जानवर"
+            ],
+            "items": [
+              "आम का पेड़",
+              "गुलाब",
+              "गाय",
+              "चील",
+              "मेंढक"
+            ]
+          },
+          "mr": {
+            "prompt": "यांना झाडे आणि प्राणी मध्ये लावा.",
+            "hint": "झाडांना मुळे असतात. प्राणी चालू शकतात.",
+            "explanation": "आंब्याचे झाड आणि गुलाब झाडे आहेत. गाय, गरुड आणि बेडूक प्राणी आहेत.",
+            "groups": [
+              "झाडे",
+              "प्राणी"
+            ],
+            "items": [
+              "आंब्याचे झाड",
+              "गुलाब",
+              "गाय",
+              "गरुड",
+              "बेडूक"
+            ]
+          }
+        },
+        {
+          "type": "pairs",
+          "prompt": "Match each animal with its home.",
+          "hint": "Where does each animal live?",
+          "explanation": "A bird lives in a nest, a fish in water, a bee in a hive and a dog in a kennel.",
+          "topic": "Animals",
+          "config": {
+            "pairs": [
+              {
+                "a": "Bird",
+                "b": "Nest"
+              },
+              {
+                "a": "Fish",
+                "b": "Water"
+              },
+              {
+                "a": "Bee",
+                "b": "Hive"
+              },
+              {
+                "a": "Dog",
+                "b": "Kennel"
+              }
+            ]
+          },
+          "hi": {
+            "prompt": "हर जानवर को उसके घर से मिलाओ।",
+            "hint": "हर जानवर कहाँ रहता है?",
+            "explanation": "चिड़िया घोंसले में, मछली पानी में, मधुमक्खी छत्ते में और कुत्ता कुत्ताघर में रहता है।",
+            "lefts": [
+              "चिड़िया",
+              "मछली",
+              "मधुमक्खी",
+              "कुत्ता"
+            ],
+            "rights": [
+              "घोंसला",
+              "पानी",
+              "छत्ता",
+              "कुत्ताघर"
+            ]
+          },
+          "mr": {
+            "prompt": "प्रत्येक प्राण्याला त्याच्या घराशी जोडा.",
+            "hint": "प्रत्येक प्राणी कुठे राहतो?",
+            "explanation": "पक्षी घरट्यात, मासा पाण्यात, मधमाशी पोळ्यात आणि कुत्रा कुत्र्याच्या घरात राहतो.",
+            "lefts": [
+              "पक्षी",
+              "मासा",
+              "मधमाशी",
+              "कुत्रा"
+            ],
+            "rights": [
+              "घरटे",
+              "पाणी",
+              "पोळे",
+              "कुत्र्याचे घर"
+            ]
+          }
+        },
+        {
+          "type": "order",
+          "prompt": "Put the life of a plant in order.",
+          "hint": "A plant starts very small.",
+          "explanation": "A seed grows into a seedling, then a plant, then it flowers.",
+          "topic": "Plants",
+          "answer": [
+            "Seed",
+            "Seedling",
+            "Plant",
+            "Flower"
+          ],
+          "hi": {
+            "prompt": "पौधे के जीवन को सही क्रम में लगाओ।",
+            "hint": "पौधा बहुत छोटा शुरू होता है।",
+            "explanation": "बीज से अंकुर निकलता है, फिर पौधा बनता है, फिर फूल आता है।",
+            "items": [
+              "बीज",
+              "अंकुर",
+              "पौधा",
+              "फूल"
+            ]
+          },
+          "mr": {
+            "prompt": "झाडाचे जीवन योग्य क्रमाने लावा.",
+            "hint": "झाड खूप लहान सुरू होते.",
+            "explanation": "बीमधून अंकुर येतो, मग रोप बनते, मग फूल येते.",
+            "items": [
+              "बी",
+              "अंकुर",
+              "रोप",
+              "फूल"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "title": "Our World",
+    "subject": "gk",
+    "hi": {
+      "title": "हमारी दुनिया"
+    },
+    "mr": {
+      "title": "आपले जग"
+    },
+    "lessons": [
+      {
+        "title": "Days of the week",
+        "hi": {
+          "title": "हफ़्ते के दिन"
+        },
+        "mr": {
+          "title": "आठवड्याचे दिवस"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "There are seven days in a week: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday and Sunday.",
+            "hi": {
+              "text": "एक हफ़्ते में सात दिन होते हैं: सोमवार, मंगलवार, बुधवार, गुरुवार, शुक्रवार, शनिवार और रविवार।"
+            },
+            "mr": {
+              "text": "आठवड्यात सात दिवस असतात: सोमवार, मंगळवार, बुधवार, गुरुवार, शुक्रवार, शनिवार आणि रविवार."
+            }
+          },
+          {
+            "type": "example",
+            "text": "Sunday is often a day to rest. School starts again on Monday.",
+            "hi": {
+              "text": "रविवार अक्सर आराम का दिन होता है। स्कूल सोमवार से फिर शुरू होता है।"
+            },
+            "mr": {
+              "text": "रविवार हा अनेकदा विश्रांतीचा दिवस असतो. शाळा सोमवारी पुन्हा सुरू होते."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Put the school days in order.",
+            "hi": {
+              "text": "स्कूल के दिनों को क्रम में लगाओ।"
+            },
+            "mr": {
+              "text": "शाळेचे दिवस क्रमाने लावा."
+            },
+            "question": {
+              "type": "order",
+              "prompt": "Put the days in order.",
+              "hint": "The week starts on Monday.",
+              "explanation": "Monday, Tuesday, Wednesday, Thursday, Friday.",
+              "topic": "Days",
+              "answer": [
+                "Monday",
+                "Tuesday",
+                "Wednesday",
+                "Thursday",
+                "Friday"
+              ],
+              "hi": {
+                "prompt": "दिनों को सही क्रम में लगाओ।",
+                "hint": "हफ़्ता सोमवार से शुरू होता है।",
+                "explanation": "सोमवार, मंगलवार, बुधवार, गुरुवार, शुक्रवार।",
+                "items": [
+                  "सोमवार",
+                  "मंगलवार",
+                  "बुधवार",
+                  "गुरुवार",
+                  "शुक्रवार"
+                ]
+              },
+              "mr": {
+                "prompt": "दिवस योग्य क्रमाने लावा.",
+                "hint": "आठवडा सोमवारपासून सुरू होतो.",
+                "explanation": "सोमवार, मंगळवार, बुधवार, गुरुवार, शुक्रवार.",
+                "items": [
+                  "सोमवार",
+                  "मंगळवार",
+                  "बुधवार",
+                  "गुरुवार",
+                  "शुक्रवार"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "Seasons",
+        "hi": {
+          "title": "मौसम"
+        },
+        "mr": {
+          "title": "ऋतू"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "A year has different seasons. Summer is hot, the rainy season is wet and winter is cold.",
+            "hi": {
+              "text": "साल में अलग-अलग मौसम होते हैं। गर्मी गर्म होती है, बरसात में पानी गिरता है और सर्दी ठंडी होती है।"
+            },
+            "mr": {
+              "text": "वर्षात वेगवेगळे ऋतू असतात. उन्हाळा गरम असतो, पावसाळ्यात पाऊस पडतो आणि हिवाळा थंड असतो."
+            }
+          },
+          {
+            "type": "example",
+            "text": "We wear woollen clothes in winter and carry an umbrella in the rainy season.",
+            "hi": {
+              "text": "सर्दी में हम ऊनी कपड़े पहनते हैं और बरसात में छाता रखते हैं।"
+            },
+            "mr": {
+              "text": "हिवाळ्यात आपण लोकरीचे कपडे घालतो आणि पावसाळ्यात छत्री घेतो."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Match each season with how it feels.",
+            "hi": {
+              "text": "हर मौसम को उसके एहसास से मिलाओ।"
+            },
+            "mr": {
+              "text": "प्रत्येक ऋतूला त्याच्या अनुभवाशी जोडा."
+            },
+            "question": {
+              "type": "pairs",
+              "prompt": "Match each season with how it feels.",
+              "hint": "Think about what you wear in each season.",
+              "explanation": "Summer is hot, winter is cold and the rainy season is wet.",
+              "topic": "Seasons",
+              "config": {
+                "pairs": [
+                  {
+                    "a": "Summer",
+                    "b": "Hot"
+                  },
+                  {
+                    "a": "Winter",
+                    "b": "Cold"
+                  },
+                  {
+                    "a": "Rainy season",
+                    "b": "Wet"
+                  }
+                ]
+              },
+              "hi": {
+                "prompt": "हर मौसम को उसके एहसास से मिलाओ।",
+                "hint": "सोचो, हर मौसम में तुम क्या पहनते हो।",
+                "explanation": "गर्मी गर्म होती है, सर्दी ठंडी होती है और बरसात गीली होती है।",
+                "lefts": [
+                  "गर्मी",
+                  "सर्दी",
+                  "बरसात"
+                ],
+                "rights": [
+                  "गर्म",
+                  "ठंडी",
+                  "गीली"
+                ]
+              },
+              "mr": {
+                "prompt": "प्रत्येक ऋतूला त्याच्या अनुभवाशी जोडा.",
+                "hint": "प्रत्येक ऋतूत तुम्ही काय घालता ते आठवा.",
+                "explanation": "उन्हाळा गरम असतो, हिवाळा थंड असतो आणि पावसाळा ओला असतो.",
+                "lefts": [
+                  "उन्हाळा",
+                  "हिवाळा",
+                  "पावसाळा"
+                ],
+                "rights": [
+                  "गरम",
+                  "थंड",
+                  "ओला"
+                ]
+              }
+            }
+          }
+        ]
+      },
+      {
+        "title": "Colours of the rainbow",
+        "hi": {
+          "title": "इंद्रधनुष के रंग"
+        },
+        "mr": {
+          "title": "इंद्रधनुष्याचे रंग"
+        },
+        "steps": [
+          {
+            "type": "explain",
+            "text": "A rainbow has seven colours: violet, indigo, blue, green, yellow, orange and red.",
+            "hi": {
+              "text": "इंद्रधनुष में सात रंग होते हैं: बैंगनी, जामुनी, नीला, हरा, पीला, नारंगी और लाल।"
+            },
+            "mr": {
+              "text": "इंद्रधनुष्यात सात रंग असतात: जांभळा, पारवा, निळा, हिरवा, पिवळा, नारिंगी आणि लाल."
+            }
+          },
+          {
+            "type": "example",
+            "text": "We see a rainbow when the sun shines while it is raining.",
+            "hi": {
+              "text": "जब बारिश के साथ धूप निकलती है तब हमें इंद्रधनुष दिखता है।"
+            },
+            "mr": {
+              "text": "पाऊस पडत असताना ऊन पडले की आपल्याला इंद्रधनुष्य दिसते."
+            }
+          },
+          {
+            "type": "activity",
+            "text": "Count the colours.",
+            "hi": {
+              "text": "रंग गिनो।"
+            },
+            "mr": {
+              "text": "रंग मोजा."
+            },
+            "question": {
+              "type": "mcq",
+              "prompt": "How many colours does a rainbow have?",
+              "hint": "Think of the word VIBGYOR.",
+              "explanation": "A rainbow has seven colours.",
+              "topic": "Rainbow",
+              "options": [
+                "5",
+                "6",
+                "7",
+                "8"
+              ],
+              "answer": "7",
+              "hi": {
+                "prompt": "इंद्रधनुष में कितने रंग होते हैं?",
+                "hint": "VIBGYOR शब्द याद करो।",
+                "explanation": "इंद्रधनुष में सात रंग होते हैं।"
+              },
+              "mr": {
+                "prompt": "इंद्रधनुष्यात किती रंग असतात?",
+                "hint": "VIBGYOR हा शब्द आठवा.",
+                "explanation": "इंद्रधनुष्यात सात रंग असतात."
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "quiz": {
+      "questions": [
+        {
+          "type": "truefalse",
+          "prompt": "There are seven days in a week.",
+          "hint": "Count Monday to Sunday.",
+          "explanation": "A week has seven days.",
+          "topic": "Days",
+          "config": {
+            "truth": true
+          },
+          "hi": {
+            "prompt": "एक हफ़्ते में सात दिन होते हैं।",
+            "hint": "सोमवार से रविवार तक गिनो।",
+            "explanation": "एक हफ़्ते में सात दिन होते हैं।"
+          },
+          "mr": {
+            "prompt": "आठवड्यात सात दिवस असतात.",
+            "hint": "सोमवार ते रविवार मोजा.",
+            "explanation": "आठवड्यात सात दिवस असतात."
+          }
+        },
+        {
+          "type": "mcq",
+          "prompt": "Which day comes after Friday?",
+          "hint": "It is the first day of the weekend.",
+          "explanation": "Saturday comes after Friday.",
+          "topic": "Days",
+          "options": [
+            "Thursday",
+            "Saturday",
+            "Monday",
+            "Wednesday"
+          ],
+          "answer": "Saturday",
+          "hi": {
+            "prompt": "शुक्रवार के बाद कौन-सा दिन आता है?",
+            "hint": "यह सप्ताहांत का पहला दिन है।",
+            "explanation": "शुक्रवार के बाद शनिवार आता है।",
+            "options": [
+              "गुरुवार",
+              "शनिवार",
+              "सोमवार",
+              "बुधवार"
+            ]
+          },
+          "mr": {
+            "prompt": "शुक्रवारनंतर कोणता दिवस येतो?",
+            "hint": "हा आठवड्याच्या शेवटचा पहिला दिवस आहे.",
+            "explanation": "शुक्रवारनंतर शनिवार येतो.",
+            "options": [
+              "गुरुवार",
+              "शनिवार",
+              "सोमवार",
+              "बुधवार"
+            ]
+          }
+        },
+        {
+          "type": "mcq",
+          "prompt": "In which season do we need an umbrella?",
+          "hint": "Think of rain.",
+          "explanation": "We use umbrellas in the rainy season.",
+          "topic": "Seasons",
+          "options": [
+            "Summer",
+            "Rainy season",
+            "Winter",
+            "Spring"
+          ],
+          "answer": "Rainy season",
+          "hi": {
+            "prompt": "किस मौसम में हमें छाते की ज़रूरत होती है?",
+            "hint": "बारिश के बारे में सोचो।",
+            "explanation": "बरसात में हम छाता इस्तेमाल करते हैं।",
+            "options": [
+              "गर्मी",
+              "बरसात",
+              "सर्दी",
+              "वसंत"
+            ]
+          },
+          "mr": {
+            "prompt": "कोणत्या ऋतूत आपल्याला छत्रीची गरज असते?",
+            "hint": "पावसाचा विचार करा.",
+            "explanation": "पावसाळ्यात आपण छत्री वापरतो.",
+            "options": [
+              "उन्हाळा",
+              "पावसाळा",
+              "हिवाळा",
+              "वसंत"
+            ]
+          }
+        },
+        {
+          "type": "truefalse",
+          "prompt": "Winter is the hottest season.",
+          "hint": "Do you wear a sweater in winter?",
+          "explanation": "Winter is cold. Summer is the hottest season.",
+          "topic": "Seasons",
+          "config": {
+            "truth": false
+          },
+          "hi": {
+            "prompt": "सर्दी सबसे गर्म मौसम है।",
+            "hint": "क्या तुम सर्दी में स्वेटर पहनते हो?",
+            "explanation": "सर्दी ठंडी होती है। गर्मी सबसे गर्म मौसम है।"
+          },
+          "mr": {
+            "prompt": "हिवाळा हा सर्वात गरम ऋतू आहे.",
+            "hint": "तुम्ही हिवाळ्यात स्वेटर घालता का?",
+            "explanation": "हिवाळा थंड असतो. उन्हाळा हा सर्वात गरम ऋतू आहे."
+          }
+        },
+        {
+          "type": "order",
+          "prompt": "Put the days in order, starting with Saturday.",
+          "hint": "After Saturday comes Sunday.",
+          "explanation": "Saturday, Sunday, Monday, Tuesday.",
+          "topic": "Days",
+          "answer": [
+            "Saturday",
+            "Sunday",
+            "Monday",
+            "Tuesday"
+          ],
+          "hi": {
+            "prompt": "शनिवार से शुरू करके दिनों को क्रम में लगाओ।",
+            "hint": "शनिवार के बाद रविवार आता है।",
+            "explanation": "शनिवार, रविवार, सोमवार, मंगलवार।",
+            "items": [
+              "शनिवार",
+              "रविवार",
+              "सोमवार",
+              "मंगलवार"
+            ]
+          },
+          "mr": {
+            "prompt": "शनिवारपासून सुरू करून दिवस क्रमाने लावा.",
+            "hint": "शनिवारनंतर रविवार येतो.",
+            "explanation": "शनिवार, रविवार, सोमवार, मंगळवार.",
+            "items": [
+              "शनिवार",
+              "रविवार",
+              "सोमवार",
+              "मंगळवार"
+            ]
+          }
+        },
+        {
+          "type": "unscramble",
+          "prompt": "Spell the word for the colourful arch in the sky.",
+          "hint": "You see it when the sun shines in the rain.",
+          "explanation": "The word is rainbow.",
+          "topic": "Rainbow",
+          "config": {
+            "word": "rainbow"
+          },
+          "hi": {
+            "prompt": "आसमान में रंग-बिरंगे चाप का अंग्रेज़ी शब्द बनाओ।",
+            "hint": "यह तब दिखता है जब बारिश में धूप निकलती है।",
+            "explanation": "शब्द rainbow है।"
+          },
+          "mr": {
+            "prompt": "आकाशातील रंगीत कमानीचा इंग्रजी शब्द तयार करा.",
+            "hint": "पावसात ऊन पडले की ती दिसते.",
+            "explanation": "शब्द rainbow आहे."
+          }
+        },
+        {
+          "type": "sort",
+          "prompt": "Sort the things into hot and cold.",
+          "hint": "Which would burn you? Which would freeze you?",
+          "explanation": "Fire, the sun and tea are hot. Ice, snow and ice cream are cold.",
+          "topic": "Seasons",
+          "config": {
+            "groups": [
+              {
+                "name": "Hot",
+                "items": [
+                  "Fire",
+                  "Sun",
+                  "Tea"
+                ]
+              },
+              {
+                "name": "Cold",
+                "items": [
+                  "Ice",
+                  "Snow",
+                  "Ice cream"
+                ]
+              }
+            ]
+          },
+          "hi": {
+            "prompt": "चीज़ों को गर्म और ठंडी में छाँटो।",
+            "hint": "कौन जलाएगा? कौन ठंडा करेगा?",
+            "explanation": "आग, सूरज और चाय गर्म हैं। बर्फ़, हिम और आइसक्रीम ठंडी हैं।",
+            "groups": [
+              "गर्म",
+              "ठंडी"
+            ],
+            "items": [
+              "आग",
+              "सूरज",
+              "चाय",
+              "बर्फ़",
+              "हिम",
+              "आइसक्रीम"
+            ]
+          },
+          "mr": {
+            "prompt": "वस्तूंना गरम आणि थंड मध्ये लावा.",
+            "hint": "काय चटका देईल? काय गार करेल?",
+            "explanation": "आग, सूर्य आणि चहा गरम आहेत. बर्फ, हिम आणि आईस्क्रीम थंड आहेत.",
+            "groups": [
+              "गरम",
+              "थंड"
+            ],
+            "items": [
+              "आग",
+              "सूर्य",
+              "चहा",
+              "बर्फ",
+              "हिम",
+              "आईस्क्रीम"
+            ]
+          }
+        },
+        {
+          "type": "pairs",
+          "prompt": "Match each colour with something of that colour.",
+          "hint": "Picture each thing in your mind.",
+          "explanation": "A tomato is red, a banana is yellow, a leaf is green and the sky is blue.",
+          "topic": "Colours",
+          "config": {
+            "pairs": [
+              {
+                "a": "Red",
+                "b": "Tomato"
+              },
+              {
+                "a": "Yellow",
+                "b": "Banana"
+              },
+              {
+                "a": "Green",
+                "b": "Leaf"
+              },
+              {
+                "a": "Blue",
+                "b": "Sky"
+              }
+            ]
+          },
+          "hi": {
+            "prompt": "हर रंग को उसी रंग की चीज़ से मिलाओ।",
+            "hint": "हर चीज़ को मन में सोचो।",
+            "explanation": "टमाटर लाल, केला पीला, पत्ता हरा और आसमान नीला होता है।",
+            "lefts": [
+              "लाल",
+              "पीला",
+              "हरा",
+              "नीला"
+            ],
+            "rights": [
+              "टमाटर",
+              "केला",
+              "पत्ता",
+              "आसमान"
+            ]
+          },
+          "mr": {
+            "prompt": "प्रत्येक रंगाला त्या रंगाच्या वस्तूशी जोडा.",
+            "hint": "प्रत्येक वस्तू मनात आणा.",
+            "explanation": "टोमॅटो लाल, केळे पिवळे, पान हिरवे आणि आकाश निळे असते.",
+            "lefts": [
+              "लाल",
+              "पिवळा",
+              "हिरवा",
+              "निळा"
+            ],
+            "rights": [
+              "टोमॅटो",
+              "केळे",
+              "पान",
+              "आकाश"
+            ]
+          }
+        }
+      ]
     }
   }
 ]

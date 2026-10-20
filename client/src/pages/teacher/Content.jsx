@@ -1,10 +1,11 @@
 // The teacher's chapters, in the order students see them. Up/Down change the
 // order (saved straight away); a chapter's title opens its editor.
-// A teacher with no chapters can start from the 4 starter chapters.
+// A teacher can add ready-made sample chapters (in several subjects) at any time.
 
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { addStarterChapters, createChapter, getContent, saveChapterOrder, useData } from '../../api'
+import { SUBJECTS, subjectColour } from '../../game'
 
 export default function Content() {
   const { data: chapters, error, reload } = useData(() => getContent(), [])
@@ -46,7 +47,7 @@ export default function Content() {
     <div className="max-w-4xl space-y-8">
       <div>
         <h1 className="text-3xl font-semibold tracking-tight">Content</h1>
-        <p className="mt-1 text-muted">Students see published chapters in this order, and each opens once they pass the one before.</p>
+        <p className="mt-1 text-muted">Students see published chapters in this order. Within a subject, each opens once they pass the one before.</p>
       </div>
 
       {moveError && (
@@ -63,6 +64,9 @@ export default function Content() {
               <Link to={`/teacher/content/${c.id}`} className="font-semibold text-accent hover:underline">
                 {c.title}
               </Link>
+              <span className="ml-2 rounded-full px-2 py-0.5 text-sm font-semibold text-white" style={{ background: subjectColour(c.subject) }}>
+                {SUBJECTS.find((s) => s.id === c.subject)?.name ?? c.subject}
+              </span>
               <p className="text-sm text-muted">
                 {c.lessonCount === 1 ? '1 lesson' : `${c.lessonCount} lessons`},{' '}
                 {c.questionCount === 0 ? 'no quiz yet' : `quiz of ${c.questionCount}`}
@@ -98,6 +102,7 @@ export default function Content() {
       <section className="max-w-xl">
         <h2 className="text-lg font-semibold">Add a chapter</h2>
         <CreateChapterForm />
+        <StarterButton onAdded={reload} />
       </section>
     </div>
   )
@@ -107,6 +112,7 @@ export default function Content() {
 function CreateChapterForm() {
   const navigate = useNavigate()
   const [title, setTitle] = useState('')
+  const [subject, setSubject] = useState('maths')
   const [error, setError] = useState(null)
   const [busy, setBusy] = useState(false)
 
@@ -115,7 +121,7 @@ function CreateChapterForm() {
     setBusy(true)
     setError(null)
     try {
-      const chapter = await createChapter(title)
+      const chapter = await createChapter(title, subject)
       navigate(`/teacher/content/${chapter.id}`)
     } catch (err) {
       setError(err.message)
@@ -125,6 +131,16 @@ function CreateChapterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="mt-4">
+      <label htmlFor="chapter-subject" className="label">
+        Subject
+      </label>
+      <select id="chapter-subject" value={subject} onChange={(e) => setSubject(e.target.value)} className="field mb-4 sm:max-w-xs">
+        {SUBJECTS.map((s) => (
+          <option key={s.id} value={s.id}>
+            {s.name}
+          </option>
+        ))}
+      </select>
       <label htmlFor="chapter-title" className="label">
         Chapter title
       </label>
@@ -133,7 +149,7 @@ function CreateChapterForm() {
           id="chapter-title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          placeholder="For example, Shapes Around Us"
+          placeholder="For example, Animals and Their Sounds"
           maxLength={80}
           className="field"
         />
@@ -168,13 +184,13 @@ function StarterButton({ onAdded }) {
 
   return (
     <div className="mt-8 border-t border-line pt-6">
-      <h3 className="font-semibold">Or start from ready-made chapters</h3>
+      <h3 className="font-semibold">Or start from ready-made sample chapters</h3>
       <p className="mt-1 text-muted">
-        The first 4 chapters of NCERT Maths Mela (12 lessons and 32 quiz questions), added as drafts so you can check and
-        change them before publishing.
+        Chapters in several subjects (Maths, English, Environment and General knowledge) with lessons, activities and a quiz each, in English, Hindi and Marathi. They are
+        added as drafts so you can check and change them before publishing. Ones you already have are not added again.
       </p>
       <button onClick={handleClick} disabled={busy} className="btn btn-secondary mt-4">
-        {busy ? 'Adding...' : 'Add the 4 starter chapters'}
+        {busy ? 'Adding...' : 'Add the sample chapters'}
       </button>
       {error && (
         <p role="alert" className="mt-2 font-semibold text-warn">

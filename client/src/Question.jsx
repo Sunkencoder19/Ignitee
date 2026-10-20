@@ -28,7 +28,8 @@
 import { useState } from 'react'
 import { answerText } from './GameArt'
 import GameBoard from './Games'
-import { checkAnswer, gameReady, gameView, isGame } from './game'
+import Speak from './Speak'
+import { checkAnswer, displayAnswer, gameReady, gameView, isGame } from './game'
 import { useT } from './i18n/t'
 
 // Mixes a list (for the tiles of a game shown without the server).
@@ -45,7 +46,7 @@ function mixed(items) {
 function checkHere(question, given, tries) {
   if (checkAnswer(question, given)) return { result: 'correct' }
   if (tries === 1) return { result: 'retry', hint: question.hint }
-  return { result: 'revealed', answer: question.answer, explanation: question.explanation }
+  return { result: 'revealed', answer: displayAnswer(question), explanation: question.explanation }
 }
 
 export default function Question({ question, onDone, check }) {
@@ -117,7 +118,10 @@ export default function Question({ question, onDone, check }) {
 
   return (
     <form onSubmit={handleCheck}>
-      <h2 className="text-xl font-semibold leading-snug sm:text-2xl">{question.prompt}</h2>
+      <div className="flex items-start gap-2">
+        <h2 className="flex-1 text-xl font-semibold leading-snug sm:text-2xl">{question.prompt}</h2>
+        <Speak text={question.prompt} />
+      </div>
 
       {question.type === 'mcq' && (
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
@@ -132,7 +136,7 @@ export default function Question({ question, onDone, check }) {
                 type="button"
                 disabled={settled || busy || wrongChoices.includes(option)}
                 onClick={() => setChoice(option)}
-                className={`min-h-14 rounded-xl border-2 px-4 text-left text-lg font-semibold ${style}`}
+                className={`min-h-14 rounded-2xl border-2 px-4 text-left text-lg font-semibold shadow-[0_4px_0_var(--color-line)] active:translate-y-0.5 active:shadow-none ${style}`}
               >
                 {option}
               </button>

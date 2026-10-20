@@ -1,19 +1,25 @@
-// A lesson is a few steps, shown one at a time:
+// A level: a few steps, shown one at a time:
 //   explain  - the idea in simple words
 //   example  - the idea in everyday life
 //   activity - something to try, sometimes with a question
 // Activity answers are checked by the server (the lesson arrives without
-// answers). After the last step the server records the lesson and says how
-// many points it earned.
+// answers) and count towards the level's stars. After the last step the server
+// records the level and says how many stars and points it earned.
 
 import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { checkLessonAnswer, getStudentChapters, getStudentLesson, useData } from '../../api'
+import Buddy from '../../Buddy'
 import { useT } from '../../i18n/t'
 import Question from '../../Question'
+import Speak from '../../Speak'
+import { Coin, Confetti, Stars } from '../../Rewards'
 import { useSession } from '../../session'
 
-// key={lessonId}: going to the next lesson only changes the URL, so this
+// The colour of each kind of step (white text on all of them is easy to read).
+const STEP_COLOUR = { explain: '#2f6fed', example: '#0f7a4d', activity: '#b45400' }
+
+// key={lessonId}: going to the next level only changes the URL, so this
 // makes React start the page fresh (step 1, nothing answered).
 export default function Lesson() {
   const { lessonId } = useParams()
@@ -30,7 +36,7 @@ function LessonSteps() {
   const [answered, setAnswered] = useState(false)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState(null)
-  const [finished, setFinished] = useState(null) // the server's reply once the lesson is recorded
+  const [finished, setFinished] = useState(null) // the server's reply once the level is recorded
 
   if (error) {
     return (
@@ -68,25 +74,42 @@ function LessonSteps() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex items-center justify-between text-muted">
-        <Link to={`/student/learn/${lesson.chapterId}`} className="inline-flex min-h-12 items-center font-semibold hover:text-ink">
-          {t('lesson.close')}
+      <div className="flex items-center gap-3">
+        <Link to={`/student/learn/${lesson.chapterId}`} aria-label={t('lesson.close')} className="grid size-12 shrink-0 place-items-center rounded-full bg-surface text-2xl font-bold text-muted shadow-[0_3px_0_var(--color-line)]">
+          <span aria-hidden="true">&times;</span>
         </Link>
-        <span>{t('lesson.stepOf', { step: stepIndex + 1, total: lesson.steps.length })}</span>
+        <div
+          className="h-4 flex-1 overflow-hidden rounded-full bg-surface ring-1 ring-line"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={lesson.steps.length}
+          aria-valuenow={stepIndex + 1}
+          aria-label={t('lesson.stepOf', { step: stepIndex + 1, total: lesson.steps.length })}
+        >
+          <div className="h-full rounded-full bg-accent transition-[width] duration-500" style={{ width: `${((stepIndex + 1) / lesson.steps.length) * 100}%` }} />
+        </div>
+        <span className="text-lg font-bold text-muted">
+          {stepIndex + 1}/{lesson.steps.length}
+        </span>
       </div>
 
-      <h1 className="mt-4 text-2xl font-semibold tracking-tight">{lesson.title}</h1>
+      <h1 className="mt-4 text-3xl leading-tight">{lesson.title}</h1>
 
-      <section className="card mt-4 p-6 md:p-8">
-        <p className="font-semibold text-accent">{t(`lesson.step.${step.type}`)}</p>
-        <p className="mt-2 text-lg leading-relaxed">{step.text}</p>
+      <section className="card mt-4 p-5 md:p-7">
+        <div className="flex items-center justify-between gap-3">
+          <span className="inline-block rounded-full px-4 py-1 text-base font-bold text-white" style={{ background: STEP_COLOUR[step.type] }}>
+            {t(`lesson.step.${step.type}`)}
+          </span>
+          <Speak text={step.text} />
+        </div>
+        <p className="mt-3 text-xl leading-relaxed">{step.text}</p>
 
         {step.question && (
-          <div className="mt-6 border-t border-line pt-6">
+          <div className="mt-6 border-t-2 border-dashed border-line pt-6">
             <Question
               key={step.question.id}
               question={step.question}
-              check={(given, tries) => checkLessonAnswer(lesson.id, step.question.id, given, tries)}
+              check={(given) => checkLessonAnswer(lesson.id, step.question.id, given)}
               onDone={() => setAnswered(true)}
             />
           </div>
@@ -112,7 +135,7 @@ function LessonSteps() {
           </button>
         )}
         {!mustAnswer && (
-          <button onClick={goNext} disabled={saving} className="btn btn-primary flex-1 text-lg">
+          <button onClick={goNext} disabled={saving} className="btn btn-primary flex-1 text-xl">
             {saving ? t('lesson.saving') : isLast ? t('lesson.finish') : t('lesson.next')}
           </button>
         )}
@@ -121,35 +144,47 @@ function LessonSteps() {
   )
 }
 
-// Points earned, any new badge, and one button to the next thing to do.
+// Stars, points and coins earned, any new badge, and one button to the next thing to do.
 function FinishScreen({ lesson, result }) {
   const t = useT()
-  const { data: chapters } = useData(() => getStudentChapters(), [])
-  const chapter = chapters?.find((c) => c.id === lesson.chapterId)
-  const index = chapter ? chapter.lessons.findIndex((l) => l.id === lesson.id) : -1
-  const nextLesson = chapter?.lessons[index + 1]
+  const { progress } = useSession()
+  const { data: worlds } = useData(() => getStudentChapters(), [])
+  const world = worlds?.find((c) => c.id === lesson.chapterId)
+  const index = world ? world.lessons.findIndex((l) => l.id === lesson.id) : -1
+  const nextLesson = world?.lessons[index + 1]
 
   let main = { to: `/student/learn/${lesson.chapterId}`, label: t('common.backToChapter') }
-  if (nextLesson) main = { to: `/student/learn/${chapter.id}/${nextLesson.id}`, label: t('lesson.nextLesson') }
-  else if (chapter?.quiz?.open) main = { to: `/student/quiz/${chapter.quiz.id}`, label: t('lesson.takeQuiz') }
+  if (nextLesson) main = { to: `/student/learn/${world.id}/${nextLesson.id}`, label: t('lesson.nextLesson') }
+  else if (world?.quiz?.open) main = { to: `/student/quiz/${world.quiz.id}`, label: t('lesson.takeQuiz') }
 
   return (
-    <div className="card mx-auto max-w-xl p-8 text-center">
-      <h1 className="text-3xl font-semibold">{t('lesson.finishedTitle')}</h1>
-      <p className="mt-2 text-lg text-muted">{lesson.title}</p>
-      <p className="mt-6 text-4xl font-semibold text-accent">{t('common.plusPoints', { count: result.pointsEarned })}</p>
-      {!result.firstTime && <p className="mt-2 text-muted">{t('lesson.alreadyDone')}</p>}
+    <div className="card relative mx-auto max-w-xl overflow-hidden p-6 text-center">
+      <Confetti />
+      <Buddy mascot={progress.mascot} size={150} label={t('home.buddyLabel')} className="float mx-auto" />
+      <h1 className="mt-2 text-4xl">{t('lesson.finishedTitle')}</h1>
+      <p className="mt-1 text-lg text-muted">{lesson.title}</p>
+      <div className="mt-4 flex justify-center">
+        <Stars earned={result.stars} size={64} animate />
+      </div>
+      <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+        <span className="pill text-xl">{t('common.plusPoints', { count: result.pointsEarned })}</span>
+        <span className="pill text-xl">
+          <Coin size={26} />
+          {t('common.plusCoins', { count: result.coinsEarned })}
+        </span>
+      </div>
+      {!result.firstTime && <p className="mt-3 text-muted">{t('lesson.alreadyDone')}</p>}
       {result.newBadges.length > 0 && (
-        <p className="mt-4 rounded-xl bg-good-soft p-3 font-semibold text-good">
+        <p className="mt-4 rounded-2xl bg-good-soft p-3 text-lg font-bold text-good">
           {t('common.newBadge', { names: result.newBadges.map((id) => t(`badges.${id}.name`)).join(', ') })}
         </p>
       )}
-      {chapters ? (
-        <Link to={main.to} className="btn btn-primary mt-8 w-full text-lg">
+      {worlds ? (
+        <Link to={main.to} className="btn btn-primary mt-6 w-full text-xl">
           {main.label}
         </Link>
       ) : (
-        <p className="mt-8 text-muted">{t('common.loading')}</p>
+        <p className="mt-6 text-muted">{t('common.loading')}</p>
       )}
     </div>
   )

@@ -6,7 +6,8 @@
 import { readFileSync } from 'node:fs'
 import express from 'express'
 import mongoose from 'mongoose'
-import { cleanGameConfig, gameAnswer, isGame, lessonProblems, quizProblems } from '../shared/game.js'
+import { SUBJECT_IDS, cleanGameConfig, gameAnswer, isGame, lessonProblems, quizProblems, translatableFields } from '../shared/game.js'
+import { translateLesson, translateQuestions, translateTitle } from './translate.js'
 import { requireTeacher } from './auth.js'
 import { Class, Student } from './classes.js'
 
@@ -17,15 +18,21 @@ const { Schema, model } = mongoose
 // chapter.hi.title, step.mr.text, question.hi.options. All are optional:
 // a missing translation falls back to English (see inLanguage in game.js).
 
-const titleTranslation = new Schema({ title: String }, { _id: false })
-const textTranslation = new Schema({ text: String }, { _id: false })
+// `auto` marks which fields were translated automatically (see translate.js).
+const auto = { type: Schema.Types.Mixed, default: undefined }
+const titleTranslation = new Schema({ title: String, auto }, { _id: false })
+const textTranslation = new Schema({ text: String, auto }, { _id: false })
 const questionTranslation = new Schema(
   {
     prompt: String,
     options: { type: [String], default: undefined }, // mcq: one for one with the English options
-    items: { type: [String], default: undefined }, // order: one for one with the English items
+    items: { type: [String], default: undefined }, // order: one for one with the English items; sort: the items, group after group
+    lefts: { type: [String], default: undefined }, // pairs: the left words, one for one with the English
+    rights: { type: [String], default: undefined }, // pairs: the right words
+    groups: { type: [String], default: undefined }, // sort: the group names
     hint: String,
     explanation: String,
+    auto,
   },
   { _id: false }
 )
@@ -35,6 +42,7 @@ const chapterSchema = new Schema(
     title: { type: String, required: true, trim: true },
     teacher: { type: Schema.Types.ObjectId, ref: 'Teacher', required: true, index: true },
     classes: [{ type: Schema.Types.ObjectId, ref: 'Class' }], // which classes see it
+    subject: { type: String, enum: SUBJECT_IDS, default: 'maths' }, // worlds are grouped by subject and open in order within it
     status: { type: String, enum: ['draft', 'published'], default: 'draft' },
     order: { type: Number, required: true }, // 0, 1, 2... the order students see
     hi: { type: titleTranslation, default: undefined },
@@ -47,7 +55,7 @@ export const Chapter = model('Chapter', chapterSchema, 'chapters')
 // One question. `answer` is text for mcq and input, and a list (the right
 // order) for order questions, so it is stored as a "Mixed" value.
 const questionSchema = new Schema({
-  type: { type: String, enum: ['mcq', 'input', 'order', 'count', 'pattern'], required: true },
+  type: { type: String, enum: ['mcq', 'input', 'order', 'truefalse', 'unscramble', 'pairs', 'sort', 'count', 'pattern', 'match', 'numberline', 'placevalue'], required: true },
   prompt: { type: String, required: true },
   options: [String], // mcq only
   config: { type: Schema.Types.Mixed, default: undefined }, // games only (see shared/game.js)
@@ -100,6 +108,14 @@ const trim = (value) => String(value ?? '').trim()
 // translations(step, ['text']) -> { hi: { text: '...' } }. Lists (options,
 // items) are kept whole if any entry is filled; the checks in game.js make sure
 // they are complete.
+// The "translated automatically" stamps a translation carries (see translate.js):
+// only well-formed ones are kept.
+function cleanAuto(value) {
+  if (!value || typeof value !== 'object') return undefined
+  const stamps = Object.fromEntries(Object.entries(value).filter(([k, v]) => typeof v === 'string' && /^[0-9a-f]{10}:[0-9a-f]{10}$/.test(v) && k.length < 20))
+  return Object.keys(stamps).length ? stamps : undefined
+}
+
 function translations(source, fields, lists = []) {
   const out = {}
   for (const lang of ['hi', 'mr']) {
@@ -110,7 +126,11 @@ function translations(source, fields, lists = []) {
     for (const field of lists) {
       if (Array.isArray(t[field]) && t[field].some((x) => trim(x))) kept[field] = t[field].map(trim)
     }
-    if (Object.keys(kept).length) out[lang] = kept
+    if (Object.keys(kept).length) {
+      const stamps = cleanAuto(t.auto)
+      if (stamps) kept.auto = stamps
+      out[lang] = kept
+    }
   }
   return out
 }
@@ -133,8 +153,7 @@ function cleanQuestion(q, keepIds) {
     out.answer = trim(q?.answer)
   }
   if (q?.id && keepIds.has(String(q.id))) out._id = q.id
-  const lists = q?.type === 'mcq' ? ['options'] : q?.type === 'order' ? ['items'] : []
-  Object.assign(out, translations(q, ['prompt', 'hint', 'explanation'], lists))
+  Object.assign(out, translations(q, ['prompt', 'hint', 'explanation'], translatableFields(q?.type)))
   return out
 }
 
@@ -236,6 +255,7 @@ router.get('/chapters', requireTeacher, async (req, res) => {
     chapters.map((c) => ({
       id: c.id,
       title: c.title,
+      subject: c.subject,
       status: c.status,
       classes: c.classes.map((cls) => ({ id: cls.id, name: cls.name })),
       lessonCount: lessonsOf.get(c.id) ?? 0,
@@ -248,9 +268,13 @@ router.get('/chapters', requireTeacher, async (req, res) => {
 router.post('/chapters', requireTeacher, async (req, res) => {
   const title = trim(req.body?.title)
   if (!title || title.length > 80) return res.status(400).json({ error: 'Give the chapter a title (up to 80 characters).' })
+  const subject = req.body?.subject === undefined ? 'maths' : req.body.subject
+  if (!SUBJECT_IDS.includes(subject)) return res.status(400).json({ error: 'Choose a subject from the list.' })
   const last = await Chapter.findOne({ teacher: req.teacher._id }).sort({ order: -1 })
-  const chapter = await Chapter.create({ title, teacher: req.teacher._id, order: last ? last.order + 1 : 0 })
-  res.status(201).json({ id: chapter.id, title: chapter.title, status: chapter.status })
+  const named = { title }
+  await translateTitle(named) // Hindi and Marathi titles, filled in for the teacher
+  const chapter = await Chapter.create({ title, subject, hi: named.hi, mr: named.mr, teacher: req.teacher._id, order: last ? last.order + 1 : 0 })
+  res.status(201).json({ id: chapter.id, title: chapter.title, subject: chapter.subject, status: chapter.status })
 })
 
 // POST /api/chapters/starter   add the 4 starter chapters (Maths Mela 1-4) as drafts.
@@ -258,11 +282,16 @@ router.post('/chapters', requireTeacher, async (req, res) => {
 const STARTER = JSON.parse(readFileSync(new URL('./starter-content.json', import.meta.url), 'utf8'))
 
 router.post('/chapters/starter', requireTeacher, async (req, res) => {
-  if (await Chapter.exists({ teacher: req.teacher._id })) {
-    return res.status(409).json({ error: 'The starter chapters can only be added while you have no chapters.' })
-  }
-  for (const [order, item] of STARTER.entries()) {
-    const chapter = await Chapter.create({ title: item.title, ...translations(item, ['title']), teacher: req.teacher._id, order })
+  // Adds the sample chapters the teacher doesn't have yet (matched by title), so they
+  // can be added again after new ones are released, and never twice.
+  const mine = await Chapter.find({ teacher: req.teacher._id }, 'title order')
+  const have = new Set(mine.map((c) => c.title.trim().toLowerCase()))
+  const missing = STARTER.filter((item) => !have.has(item.title.trim().toLowerCase()))
+  if (missing.length === 0) return res.status(409).json({ error: 'You already have all the sample chapters.' })
+  let nextOrder = mine.reduce((most, c) => Math.max(most, c.order), -1) + 1
+  for (const item of missing) {
+    const order = nextOrder++
+    const chapter = await Chapter.create({ title: item.title, subject: item.subject ?? 'maths', ...translations(item, ['title']), teacher: req.teacher._id, order })
     await Lesson.insertMany(
       item.lessons.map((l, i) => ({ ...cleanLesson(l), chapter: chapter._id, teacher: req.teacher._id, order: i }))
     )
@@ -272,7 +301,7 @@ router.post('/chapters/starter', requireTeacher, async (req, res) => {
       questions: item.quiz.questions.map((q) => cleanQuestion(q, new Set())),
     })
   }
-  res.status(201).json({ added: STARTER.length })
+  res.status(201).json({ added: missing.length })
 })
 
 // PUT /api/chapters/order  { chapterIds }   the teacher's chapters in their new order
@@ -301,6 +330,7 @@ router.get('/chapters/:chapterId', requireTeacher, async (req, res) => {
     ...withTranslations({}, chapter),
     id: chapter.id,
     title: chapter.title,
+    subject: chapter.subject,
     status: chapter.status,
     classIds: chapter.classes.map(String),
     lessons: lessons.map(lessonJson),
@@ -325,7 +355,18 @@ router.patch('/chapters/:chapterId', requireTeacher, async (req, res) => {
     if (body[lang]?.title === undefined) continue
     const translated = trim(body[lang].title)
     if (translated.length > 80) return res.status(400).json({ error: 'Keep the translated title under 80 characters.' })
-    chapter[lang] = translated ? { title: translated } : undefined
+    chapter[lang] = translated ? { title: translated, auto: cleanAuto(body[lang].auto) } : undefined
+  }
+  if (body.title !== undefined) {
+    // The English title may have changed: refresh translations that were made automatically.
+    const named = { title: chapter.title, hi: plain(chapter.hi), mr: plain(chapter.mr) }
+    await translateTitle(named)
+    chapter.hi = named.hi
+    chapter.mr = named.mr
+  }
+  if (body.subject !== undefined) {
+    if (!SUBJECT_IDS.includes(body.subject)) return res.status(400).json({ error: 'Choose a subject from the list.' })
+    chapter.subject = body.subject
   }
   if (body.classIds !== undefined) {
     const ids = [...new Set((Array.isArray(body.classIds) ? body.classIds : []).map(String))]
@@ -343,7 +384,7 @@ router.patch('/chapters/:chapterId', requireTeacher, async (req, res) => {
     if (problems.length) return res.status(400).json({ error: `Can’t publish yet. ${problems[0]}`, problems })
   }
   await chapter.save()
-  res.json({ id: chapter.id, title: chapter.title, status: chapter.status, classIds: chapter.classes.map(String) })
+  res.json({ id: chapter.id, title: chapter.title, subject: chapter.subject, status: chapter.status, classIds: chapter.classes.map(String) })
 })
 
 // DELETE /api/chapters/:chapterId   the chapter with its lessons and quiz (refused once students have started it)
@@ -365,6 +406,7 @@ router.post('/chapters/:chapterId/lessons', requireTeacher, async (req, res) => 
   const lesson = cleanLesson(req.body)
   const problems = lessonProblems(lesson)
   if (problems.length) return invalid(res, problems)
+  await translateLesson(lesson)
   const last = await Lesson.findOne({ chapter: chapter._id }).sort({ order: -1 })
   const saved = await Lesson.create({ ...lesson, chapter: chapter._id, teacher: req.teacher._id, order: last ? last.order + 1 : 0 })
   res.status(201).json(lessonJson(saved))
@@ -390,6 +432,7 @@ router.patch('/lessons/:lessonId', requireTeacher, async (req, res) => {
   const next = cleanLesson(req.body, keepIds)
   const problems = lessonProblems(next)
   if (problems.length) return invalid(res, problems)
+  await translateLesson(next)
   lesson.title = next.title
   lesson.hi = next.hi // undefined (no Hindi title) removes it
   lesson.mr = next.mr
@@ -421,6 +464,7 @@ router.put('/chapters/:chapterId/quiz', requireTeacher, async (req, res) => {
   const questions = (Array.isArray(req.body?.questions) ? req.body.questions : []).map((q) => cleanQuestion(q, keepIds))
   const problems = quizProblems(questions)
   if (problems.length) return invalid(res, problems)
+  await translateQuestions(questions)
   quiz.questions = questions
   await quiz.save()
   res.json({ id: quiz.id, questions: quiz.questions.map(questionJson) })

@@ -9,20 +9,31 @@ import { hasTranslation, translate } from './i18n/t'
 
 // ---------- talking to the server ----------
 
-const TOKEN_KEY = 'ignite:token'
+// A teacher and a student can be logged in at the same time (for example in two
+// browser tabs), so each keeps their own saved login. Which one a request uses is
+// decided by the endpoint it calls, never by the page on screen: /student/...
+// always uses the student's login, the teacher endpoints always the teacher's.
+// (The /auth/... calls are told which one, or none, by the function that makes them.)
+const TOKEN_KEYS = { teacher: 'ignite:token:teacher', student: 'ignite:token:student' }
 
-function getToken() {
+function roleFor(path) {
+  if (path === '/student' || path.startsWith('/student/')) return 'student'
+  if (path.startsWith('/auth')) return null
+  return 'teacher'
+}
+
+function getToken(role) {
   try {
-    return localStorage.getItem(TOKEN_KEY)
+    return role ? localStorage.getItem(TOKEN_KEYS[role]) : null
   } catch {
     return null
   }
 }
 
-function setToken(token) {
+function setToken(role, token) {
   try {
-    if (token) localStorage.setItem(TOKEN_KEY, token)
-    else localStorage.removeItem(TOKEN_KEY)
+    if (token) localStorage.setItem(TOKEN_KEYS[role], token)
+    else localStorage.removeItem(TOKEN_KEYS[role])
   } catch {
     // Private browsing: you stay logged in until the tab closes.
   }
@@ -42,9 +53,9 @@ function errorText(code, fallback) {
 
 // Sends one request to /api/... and returns the JSON reply.
 // If the server says no, it throws an Error whose message the page can show.
-async function request(method, path, body) {
+async function request(method, path, body, role = roleFor(path)) {
   const headers = { 'Content-Type': 'application/json' }
-  const token = getToken()
+  const token = getToken(role)
   if (token) headers.Authorization = `Bearer ${token}`
 
   let res
@@ -55,7 +66,7 @@ async function request(method, path, body) {
   }
 
   const data = await res.json().catch(() => ({}))
-  if (res.status === 401) setToken(null) // the saved login no longer works
+  if (res.status === 401 && role) setToken(role, null) // the saved login no longer works
   if (!res.ok) {
     // The Vite proxy answers 500/502/504 with no JSON when the server isn't running.
     const error = new Error(
@@ -72,28 +83,28 @@ async function request(method, path, body) {
 
 // ---------- login ----------
 
-// Is there a saved login? (Checked with getMe() when the app opens.)
-export function hasSavedLogin() {
-  return Boolean(getToken())
+// Is there a saved login for this role? (Checked with getMe() when the app opens.)
+export function hasSavedLogin(role) {
+  return Boolean(getToken(role))
 }
 
 // GET /api/auth/me
-export async function getMe() {
-  const { user } = await request('GET', '/auth/me')
+export async function getMe(role) {
+  const { user } = await request('GET', '/auth/me', undefined, role)
   return user
 }
 
 // POST /api/auth/teacher/signup  { name, email, password }
 export async function teacherSignup(name, email, password) {
-  const { token, user } = await request('POST', '/auth/teacher/signup', { name, email, password })
-  setToken(token)
+  const { token, user } = await request('POST', '/auth/teacher/signup', { name, email, password }, null)
+  setToken('teacher', token)
   return user
 }
 
 // POST /api/auth/teacher/login  { email, password }
 export async function teacherLogin(email, password) {
-  const { token, user } = await request('POST', '/auth/teacher/login', { email, password })
-  setToken(token)
+  const { token, user } = await request('POST', '/auth/teacher/login', { email, password }, null)
+  setToken('teacher', token)
   return user
 }
 
@@ -105,13 +116,13 @@ export function findClass(code) {
 // POST /api/auth/student/login  { classCode, studentId, pin, language }
 // `language` is the login screen's; the server keeps it only if the child has none yet.
 export async function studentLogin(classCode, studentId, pin, language) {
-  const { token, user } = await request('POST', '/auth/student/login', { classCode, studentId, pin, language })
-  setToken(token)
+  const { token, user } = await request('POST', '/auth/student/login', { classCode, studentId, pin, language }, null)
+  setToken('student', token)
   return user
 }
 
-export function logout() {
-  setToken(null)
+export function logout(role) {
+  setToken(role, null)
 }
 
 // ---------- classes and students (teacher) ----------
@@ -169,9 +180,9 @@ export function getContent() {
   return request('GET', '/chapters')
 }
 
-// POST /api/chapters  { title }   a new draft chapter at the end
-export function createChapter(title) {
-  return request('POST', '/chapters', { title })
+// POST /api/chapters  { title, subject }   a new draft chapter at the end
+export function createChapter(title, subject) {
+  return request('POST', '/chapters', { title, subject })
 }
 
 // POST /api/chapters/starter   adds the 4 starter chapters as drafts (only when there are none)
@@ -262,7 +273,7 @@ export function setStudentLanguage(language) {
   return request('PATCH', '/student/language', { language })
 }
 
-// GET /api/student/progress  ->  { lessons, attempts, points, streak, bestStreak, lastActive, badges }
+// GET /api/student/progress  ->  { lessons, attempts, points, coins, mascot, streak, bestStreak, lastActive, badges }
 export function getProgress() {
   return request('GET', '/student/progress')
 }
@@ -272,13 +283,13 @@ export function getStudentLesson(lessonId) {
   return request('GET', `/student/lessons/${lessonId}`)
 }
 
-// POST /api/student/lessons/:id/check  { questionId, given, tries }
+// POST /api/student/lessons/:id/check  { questionId, given }   (the server counts the tries)
 //   ->  { result: 'correct' }  |  { result: 'retry', hint }  |  { result: 'revealed', answer, explanation }
-export function checkLessonAnswer(lessonId, questionId, given, tries) {
-  return request('POST', `/student/lessons/${lessonId}/check`, { questionId, given, tries })
+export function checkLessonAnswer(lessonId, questionId, given) {
+  return request('POST', `/student/lessons/${lessonId}/check`, { questionId, given })
 }
 
-// POST /api/student/lessons/:id/finish  ->  { firstTime, pointsEarned, newBadges, progress }
+// POST /api/student/lessons/:id/finish  ->  { firstTime, stars, pointsEarned, coinsEarned, newBadges, progress }
 export function finishLesson(lessonId) {
   return request('POST', `/student/lessons/${lessonId}/finish`)
 }
@@ -344,4 +355,33 @@ export function useData(load, deps) {
   }
 
   return { ...state, reload }
+}
+
+// ---------- daily challenge and the buddy shop (student) ----------
+
+// GET /api/student/daily  ->  { available: false }
+//   | { available: true, done: true, points }
+//   | { available: true, done: false, questions (no answers), outcomes }
+export function getDaily() {
+  return request('GET', '/student/daily')
+}
+
+// POST /api/student/daily/answers  { questionId, given }  ->  like a quiz answer, plus { done, points } after the last one
+export function answerDailyQuestion(questionId, given) {
+  return request('POST', '/student/daily/answers', { questionId, given })
+}
+
+// GET /api/student/shop  ->  { points, coins, mascot, items: [{ key, slot, id, price, milestone, owned }] }
+export function getShop() {
+  return request('GET', '/student/shop')
+}
+
+// POST /api/student/shop/buy  { item: 'hat:cap' }  ->  the shop again
+export function buyItem(item) {
+  return request('POST', '/student/shop/buy', { item })
+}
+
+// PATCH /api/student/mascot  { buddy, hat, face, neck, background }  ->  the shop again
+export function setMascot(mascot) {
+  return request('PATCH', '/student/mascot', mascot)
 }

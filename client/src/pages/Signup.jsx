@@ -7,7 +7,7 @@ import { useSession } from '../session'
 import ThemeToggle from '../ThemeToggle'
 
 export default function Signup() {
-  const { user, checking, teacherSignup } = useSession()
+  const { teacherUser, checking, teacherSignup } = useSession()
   const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
@@ -16,7 +16,7 @@ export default function Signup() {
   const [busy, setBusy] = useState(false)
 
   if (checking) return null
-  if (user) return <Navigate to={`/${user.role}`} replace />
+  if (teacherUser) return <Navigate to="/teacher" replace />
 
   async function handleSubmit(e) {
     e.preventDefault()

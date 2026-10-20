@@ -41,6 +41,8 @@ export function tileName(key, t) {
 // The right answer of a game, or a student's answer, as words.
 export function answerText(type, value, t) {
   if (type === 'pattern') return (Array.isArray(value) ? value : []).filter(Boolean).map((k) => tileName(k, t)).join(', ')
+  if (type === 'truefalse') return t(`games.truefalse.${value}`)
+  if (type === 'match') return (Array.isArray(value) ? value : []).map((pair) => tileName(String(pair).split('|')[0], t)).join(', ')
   return Array.isArray(value) ? value.join(', ') : value
 }
 
@@ -146,6 +148,74 @@ export function ObjectArt({ object, colour = 'blue', size = 56, label }) {
       {object === 'bird' && <Bird />}
       {object === 'tile' && <SquareTile colour={colour} />}
       {object === 'block' && <Block colour={colour} />}
+    </svg>
+  )
+}
+
+// ---------- number line and place value ----------
+
+// The frog that jumps along the number line (drawn here, not taken from anywhere).
+export function FrogArt({ size = 56 }) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" focusable="false">
+      <ellipse cx="22" cy="86" rx="14" ry="7" fill="#3eaf5c" {...outline} />
+      <ellipse cx="78" cy="86" rx="14" ry="7" fill="#3eaf5c" {...outline} />
+      <ellipse cx="50" cy="64" rx="35" ry="27" fill="#4cc36b" {...outline} />
+      <ellipse cx="50" cy="72" rx="21" ry="13" fill="#c1f2cb" />
+      <circle cx="32" cy="36" r="15" fill="#4cc36b" {...outline} />
+      <circle cx="68" cy="36" r="15" fill="#4cc36b" {...outline} />
+      <circle cx="32" cy="35" r="9" fill="#fff" stroke={INK} strokeWidth="3" />
+      <circle cx="68" cy="35" r="9" fill="#fff" stroke={INK} strokeWidth="3" />
+      <circle cx="34" cy="36" r="4.5" fill={INK} />
+      <circle cx="66" cy="36" r="4.5" fill={INK} />
+      <path d="M34 62 Q50 76 66 62" fill="none" stroke={INK} strokeWidth="4" strokeLinecap="round" />
+      <circle cx="26" cy="58" r="5" fill="#ff8fa3" opacity="0.7" />
+      <circle cx="74" cy="58" r="5" fill="#ff8fa3" opacity="0.7" />
+    </svg>
+  )
+}
+
+export function FlagArt({ size = 40 }) {
+  return (
+    <svg viewBox="0 0 100 100" width={size} height={size} aria-hidden="true" focusable="false">
+      <path d="M26 92 V10" stroke={INK} strokeWidth="7" strokeLinecap="round" />
+      <path d="M26 12 L84 28 L26 46 Z" fill="#e5484d" {...outline} />
+    </svg>
+  )
+}
+
+// The colour of each place-value column.
+export const PLACE_HEX = { ones: '#ff8a00', tens: '#1fa36a', hundreds: '#2f6fed', thousands: '#8b5cf6' }
+export const PLACES = ['ones', 'tens', 'hundreds', 'thousands'] // lowest first
+
+// One block in a place-value column: a small cube for ones, a rod for tens, a flat for
+// hundreds and a big cube for thousands (all the same size on the board, in the column's colour).
+export function PlaceBlock({ place, size = 22 }) {
+  const fill = PLACE_HEX[place]
+  return (
+    <svg viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" focusable="false">
+      {place === 'ones' && <rect x="5" y="5" width="14" height="14" rx="3" fill={fill} stroke={INK} strokeWidth="1.6" />}
+      {place === 'tens' && (
+        <>
+          <rect x="8" y="1.5" width="8" height="21" rx="2.5" fill={fill} stroke={INK} strokeWidth="1.6" />
+          <path d="M8 7 H16 M8 12 H16 M8 17 H16" stroke={INK} strokeWidth="1" opacity="0.5" />
+        </>
+      )}
+      {place === 'hundreds' && (
+        <>
+          <rect x="2.5" y="2.5" width="19" height="19" rx="3" fill={fill} stroke={INK} strokeWidth="1.6" />
+          <path d="M9 3 V21 M15 3 V21 M3 9 H21 M3 15 H21" stroke="#fff" strokeWidth="1" opacity="0.55" />
+        </>
+      )}
+      {place === 'thousands' && (
+        <>
+          <polygon points="12,2 22,7 12,12 2,7" fill={fill} stroke={INK} strokeWidth="1.4" strokeLinejoin="round" />
+          <polygon points="2,7 12,12 12,22 2,17" fill={fill} stroke={INK} strokeWidth="1.4" strokeLinejoin="round" />
+          <polygon points="22,7 12,12 12,22 22,17" fill={fill} stroke={INK} strokeWidth="1.4" strokeLinejoin="round" />
+          <polygon points="22,7 12,12 12,22 22,17" fill="#000" opacity="0.2" />
+          <polygon points="12,2 22,7 12,12 2,7" fill="#fff" opacity="0.3" />
+        </>
+      )}
     </svg>
   )
 }
