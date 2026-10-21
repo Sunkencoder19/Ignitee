@@ -225,8 +225,64 @@ All in `shared/game.js`.
 - **Deleting is careful:** deleting a class needs its name typed in; a chapter, lesson or quiz that students have started can't be deleted (unpublish it instead).
 - **Secrets stay local:** `server/.env` is gitignored, and the dev server only serves files from `client/` and `shared/`.
 
+## Deploy
+
+Frontend on Vercel, backend on Render, database on MongoDB Atlas. No secrets go in the repo; set them in each service's dashboard.
+
+### 1. MongoDB Atlas
+
+1. Make a free cluster. Under **Database Access** add a user with a password.
+2. Under **Network Access** allow Render. Its addresses change, so use `0.0.0.0/0`.
+3. **Connect > Drivers** gives the connection string, like `mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/ignite_app?retryWrites=true&w=majority`. Keep `/ignite_app` before the `?`.
+
+### 2. Render (web service)
+
+| Setting | Value |
+|---|---|
+| Root Directory | leave empty (repo root, so `shared/` is included) |
+| Runtime | Node |
+| Build Command | `cd server && npm install` |
+| Start Command | `cd server && node index.js` |
+| Health Check Path | `/api/health` |
+
+Environment variables:
+
+| Name | Value |
+|---|---|
+| `NODE_ENV` | `production` |
+| `MONGODB_URI` | the Atlas connection string |
+| `JWT_SECRET` | a long random string: `node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"` |
+| `CLIENT_ORIGIN` | the exact Vercel address, e.g. `https://your-app.vercel.app` (no trailing slash; several allowed, separated by commas) |
+| `TRANSLATE` | optional, `off` turns auto-translate off |
+| `TRANSLATE_EMAIL` | optional, raises MyMemory's daily limit |
+
+Do not set `PORT`; Render sets it and the server reads it. The free plan sleeps when idle, so the first request after a pause is slow.
+
+### 3. Vercel (project)
+
+| Setting | Value |
+|---|---|
+| Framework Preset | Vite |
+| Root Directory | `client` |
+| **Include source files outside of the Root Directory in the Build Step** | **ON** (Settings > General > Root Directory). The build imports `../shared/game.js`, which is outside `client/`. |
+| Build Command | `npm run build` |
+| Output Directory | `dist` |
+| Install Command | `npm install` |
+
+Environment variable (Production and Preview): `VITE_API_URL` = the Render address, e.g. `https://your-server.onrender.com` (no trailing slash). It is read when the app is built, so redeploy after changing it.
+
+`client/vercel.json` sends every path to `index.html`, so deep links and refreshes work.
+
+### 4. Order and check
+
+1. Atlas, then Render (with a first guess for `CLIENT_ORIGIN`), then Vercel with `VITE_API_URL`.
+2. Copy the real Vercel address into Render's `CLIENT_ORIGIN` and let Render redeploy.
+3. Open `https://your-server.onrender.com/api/health`; it should say the database is connected. Then open the Vercel address and sign up as a teacher.
+
+Local dev is unchanged: leave `VITE_API_URL` and `CLIENT_ORIGIN` unset.
+
 ## Tech
 
 Light and dark: every header has a **Colours** switch (Auto, Light, Dark). Auto follows the device, and the choice is remembered in the browser.
 
-Client: React 18, React Router 7, Tailwind CSS 4, Vite. Server: Express 5, Mongoose 9, bcryptjs, jsonwebtoken, cors, dotenv. Database: MongoDB Community Server. Everything runs in dev mode; there are no build, lint or test steps yet.
+Client: React 18, React Router 7, Tailwind CSS 4, Vite. Server: Express 5, Mongoose 9, bcryptjs, jsonwebtoken, cors, dotenv. Database: MongoDB Community Server. Locally everything runs in dev mode; the only build is the client's, for Vercel (see Deploy). There are no lint or test steps.

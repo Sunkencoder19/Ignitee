@@ -53,6 +53,9 @@ function errorText(code, fallback) {
 
 // Sends one request to /api/... and returns the JSON reply.
 // If the server says no, it throws an Error whose message the page can show.
+// Empty in dev (the Vite proxy forwards /api). When deployed, VITE_API_URL is the server's address.
+const API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/+$/, '')
+
 async function request(method, path, body, role = roleFor(path)) {
   const headers = { 'Content-Type': 'application/json' }
   const token = getToken(role)
@@ -60,7 +63,7 @@ async function request(method, path, body, role = roleFor(path)) {
 
   let res
   try {
-    res = await fetch(`/api${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined })
+    res = await fetch(`${API_URL}/api${path}`, { method, headers, body: body ? JSON.stringify(body) : undefined })
   } catch {
     throw new Error(errorText('offline', 'Can’t reach the IGNITE server. Check your connection and try again.'))
   }

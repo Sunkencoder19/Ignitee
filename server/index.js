@@ -20,9 +20,16 @@ for (const name of ['MONGODB_URI', 'JWT_SECRET']) {
 
 const app = express()
 
-// The React dev server (Vite) forwards /api here, so the browser never calls
-// this server directly. cors is only for calling it from localhost:5173 by hand.
-app.use(cors({ origin: 'http://localhost:5173' }))
+// In dev, the React dev server (Vite) forwards /api here, so the browser never calls
+// this server directly. When deployed, the app lives on another address (Vercel), so
+// only that address (CLIENT_ORIGIN, several allowed with commas) may call the API.
+// localhost:5173 is allowed too, except in production.
+const allowedOrigins = (process.env.CLIENT_ORIGIN || '')
+  .split(',')
+  .map((origin) => origin.trim().replace(/\/+$/, ''))
+  .filter(Boolean)
+if (process.env.NODE_ENV !== 'production') allowedOrigins.push('http://localhost:5173')
+app.use(cors({ origin: allowedOrigins }))
 app.use(express.json({ limit: '200kb' }))
 
 // GET /api/health   anyone. Quick check that the server and database are up.
